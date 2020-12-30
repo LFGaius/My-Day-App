@@ -22,9 +22,9 @@ class OnboardingSlide extends StatelessWidget {
           child:Text(
             message,
             style: TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 40,
-                color: Colors.white
+                fontWeight: FontWeight.bold,
+                fontSize: 35,
+                color: Colors.black45
             ),
             textAlign: TextAlign.center,
           ),

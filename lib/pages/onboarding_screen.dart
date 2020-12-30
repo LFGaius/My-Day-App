@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/widgets/onboarding_slide.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -36,11 +37,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children:[
                             OnboardingSlide(
                               imagepath: 'assets/onboardillust1.png',
-                              message: 'Share fun with the world',
+                              message: 'A good way to organize your daily activities',
                             ),
                             OnboardingSlide(
                               imagepath: 'assets/onboardillust2.png',
-                              message: 'Only with text isd the rule',
+                              message: 'Organize your tasks and increase your productivity',
                             )
                           ]
                       ),
@@ -54,8 +55,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               dotsCount: numpages,
                               position: currentpage.toDouble(),
                               decorator:DotsDecorator(
-                                  color: Color.fromRGBO(249, 249, 249, 0.3),
-                                  activeColor: Colors.white,
+                                  color: ConfigDatas.appBlueColorDotDeactivated,
+                                  activeColor: ConfigDatas.appBlueColor,
                                   size: Size.fromRadius(17),
                                   activeSize:Size.fromRadius(17)
                               )
@@ -68,11 +69,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         FlatButton(
                           child: Text(
-                            (currentpage==numpages-1)?'Get Started':'Skip',
+                            (currentpage==numpages-1)?'Get started':'Skip',
                             style: TextStyle(
                               fontWeight:FontWeight.bold,
-                              fontSize: 28,
-                              color: Colors.white
+                              fontSize: 23,
+                              color: ConfigDatas.appBlueColor
                             ),
                           ),
                           onPressed: () {
