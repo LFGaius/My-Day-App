@@ -30,6 +30,8 @@ dependencies:
   cupertino_icons: ^1.0.0
   shared_preferences: ^0.5.7
   dots_indicator: ^1.0.0
+  timelines: ^0.0.2+1
+  rflutter_alert: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +53,7 @@ flutter:
    - assets/logo.png
    - assets/onboardillust1.png
    - assets/onboardillust2.png
+   - assets/logowhitevariant.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
