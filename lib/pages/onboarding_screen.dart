@@ -3,8 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/widgets/onboarding_slide.dart';
+import 'package:sembast/sembast.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  final Database database;
+
+  const OnboardingScreen({Key key, this.database}) : super(key: key);
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -78,7 +82,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           onPressed: () {
                             Navigator.of(context).popAndPushNamed(
-                                '/home'
+                                '/home',
+                                arguments:{'database':widget.database}
                             );
                           },
                         )

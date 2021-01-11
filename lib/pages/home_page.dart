@@ -2,25 +2,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/models/activity.dart';
+import 'package:my_day_app/models/activity_type_item.dart';
+import 'package:my_day_app/models/emergency.dart';
+import 'package:my_day_app/models/principle.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sembast/sembast.dart';
 import 'package:timelines/timelines.dart';
 
 class HomePage extends StatefulWidget {
-  BuildContext get homePageContext {
-    return this.pageContext;
-  }
-  BuildContext pageContext;
+
+  final Database database;
+
+  const HomePage({this.database, Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
-class Item {
-  const Item(this.name,this.icon);
-  final String name;
-  final Icon icon;
-}
-
 
 class _HomePageState extends State<HomePage> {
   TextEditingController timeController = TextEditingController();
@@ -29,24 +29,57 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   int activeTab=0;
   bool dayStarted=false;
-  List<String> activities = ['Activity 1','Activity 2','Activity 3','Activity 4'];
-  List<Item> activitytypes = <Item>[
-    const Item('Rest',Icon(Icons.airline_seat_flat,color:  const Color.fromRGBO(51, 102, 255, 1))),
-    const Item('Hobby',Icon(Icons.accessible_forward_outlined,color:  Color.fromRGBO(51, 102, 255, 1))),
-    const Item('Study',Icon(Icons.menu_book,color:  Color.fromRGBO(51, 102, 255, 1))),
-    const Item('Spiritual',Icon(Icons.accessibility_new,color:  Color.fromRGBO(51, 102, 255, 1))),
-    const Item('Professional',Icon(Icons.corporate_fare,color:  Color.fromRGBO(51, 102, 255, 1))),
+  List<Activity> activities=[]; //= [new Activity('Activity 1', 'Description activity 1','hobby', '0:12'),new Activity('Activity 2', 'Description activity 2','hobby', '0:12'),new Activity('Activity 3', 'Description activity 3','hobby', '0:12'),new Activity('Activity 4', 'Description activity 4','hobby', '0:12')];
+  List<Emergency> emergencies = [new Emergency('Emergency 1', 'Description emergency 1'),new Emergency('Emergency 2', 'Description emergency 2'),new Emergency('Emergency 3', 'Description emergency 3'),new Emergency('Emergency 4', 'Description emergency 4')];
+  List<Principle> principles = [new Principle('Principle 1', 'Description principle 1'),new Principle('Principle 2', 'Description principle 2'),new Principle('Principle 3', 'Description principle 3'),new Principle('Principle 4', 'Description principle 4')];
+  List<ActivityTypeItem> activitytypes = <ActivityTypeItem>[
+    const ActivityTypeItem('Rest',Icon(Icons.airline_seat_flat,color:  const Color.fromRGBO(51, 102, 255, 1))),
+    const ActivityTypeItem('Hobby',Icon(Icons.accessible_forward_outlined,color:  Color.fromRGBO(51, 102, 255, 1))),
+    const ActivityTypeItem('Study',Icon(Icons.menu_book,color:  Color.fromRGBO(51, 102, 255, 1))),
+    const ActivityTypeItem('Spiritual',Icon(Icons.accessibility_new,color:  Color.fromRGBO(51, 102, 255, 1))),
+    const ActivityTypeItem('Professional',Icon(Icons.corporate_fare,color:  Color.fromRGBO(51, 102, 255, 1))),
   ];
-  Item selectedActivityType;
+  String selectedActivityType;
+  var subscription;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    var store = intMapStoreFactory.store('activities');
+    var finder = Finder(
+        sortOrders: [SortOrder('time',true)]);
+    var query = store.query(finder: finder);
+    subscription = query.onSnapshots(widget.database).listen((snapshots) {
+      // snapshots always contains the list of records matching the query
+      print('fds ${snapshots[0].value}');
+      setState(() {
+        activities=snapshots.map((snapshot) {
+          var act=new Activity(
+              snapshot.key,
+              snapshot.value['title'],
+              snapshot.value['description'],
+              snapshot.value['type'],
+              snapshot.value['time']);
+          return act;
+        }).toList();
+      });
+
+      // ...
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    // cancel subscription. Important! not doing this might lead to
+    // memory leaks
+    unawaited(subscription?.cancel());
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.pageContext=context;//we store the context of this widget
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -80,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                 contentsAlign: ContentsAlign.alternating,
                 oppositeContentsBuilder: (context, index) => Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(activities.length==index?'Add activity':'8:12'),
+                  child: Text(activities.length==index?'Add activity':activities[index].time),
                 ),
 
                 contentsBuilder: (context, index) => activities.length==index?GestureDetector(
@@ -106,11 +139,11 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         Icon(
-                            Icons.airline_seat_individual_suite,
+                            getIcon(activities[index].type),
                             color: Colors.white
                         ),
                         Text(
-                            activities[index],
+                          activities[index].title,
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -129,7 +162,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-                itemCount: 6,
+                itemCount: emergencies.length+1,
 
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
@@ -182,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                           Text(
-                            'Read Bible jhjgh jhgj hfghfg gfdgdf',
+                            emergencies[index-1].title,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -201,7 +234,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
-                itemCount: 6,
+                itemCount: principles.length+1,
 
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
@@ -254,7 +287,7 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                           Text(
-                            'Hard working',
+                            principles[index-1].title,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -314,8 +347,8 @@ class _HomePageState extends State<HomePage> {
                 labelText: 'Description',
               ),
             ),
-            SizedBox(height: 40,),
-            TimePicker(timeController: timeController),
+            if(variant=='add_activity') SizedBox(height: 40,),
+            if(variant=='add_activity') TimePicker(timeController: timeController),
             SizedBox(height: 40,),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -330,17 +363,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 if(variant=='add_activity') StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
-                    return DropdownButton<Item>(
+                    return DropdownButton<String>(
                       hint:  Text("Select type"),
                       value: selectedActivityType,
-                      onChanged: (Item Value) {
+                      onChanged: (String value) {
                         setState(() {
-                          selectedActivityType = Value;
+                          print('----------$value---------');
+                          selectedActivityType = value;
                         });
                       },
-                      items: activitytypes.map((Item activitytype) {
-                        return  DropdownMenuItem<Item>(
-                          value: activitytype,
+                      items: activitytypes.map((ActivityTypeItem activitytype) {
+                        return  DropdownMenuItem<String>(
+                          value: activitytype.name,
                           child: Row(
                             children: <Widget>[
                               activitytype.icon,
@@ -365,8 +399,8 @@ class _HomePageState extends State<HomePage> {
         buttons: [
           DialogButton(
             onPressed: () => {
-              Navigator.pop(context),
-              save(variant)
+              save(variant),
+              Navigator.pop(context)
             },
             color: ConfigDatas.appBlueColor,
             width: 100,
@@ -378,15 +412,60 @@ class _HomePageState extends State<HomePage> {
         ]).show();
   }
 
+  dynamic getIcon(type){
+    switch(type){
+      case 'Rest': return Icons.airline_seat_flat;
+      break;
+      case 'Hobby': return Icons.accessible_forward_outlined;
+      break;
+      case 'Study': return Icons.menu_book;
+      break;
+      case 'Spiritual': return Icons.accessibility_new;
+      break;
+      case 'Professional': return Icons.corporate_fare;
+      break;
+    }
+  }
+
   save(variant){
     switch(variant){
       case 'add_emergency':print('TITLE:${titleController.text} DESCRIPTION:${descriptionController.text}');
       break;
       case 'add_activity':print('TIME:${timeController.text} TITLE:${titleController.text} DESCRIPTION:${descriptionController.text}');
+      saveActivity(new Activity(
+        null,
+        titleController.text,
+        descriptionController.text,
+        selectedActivityType,
+        timeController.text
+      ));
       break;
       case 'add_principle':print('TITLE:${titleController.text} DESCRIPTION:${descriptionController.text}');
       break;
     };
 
+  }
+
+  saveActivity(Activity activity) async{
+    var store = intMapStoreFactory.store('activities');
+    await widget.database.transaction((txn) async {
+      await store.add(txn, {
+        'title': activity.title,
+        'description': activity.description,
+        'type': activity.type,
+        'time': activity.time
+      });
+    });
+    // var finder = Finder(
+    //     sortOrders: [SortOrder('title')]);
+    // var query = store.query(finder: finder);
+    // var subscription = query.onSnapshots(widget.database).listen((snapshots) {
+    //   // snapshots always contains the list of records matching the query
+    //   print('fds $snapshots');
+    //   // ...
+    // });
+    // var finder = Finder(
+    //     filter: Filter.greaterThan('name', 'cat'),
+    //     sortOrders: [SortOrder('name')]);
   }
 }

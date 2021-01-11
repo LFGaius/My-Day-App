@@ -2,6 +2,11 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as Path;
+import 'package:path_provider/path_provider.dart';
+import 'package:pedantic/pedantic.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartPage extends StatefulWidget {
@@ -20,13 +25,55 @@ class _StartPageState extends State<StartPage> {
     super.initState();
     Timer(Duration(seconds: 3),() async{
       SharedPreferences prefs=await SharedPreferences.getInstance();
-      if(prefs.getBool('fun_already_opened')==null){//first time connection
-        prefs.setBool('fun_already_opened',true);
+      var dir = await getApplicationDocumentsDirectory();
+      await dir.create(recursive: true);
+      var dbPath = Path.join(dir.path, 'my_day_database.db');
+      var db = await databaseFactoryIo.openDatabase(dbPath, version: 0);
+      // Use the animals store using Map records with int keys
+      // var store = intMapStoreFactory.store('activities');
+      // await db.transaction((txn) async {
+      //   await store.add(txn, {'name': 'fish12'});
+      //   await store.add(txn, {'name': 'cat'});
+      // });
+      // var finder = Finder(
+      //     filter: Filter.greaterThan('name', 'cat'),
+      //     sortOrders: [SortOrder('name')]);
+      // var finder = Finder(
+      //     sortOrders: [
+      //       SortOrder('type',true)]);
+      // var records = await store.find(db, finder: finder);
+      // print(records);
+      // await store.delete(db, finder: finder);
+      // var query = store.query(finder: finder);
+      // var subscription = query.onSnapshots(db).listen((snapshots) async{
+      //   // snapshots always contains the list of records matching the query
+      //   print('fds $snapshots');
+      //   // ...
+      // });
+// ...
+
+// cancel subscription. Important! not doing this might lead to
+// memory leaks
+//       unawaited(subscription?.cancel());
+      // var records = await store.find(db, finder: finder);
+      // var results = await store
+      //     .stream(db)
+      //     .map((snapshot) => Map<String, dynamic>.from(snapshot.value)
+      //   ..['id'] = snapshot.key)
+      //     .toList();
+      // results.forEach((element) {
+      //   print('name:${element['name']}');
+      // });
+
+
+      if(prefs.getBool('myday_already_opened')==null){//first time connection
+        prefs.setBool('myday_already_opened',true);
         Navigator.of(context).popAndPushNamed(
           '/onboarding',
+            arguments:{'database':db}
         );
       }else
-        Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+        Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':db});
     });
   }
 

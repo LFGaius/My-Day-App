@@ -25,14 +25,14 @@ class _TimePickerState extends State<TimePicker> {
         selectedTime = picked;
         _hour = selectedTime.hour.toString();
         _minute = selectedTime.minute.toString();
-        _time = _hour + ' : ' + _minute;
+        _time = _hour.padLeft(2,'0') + ':' + _minute.padLeft(2,'0');
         widget.timeController.text = _time;
       });
   }
 
   @override
   void initState() {
-    widget.timeController.text = '6:00';
+    widget.timeController.text = '06:00';
     super.initState();
   }
 
