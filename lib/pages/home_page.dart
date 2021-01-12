@@ -6,6 +6,7 @@ import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/models/principle.dart';
+import 'package:my_day_app/widgets/tab_bar_view_emergencies.dart';
 import 'package:my_day_app/widgets/tab_bar_view_timeline.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
@@ -31,7 +32,6 @@ class _HomePageState extends State<HomePage> {
   int activeTab=0;
   bool dayStarted=false;
 
-  List<Emergency> emergencies = [new Emergency('Emergency 1', 'Description emergency 1'),new Emergency('Emergency 2', 'Description emergency 2'),new Emergency('Emergency 3', 'Description emergency 3'),new Emergency('Emergency 4', 'Description emergency 4')];
   List<Principle> principles = [new Principle('Principle 1', 'Description principle 1'),new Principle('Principle 2', 'Description principle 2'),new Principle('Principle 3', 'Description principle 3'),new Principle('Principle 4', 'Description principle 4')];
 
 
@@ -74,78 +74,7 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: [
             TabBarViewTimeline(database: widget.database),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GridView.builder(
-                itemCount: emergencies.length+1,
-
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return index==0?GestureDetector(
-                    onTap: ()=>_onAlertWithCustomContentPressed(context,'add_emergency'),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [Color.fromRGBO(255, 102, 51, 1), Color.fromRGBO(255, 153 , 51, 1)]
-                          )
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Icon(
-                              Icons.add_circle,
-                              size: 50,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ):Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                        gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [Color.fromRGBO(255, 102, 51, 1), Color.fromRGBO(255, 153 , 51, 1)]
-                        )
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.warning,
-                            size: 35,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            emergencies[index-1].title,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            TabBarViewEmergencies(database: widget.database),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: GridView.builder(
@@ -227,8 +156,6 @@ class _HomePageState extends State<HomePage> {
   _onAlertWithCustomContentPressed(context,variant) {
     String title;
     switch(variant){
-      case 'add_emergency':title='Add emergency';
-      break;
       case 'add_principle':title='Add principle';
       break;
     }
@@ -295,8 +222,6 @@ class _HomePageState extends State<HomePage> {
 
   save(variant){
     switch(variant){
-      case 'add_emergency':print('TITLE:${titleController.text} DESCRIPTION:${descriptionController.text}');
-      break;
       case 'add_principle':print('TITLE:${titleController.text} DESCRIPTION:${descriptionController.text}');
       break;
     };

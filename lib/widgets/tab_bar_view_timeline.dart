@@ -45,7 +45,6 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
-      print('fds ${snapshots[0].value}');
       setState(() {
         activities = snapshots.map((snapshot) {
           var act = new Activity(
