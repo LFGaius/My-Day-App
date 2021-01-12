@@ -6,6 +6,7 @@ import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/principle.dart';
+import 'package:my_day_app/widgets/card_action_list.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -33,7 +34,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
     super.initState();
     var store = intMapStoreFactory.store('principles');
     var finder = Finder(
-        sortOrders: [SortOrder('time',true)]);
+        sortOrders: [SortOrder('title',true)]);
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
@@ -107,21 +108,30 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(
-                    Icons.admin_panel_settings_sharp,
-                    size: 35,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    principles[index-1].title,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
+                  CardActionList(),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.admin_panel_settings_sharp,
+                          size: 35,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          principles[index-1].title,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                          ),
+                        )
+                      ]
                     ),
                   )
+                  
                 ],
               ),
             ),

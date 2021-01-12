@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
+import 'package:my_day_app/widgets/card_action_list.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -92,22 +93,33 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           ),
         ):Card(
           color: Colors.orangeAccent,
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
+          child: Container(
+            width: MediaQuery.of(context).size.width*0.3,
+            height: 90,
+            padding: const EdgeInsets.all(8.0),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(
-                    getIcon(activities[index].type),
-                    color: Colors.white
-                ),
-                Text(
-                  activities[index].title,
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white
-                  ),
-                ),
+                CardActionList(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children:[
+                    Icon(
+                        getIcon(activities[index].type),
+                        color: Colors.white
+                    ),
+                    Text(
+                      activities[index].title,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                      ),
+                    ),
+                  ]
+                )
+
               ],
             ),
           ),

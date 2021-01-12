@@ -6,6 +6,7 @@ import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/emergency.dart';
+import 'package:my_day_app/widgets/card_action_list.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -33,7 +34,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
     super.initState();
     var store = intMapStoreFactory.store('emergencies');
     var finder = Finder(
-        sortOrders: [SortOrder('time',true)]);
+        sortOrders: [SortOrder('title',true)]);
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
@@ -106,23 +107,32 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.warning,
-                    size: 35,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    emergencies[index-1].title,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
+                  CardActionList(),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.warning,
+                          size: 35,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          emergencies[index-1].title,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                          ),
+                        )
+                      ],
                     ),
                   )
+
                 ],
               ),
             ),
@@ -148,6 +158,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
           children: <Widget>[
             TextField(
               controller: titleController,
+              readOnly: true,
               decoration: InputDecoration(
                 labelText: 'Title',
               ),
