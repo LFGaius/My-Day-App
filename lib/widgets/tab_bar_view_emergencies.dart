@@ -109,7 +109,15 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CardActionList(),
+                  CardActionList(
+                    onDelete: () async{
+                      var store = intMapStoreFactory.store('emergencies');
+                      await store.record(emergencies[index-1].id).delete(widget.database);
+                    },
+                    onView: () {
+
+                    },
+                  ),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

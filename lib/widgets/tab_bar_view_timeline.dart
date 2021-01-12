@@ -100,7 +100,15 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CardActionList(),
+                CardActionList(
+                  onDelete: () async{
+                    var store = intMapStoreFactory.store('activities');
+                    await store.record(activities[index].id).delete(widget.database);
+                  },
+                  onView: () {
+
+                  },
+                ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children:[
@@ -230,6 +238,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             )
           ]).show();
     }
+
+
 
     dynamic getIcon(type){
       switch(type){

@@ -108,7 +108,15 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CardActionList(),
+                  CardActionList(
+                    onDelete: () async{
+                      var store = intMapStoreFactory.store('principles');
+                      await store.record(principles[index-1].id).delete(widget.database);
+                    },
+                    onView: () {
+
+                    },
+                  ),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
