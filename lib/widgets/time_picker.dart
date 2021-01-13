@@ -3,8 +3,9 @@ import 'package:intl/intl.dart';
 
 class TimePicker extends StatefulWidget {
   final TextEditingController timeController;
+  final bool readOnly;
 
-  const TimePicker({Key key, this.timeController}) : super(key: key);
+  const TimePicker({Key key, this.timeController, this.readOnly}) : super(key: key);
   @override
   _TimePickerState createState() => _TimePickerState();
 }
@@ -20,19 +21,21 @@ class _TimePickerState extends State<TimePicker> {
       context: context,
       initialTime: selectedTime,
     );
-    if (picked != null)
-      setState(() {
-        selectedTime = picked;
-        _hour = selectedTime.hour.toString();
-        _minute = selectedTime.minute.toString();
-        _time = _hour.padLeft(2,'0') + ':' + _minute.padLeft(2,'0');
-        widget.timeController.text = _time;
-      });
+    if (picked != null) {
+      selectedTime = picked;
+      _hour = selectedTime.hour.toString();
+      _minute = selectedTime.minute.toString();
+      _time = _hour.padLeft(2, '0') + ':' + _minute.padLeft(2, '0');
+      widget.timeController.text = _time;
+    }
   }
 
   @override
   void initState() {
-    widget.timeController.text = '06:00';
+    WidgetsBinding.instance.addPostFrameCallback((_){//The code inside will be executed after build to avoid issue of setState executed before widget built
+      if(widget.timeController.text==null) widget.timeController.text = '06:00';
+    });
+
     super.initState();
   }
 
@@ -57,7 +60,7 @@ class _TimePickerState extends State<TimePicker> {
               ),
               InkWell(
                 onTap: () {
-                  _selectTime(context);
+                  if(!widget.readOnly) _selectTime(context);
                 },
                 child: Container(
                   alignment: Alignment.center,

@@ -28,6 +28,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
   TextEditingController descriptionController = TextEditingController();
   List<Activity> activities=[];
   List<ActivityTypeItem> activitytypes = <ActivityTypeItem>[
+    const ActivityTypeItem('Other',Icon(Icons.wysiwyg_sharp,color:  const Color.fromRGBO(51, 102, 255, 1))),
     const ActivityTypeItem('Rest',Icon(Icons.airline_seat_flat,color:  const Color.fromRGBO(51, 102, 255, 1))),
     const ActivityTypeItem('Hobby',Icon(Icons.accessible_forward_outlined,color:  Color.fromRGBO(51, 102, 255, 1))),
     const ActivityTypeItem('Study',Icon(Icons.menu_book,color:  Color.fromRGBO(51, 102, 255, 1))),
@@ -76,7 +77,13 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         ),
 
         contentsBuilder: (context, index) => activities.length==index?GestureDetector(
-          onTap: ()=>_onAlertWithCustomContentPressed(context),
+          onTap: ()=>_onAlertWithCustomContentPressed(context,'create',activity:new Activity(
+              null,
+              '',
+              '',
+              '',
+              '00:00'
+          )),
           child: Card(
             color: ConfigDatas.appBlueColor,
             child: Padding(
@@ -106,7 +113,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                     await store.record(activities[index].id).delete(widget.database);
                   },
                   onView: () {
-
+                    _onAlertWithCustomContentPressed(context,'view',activity: activities[index]);
                   },
                 ),
                 Column(
@@ -139,22 +146,54 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     );
   }
 
-    _onAlertWithCustomContentPressed(context) {
+    _onAlertWithCustomContentPressed(context,mode,{Activity activity}){
+      if(activity!=null) {
+        titleController.text = activity.title;
+        descriptionController.text = activity.description;
+        timeController.text=activity.time;
+        selectedActivityType=activity.type;
+      }
       Alert(
           context: context,
           style: AlertStyle(
               titleStyle: TextStyle(
                   color: ConfigDatas.appBlueColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 30
+                  fontSize: mode!='view'?30:0,
               )
           ),
-          title: 'Add activity',
+          title: mode!='view'?(mode=='create'?'Add activity':'Edit activity'):'',
           closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
           content: Column(
             children: <Widget>[
+              if(mode=='view') GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  _onAlertWithCustomContentPressed(context,'edit',activity: activity);
+                },
+                child: Container(
+                  width: 80,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    color: ConfigDatas.appBlueColor,
+                    borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.edit,color: Colors.white),
+                      Text(
+                        'Edit',
+                        style: TextStyle(
+                            color: Colors.white
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
               TextField(
                 controller: titleController,
+                readOnly: mode=='view',
                 decoration: InputDecoration(
                   labelText: 'Title',
                 ),
@@ -163,13 +202,14 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                 controller: descriptionController,
                 minLines: 4,
                 maxLines: null,
+                readOnly: mode=='view',
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   labelText: 'Description',
                 ),
               ),
               SizedBox(height: 40,),
-              TimePicker(timeController: timeController),
+              TimePicker(readOnly: mode=='view',timeController: timeController),
               SizedBox(height: 40,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -182,12 +222,15 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                         color: Colors.black54
                     ),
                   ),
+
                   StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
                       return DropdownButton<String>(
+
                         hint:  Text("Select type"),
                         value: selectedActivityType,
                         onChanged: (String value) {
+                          if(mode!='view')
                           setState(() {
                             print('----------$value---------');
                             selectedActivityType = value;
@@ -218,10 +261,10 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             ],
           ),
           buttons: [
-            DialogButton(
+            if(mode!='view') DialogButton(
               onPressed: ()  async=>{
                 await saveActivity(new Activity(
-                  null,
+                  activity?.id,
                   titleController.text,
                   descriptionController.text,
                   selectedActivityType,
@@ -258,14 +301,29 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
 
     saveActivity(Activity activity) async {
       var store = intMapStoreFactory.store('activities');
-      await widget.database.transaction((txn) async {
-        await store.add(txn, {
-          'title': activity.title,
-          'description': activity.description,
-          'type': activity.type,
-          'time': activity.time
+      if(activity.id==null)
+        await widget.database.transaction((txn) async {
+          print(activity.id);
+            print('ttt ${activity.id}');
+            await store.add(txn, {
+              'title': activity.title,
+              'description': activity.description,
+              'type': activity.type,
+              'time': activity.time
+            });
         });
-      });
+      else
+        await widget.database.transaction((txn) async {
+          print(activity.id);
+          print('ttt ${activity.id}');
+          await store.record(activity.id).update(txn, {
+            'title': activity.title,
+            'description': activity.description,
+            'type': activity.type,
+            'time': activity.time
+          });
+        });
+
     }
       // var
 }
