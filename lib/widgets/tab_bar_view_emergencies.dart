@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
-import 'package:my_day_app/models/activity.dart';
-import 'package:my_day_app/models/activity_type_item.dart';
+import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/widgets/card_action_list.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
@@ -71,7 +70,11 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
         itemBuilder: (BuildContext context, int index) {
           print('index: $index');
           return index==0?GestureDetector(
-            onTap: ()=>_onAlertWithCustomContentPressed(context),
+            onTap: ()=>_onAlertWithCustomContentPressed(context,'create',emergency:new Emergency(
+                null,
+                '',
+                ''
+            )),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
@@ -115,7 +118,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
                       await store.record(emergencies[index-1].id).delete(widget.database);
                     },
                     onView: () {
-
+                      _onAlertWithCustomContentPressed(context,'view',emergency: emergencies[index-1]);
                     },
                   ),
                   Expanded(
@@ -150,23 +153,52 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
     );
   }
 
-  _onAlertWithCustomContentPressed(context) {
+  _onAlertWithCustomContentPressed(context,mode,{Emergency emergency}) {
+    if(emergency!=null) {
+      titleController.text = emergency.title;
+      descriptionController.text = emergency.description;
+    }
     Alert(
         context: context,
         style: AlertStyle(
             titleStyle: TextStyle(
                 color: ConfigDatas.appBlueColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 30
+                fontSize: mode!='view'?30:0,
             )
         ),
-        title: 'Add emergency',
+        title: mode!='view'?(mode=='create'?'Add emergency':'Edit emergency'):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Column(
           children: <Widget>[
+            if(mode=='view') GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                _onAlertWithCustomContentPressed(context,'edit',emergency: emergency);
+              },
+              child: Container(
+                width: 80,
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    color: ConfigDatas.appBlueColor,
+                    borderRadius: BorderRadius.circular(20)
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.edit,color: Colors.white),
+                    Text(
+                      'Edit',
+                      style: TextStyle(
+                          color: Colors.white
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
             TextField(
               controller: titleController,
-              readOnly: true,
+              readOnly: mode=='view',
               decoration: InputDecoration(
                 labelText: 'Title',
               ),
@@ -175,6 +207,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
               controller: descriptionController,
               minLines: 4,
               maxLines: null,
+              readOnly: mode=='view',
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 labelText: 'Description',
@@ -183,12 +216,12 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
           ],
         ),
         buttons: [
-          DialogButton(
+          if(mode!='view') DialogButton(
             onPressed: ()  async=>{
               await saveEmergency(new Emergency(
-                null,
-                titleController.text,
-                descriptionController.text,
+                  emergency?.id,
+                  titleController.text,
+                  descriptionController.text
               )),
               Navigator.pop(context)
             },
@@ -204,12 +237,24 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
 
   saveEmergency(Emergency emergency) async {
     var store = intMapStoreFactory.store('emergencies');
-    await widget.database.transaction((txn) async {
-      await store.add(txn, {
-        'title': emergency.title,
-        'description': emergency.description
+    if(emergency.id==null)
+      await widget.database.transaction((txn) async {
+        print(emergency.id);
+        print('ttt ${emergency.id}');
+        await store.add(txn, {
+          'title': emergency.title,
+          'description': emergency.description
+        });
       });
-    });
+    else
+      await widget.database.transaction((txn) async {
+        print(emergency.id);
+        print('ttt ${emergency.id}');
+        await store.record(emergency.id).update(txn, {
+          'title': emergency.title,
+          'description': emergency.description
+        });
+      });
   }
 // var
 }
