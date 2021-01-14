@@ -69,15 +69,20 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
             mainAxisSpacing: 10.0
         ),
         itemBuilder: (BuildContext context, int index) {
+          print('index: $index');
           return index==0?GestureDetector(
-            onTap: ()=>_onAlertWithCustomContentPressed(context),
+            onTap: ()=>_onAlertWithCustomContentPressed(context,'create',principle:new Principle(
+                null,
+                '',
+                ''
+            )),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      colors: [Color.fromRGBO(255, 153, 102, 1), Color.fromRGBO(255, 204, 102, 1)]
+                      colors: [Color.fromRGBO(255, 102, 51, 1), Color.fromRGBO(255, 153 , 51, 1)]
                   )
               ),
               child: Padding(
@@ -100,13 +105,13 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                 gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: [Color.fromRGBO(255, 153, 102, 1), Color.fromRGBO(255, 204, 102, 1)]
+                    colors: [Color.fromRGBO(255, 102, 51, 1), Color.fromRGBO(255, 153 , 51, 1)]
                 )
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CardActionList(
                     onDelete: () async{
@@ -114,7 +119,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                       await store.record(principles[index-1].id).delete(widget.database);
                     },
                     onView: () {
-
+                      _onAlertWithCustomContentPressed(context,'view',principle: principles[index-1]);
                     },
                   ),
                   Expanded(
@@ -122,7 +127,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Icon(
-                          Icons.admin_panel_settings_sharp,
+                          Icons.warning,
                           size: 35,
                           color: Colors.white,
                         ),
@@ -136,10 +141,10 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                               color: Colors.white
                           ),
                         )
-                      ]
+                      ],
                     ),
                   )
-                  
+
                 ],
               ),
             ),
@@ -149,22 +154,52 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
     );
   }
 
-  _onAlertWithCustomContentPressed(context) {
+  _onAlertWithCustomContentPressed(context,mode,{Principle principle}) {
+    if(principle!=null) {
+      titleController.text = principle.title;
+      descriptionController.text = principle.description;
+    }
     Alert(
         context: context,
         style: AlertStyle(
             titleStyle: TextStyle(
-                color: ConfigDatas.appBlueColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 30
+              color: ConfigDatas.appBlueColor,
+              fontWeight: FontWeight.bold,
+              fontSize: mode!='view'?30:0,
             )
         ),
-        title: 'Add principle',
+        title: mode!='view'?(mode=='create'?'Add principle':'Edit principle'):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Column(
           children: <Widget>[
+            if(mode=='view') GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                _onAlertWithCustomContentPressed(context,'edit',principle: principle);
+              },
+              child: Container(
+                width: 80,
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                    color: ConfigDatas.appBlueColor,
+                    borderRadius: BorderRadius.circular(20)
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.edit,color: Colors.white),
+                    Text(
+                      'Edit',
+                      style: TextStyle(
+                          color: Colors.white
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
             TextField(
               controller: titleController,
+              readOnly: mode=='view',
               decoration: InputDecoration(
                 labelText: 'Title',
               ),
@@ -173,6 +208,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
               controller: descriptionController,
               minLines: 4,
               maxLines: null,
+              readOnly: mode=='view',
               keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                 labelText: 'Description',
@@ -181,12 +217,12 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
           ],
         ),
         buttons: [
-          DialogButton(
+          if(mode!='view') DialogButton(
             onPressed: ()  async=>{
               await savePrinciple(new Principle(
-                null,
-                titleController.text,
-                descriptionController.text,
+                  principle?.id,
+                  titleController.text,
+                  descriptionController.text
               )),
               Navigator.pop(context)
             },
@@ -202,12 +238,24 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
 
   savePrinciple(Principle principle) async {
     var store = intMapStoreFactory.store('principles');
-    await widget.database.transaction((txn) async {
-      await store.add(txn, {
-        'title': principle.title,
-        'description': principle.description
+    if(principle.id==null)
+      await widget.database.transaction((txn) async {
+        print(principle.id);
+        print('ttt ${principle.id}');
+        await store.add(txn, {
+          'title': principle.title,
+          'description': principle.description
+        });
       });
-    });
+    else
+      await widget.database.transaction((txn) async {
+        print(principle.id);
+        print('ttt ${principle.id}');
+        await store.record(principle.id).update(txn, {
+          'title': principle.title,
+          'description': principle.description
+        });
+      });
   }
 // var
 }
