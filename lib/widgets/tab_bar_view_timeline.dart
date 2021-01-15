@@ -37,18 +37,34 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
   ];
   String selectedActivityType;
   var subscription;
+  String timesCHain;//Use to concatenate all the activities times
 
   @override
   void initState(){
     super.initState();
+    DateTime current = DateTime.now();
+    Stream timer = Stream.periodic( Duration(seconds: 5), (i){
+      var now='${DateTime.now().hour}:${DateTime.now().minute}';
+      if(timesCHain.contains(now)){
+        setState(() {
+          timesCHain=timesCHain.replaceFirst(now,'');
+        });
+      }
+      current = current.add(Duration(seconds: 15));
+      return current;
+    });
+
+    timer.listen((data)=> print(data));
     var store = intMapStoreFactory.store('activities');
     var finder = Finder(
         sortOrders: [SortOrder('time',true)]);
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
+      var temp='';
       setState(() {
         activities = snapshots.map((snapshot) {
+          temp+=';'+snapshot.value['time'];
           var act = new Activity(
               snapshot.key,
               snapshot.value['title'],
@@ -57,6 +73,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               snapshot.value['time']);
           return act;
         }).toList();
+        timesCHain=temp;
       });
     });
   }
@@ -81,7 +98,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               null,
               '',
               '',
-              '',
+              'Other',
               '00:00'
           )),
           child: Card(
@@ -140,7 +157,19 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           ),
         ),
         connectorStyleBuilder: (context, index) => ConnectorStyle.solidLine,
-        indicatorStyleBuilder: (context, index) => IndicatorStyle.outlined,
+        indicatorStyleBuilder: (context, index) {
+          if(activities.length>index){
+            DateTime now=DateTime.now();
+            var timeSplited=activities[index].time.split(':');
+            DateTime activityTime=new DateTime(now.year,now.month,now.day,int.parse(timeSplited[0]),int.parse(timeSplited[1]));
+
+            if(now.isAfter(activityTime))
+              return IndicatorStyle.dot;
+            else
+              return IndicatorStyle.outlined;
+          }else
+            return IndicatorStyle.outlined;
+        },
         itemCount: activities.length+1,
       ),
     );
@@ -286,6 +315,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
 
     dynamic getIcon(type){
       switch(type){
+        case 'Other': return Icons.wysiwyg_sharp;
+        break;
         case 'Rest': return Icons.airline_seat_flat;
         break;
         case 'Hobby': return Icons.accessible_forward_outlined;
