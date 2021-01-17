@@ -2,7 +2,10 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/main.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/widgets/card_action_list.dart';
@@ -10,7 +13,9 @@ import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
-import 'package:timelines/timelines.dart';
+import 'package:timelines/timelines.dart';import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
 
 class TabBarViewTimeline extends StatefulWidget {
 
@@ -42,19 +47,20 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
   @override
   void initState(){
     super.initState();
-    DateTime current = DateTime.now();
-    Stream timer = Stream.periodic( Duration(seconds: 5), (i){
-      var now='${DateTime.now().hour}:${DateTime.now().minute}';
-      if(timesCHain.contains(now)){
-        setState(() {
-          timesCHain=timesCHain.replaceFirst(now,'');
-        });
-      }
-      current = current.add(Duration(seconds: 15));
-      return current;
-    });
-
-    timer.listen((data)=> print(data));
+    tz.initializeTimeZones();
+    // DateTime current = DateTime.now();
+    // Stream timer = Stream.periodic( Duration(seconds: 5), (i){
+    //   var now='${DateTime.now().hour}:${DateTime.now().minute}';
+    //   if(timesCHain.contains(now)){
+    //     setState(() {
+    //       timesCHain=timesCHain.replaceFirst(now,'');
+    //     });
+    //   }
+    //   current = current.add(Duration(seconds: 15));
+    //   return current;
+    // });
+    //
+    // timer.listen((data)=> print(data));
     var store = intMapStoreFactory.store('activities');
     var finder = Finder(
         sortOrders: [SortOrder('time',true)]);
@@ -126,8 +132,10 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               children: [
                 CardActionList(
                   onDelete: () async{
+                    var notifId=activities[index].id;
                     var store = intMapStoreFactory.store('activities');
                     await store.record(activities[index].id).delete(widget.database);
+                    cancelNotification(notifId);
                   },
                   onView: () {
                     _onAlertWithCustomContentPressed(context,'view',activity: activities[index]);
@@ -291,15 +299,31 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           ),
           buttons: [
             if(mode!='view') DialogButton(
-              onPressed: ()  async=>{
-                await saveActivity(new Activity(
-                  activity?.id,
-                  titleController.text,
-                  descriptionController.text,
-                  selectedActivityType,
-                  timeController.text
-                )),
-                Navigator.pop(context)
+              onPressed: ()  async{
+                tz.TZDateTime now=tz.TZDateTime.now(tz.local);
+                var targetDt=tz.TZDateTime.local(now.year,now.month,now.day,int.parse(timeController.text.split(':')[0]),int.parse(timeController.text.split(':')[1]));
+                if(now.isBefore(targetDt)){
+                  int activityId=await saveActivity(new Activity(
+                      activity?.id,
+                      titleController.text,
+                      descriptionController.text,
+                      selectedActivityType,
+                      timeController.text
+                  ));
+                  int secondsToSchedule=((targetDt.millisecondsSinceEpoch-now.millisecondsSinceEpoch)/1000).toInt();
+                  scheduleAlarm(activityId, activity.time,secondsToSchedule,titleController.text);
+                  Navigator.pop(context);
+                }else{
+                  Fluttertoast.showToast(
+                      msg: "Time passed! Please enter a future time",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.redAccent,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
+                }
               },
               color: ConfigDatas.appBlueColor,
               width: 100,
@@ -311,7 +335,40 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           ]).show();
     }
 
+  cancelNotification(int notificationId) async{
+    await flutterLocalNotificationsPlugin.cancel(notificationId);
+  }
 
+  void scheduleAlarm(int id,String time,int secondsToSchedule,String activityTitle) async {
+    print('wait $secondsToSchedule');
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'alarm_notif',
+      'alarm_notif',
+      'Channel for Alarm notification',
+      icon: 'logo',
+      // sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+      largeIcon: DrawableResourceAndroidBitmap('logo'),
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+        // sound: 'a_long_cold_sting.wav',
+        presentAlert: true,
+        presentBadge: true,
+        // presentSound: true
+    );
+    var platformChannelSpecifics = NotificationDetails(
+        android:androidPlatformChannelSpecifics,
+        iOS:iOSPlatformChannelSpecifics
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        id, 'Activity started', activityTitle,
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: secondsToSchedule)),
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:UILocalNotificationDateInterpretation.absoluteTime
+    );
+  }
 
     dynamic getIcon(type){
       switch(type){
@@ -330,23 +387,23 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
       }
     }
 
-    saveActivity(Activity activity) async {
+    Future<int> saveActivity(Activity activity) async {
       var store = intMapStoreFactory.store('activities');
-      if(activity.id==null)
-        await widget.database.transaction((txn) async {
-          print(activity.id);
-            print('ttt ${activity.id}');
-            await store.add(txn, {
-              'title': activity.title,
-              'description': activity.description,
-              'type': activity.type,
-              'time': activity.time
-            });
-        });
-      else
+      int activityId;
+      if (activity.id == null){
         await widget.database.transaction((txn) async {
           print(activity.id);
           print('ttt ${activity.id}');
+          activityId=await store.add(txn, {
+            'title': activity.title,
+            'description': activity.description,
+            'type': activity.type,
+            'time': activity.time
+          });
+        });
+      }else {
+        activityId=activity.id;
+        await widget.database.transaction((txn) async {
           await store.record(activity.id).update(txn, {
             'title': activity.title,
             'description': activity.description,
@@ -354,7 +411,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'time': activity.time
           });
         });
-
+      }
+      return activityId;
     }
       // var
 }

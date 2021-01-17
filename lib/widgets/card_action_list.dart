@@ -71,8 +71,8 @@ class CardActionList extends StatelessWidget {
             "Confirm",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () async{
-            await onDelete();
+          onPressed: () {
+            onDelete();
             Navigator.pop(context);
           },
           color: Colors.redAccent

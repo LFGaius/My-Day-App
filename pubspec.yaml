@@ -36,6 +36,8 @@ dependencies:
   path_provider: ^1.6.24
   path: ^1.7.0
   pedantic: ^1.9.2
+  flutter_local_notifications: ^3.0.3
+  fluttertoast: ^7.1.6
 
 dev_dependencies:
   flutter_test:
