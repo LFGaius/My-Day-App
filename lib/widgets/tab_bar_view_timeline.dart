@@ -48,35 +48,38 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
   void initState(){
     super.initState();
     tz.initializeTimeZones();
-    // DateTime current = DateTime.now();
-    // Stream timer = Stream.periodic( Duration(seconds: 5), (i){
-    //   var now='${DateTime.now().hour}:${DateTime.now().minute}';
-    //   if(timesCHain.contains(now)){
-    //     setState(() {
-    //       timesCHain=timesCHain.replaceFirst(now,'');
-    //     });
-    //   }
-    //   current = current.add(Duration(seconds: 15));
-    //   return current;
-    // });
-    //
-    // timer.listen((data)=> print(data));
+    DateTime current = DateTime.now();
+    Stream timer = Stream.periodic( Duration(seconds: 1), (i){
+      var now='${DateTime.now().hour}:${DateTime.now().minute}';
+      if(timesCHain.contains(now)){
+        setState(() {
+          timesCHain=timesCHain.replaceFirst(now,'');
+        });
+      }
+      current = current.add(Duration(seconds: 15));
+      return current;
+    });
+
+    timer.listen((data)=> {});
     var store = intMapStoreFactory.store('activities');
     var finder = Finder(
-        sortOrders: [SortOrder('time',true)]);
+        filter: Filter.equals('date', '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}'),
+        sortOrders: [SortOrder('time',true)]
+    );
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
       var temp='';
       setState(() {
-        activities = snapshots.map((snapshot) {
+        activities = snapshots.where((e) => e.value['date']=='${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}').map((snapshot) {
           temp+=';'+snapshot.value['time'];
           var act = new Activity(
               snapshot.key,
               snapshot.value['title'],
               snapshot.value['description'],
               snapshot.value['type'],
-              snapshot.value['time']);
+              snapshot.value['time'],
+              snapshot.value['date']);
           return act;
         }).toList();
         timesCHain=temp;
@@ -105,7 +108,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               '',
               '',
               'Other',
-              '00:00'
+              '00:00',
+               'dd-mm-yy'
           )),
           child: Card(
             color: ConfigDatas.appBlueColor,
@@ -308,7 +312,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                       titleController.text,
                       descriptionController.text,
                       selectedActivityType,
-                      timeController.text
+                      timeController.text,
+                      '${now.day}-${now.month}-${now.year}'
                   ));
                   int secondsToSchedule=((targetDt.millisecondsSinceEpoch-now.millisecondsSinceEpoch)/1000).toInt();
                   scheduleAlarm(activityId, activity.time,secondsToSchedule,titleController.text);
@@ -360,7 +365,6 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         android:androidPlatformChannelSpecifics,
         iOS:iOSPlatformChannelSpecifics
     );
-
     await flutterLocalNotificationsPlugin.zonedSchedule(
         id, 'Activity started', activityTitle,
       tz.TZDateTime.now(tz.local).add(Duration(seconds: secondsToSchedule)),
@@ -398,7 +402,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'title': activity.title,
             'description': activity.description,
             'type': activity.type,
-            'time': activity.time
+            'time': activity.time,
+            'date': activity.date
           });
         });
       }else {
@@ -408,7 +413,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'title': activity.title,
             'description': activity.description,
             'type': activity.type,
-            'time': activity.time
+            'time': activity.date
           });
         });
       }
