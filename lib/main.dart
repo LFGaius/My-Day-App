@@ -1,25 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:my_day_app/routes/route_builder.dart';
-import 'package:schedule_controller/schedule_controller.dart';
 import 'package:sembast/sembast.dart';
-import 'package:sembast/sembast_io.dart';
-import 'package:timelines/timelines.dart';import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin=FlutterLocalNotificationsPlugin();
+final  MethodChannel platform =MethodChannel('myday.app/channel');
+
+Future<void> _configureLocalTimeZone() async {
+  tz.initializeTimeZones();
+  // String timeZoneName;
+  // try {
+  //   timeZoneName = await platform.invokeMethod('getTimeZoneName');
+  // } on PlatformException catch(e){}
+
+  print('timeZoneName1 ${tz.TZDateTime.local(2021,1,27,22,40)}');
+  // tz.setLocalLocation(tz.getLocation(timeZoneName));
+}
+
 void main() async{
+
   WidgetsFlutterBinding.ensureInitialized();
+  await _configureLocalTimeZone();
   const AndroidInitializationSettings initializationSettingsAndroid =
   AndroidInitializationSettings('logo');
-  final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
-    onDidReceiveLocalNotification: (int id,String title,String body,String payload) async{}
-  );
+  // final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
+  //   requestAlertPermission: true,
+  //   requestBadgePermission: true,
+  //   requestSoundPermission: true,
+  //   onDidReceiveLocalNotification: (int id,String title,String body,String payload) async{}
+  // );
   final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS
+      // iOS: initializationSettingsIOS
   );
 
   await flutterLocalNotificationsPlugin.initialize(

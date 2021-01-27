@@ -304,19 +304,21 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           buttons: [
             if(mode!='view') DialogButton(
               onPressed: ()  async{
-                tz.TZDateTime now=tz.TZDateTime.now(tz.local);
+                var now=DateTime.now();
+                tz.TZDateTime _now=tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second);
                 var targetDt=tz.TZDateTime.local(now.year,now.month,now.day,int.parse(timeController.text.split(':')[0]),int.parse(timeController.text.split(':')[1]));
-                if(now.isBefore(targetDt)){
+                print('now: ${now} targetDt: ${targetDt}');
+                if(_now.isBefore(targetDt)){
                   int activityId=await saveActivity(new Activity(
                       activity?.id,
                       titleController.text,
                       descriptionController.text,
                       selectedActivityType,
                       timeController.text,
-                      '${now.day}-${now.month}-${now.year}'
+                      '${_now.day}-${_now.month}-${_now.year}'
                   ));
-                  int secondsToSchedule=((targetDt.millisecondsSinceEpoch-now.millisecondsSinceEpoch)/1000).toInt();
-                  scheduleAlarm(activityId, activity.time,secondsToSchedule,titleController.text);
+                  int secondsToSchedule=((targetDt.millisecondsSinceEpoch-_now.millisecondsSinceEpoch)/1000).toInt();
+                  scheduleAlarm(activityId, activity.time,secondsToSchedule==0?1:secondsToSchedule,titleController.text);
                   Navigator.pop(context);
                 }else{
                   Fluttertoast.showToast(
@@ -355,19 +357,22 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
       largeIcon: DrawableResourceAndroidBitmap('logo'),
     );
 
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        // sound: 'a_long_cold_sting.wav',
-        presentAlert: true,
-        presentBadge: true,
-        // presentSound: true
-    );
+    // var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+    //     // sound: 'a_long_cold_sting.wav',
+    //     presentAlert: true,
+    //     presentBadge: true,
+    //     // presentSound: true
+    // );
     var platformChannelSpecifics = NotificationDetails(
         android:androidPlatformChannelSpecifics,
-        iOS:iOSPlatformChannelSpecifics
+        // iOS:iOSPlatformChannelSpecifics
     );
+    var now=DateTime.now();
+    var offset=now.timeZoneOffset;
+    print('schedule ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second)} ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(Duration(seconds: secondsToSchedule))}');
     await flutterLocalNotificationsPlugin.zonedSchedule(
         id, 'Activity started', activityTitle,
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: secondsToSchedule)),
+      tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(-offset).add(Duration(seconds: secondsToSchedule)),//with -offset, we avoid the effect of the offset because in background, the offset is added(conversion to UTC) and compared to the local time(Weird package behavior)
       platformChannelSpecifics,
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:UILocalNotificationDateInterpretation.absoluteTime
