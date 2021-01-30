@@ -71,6 +71,13 @@ class _HomePageState extends State<HomePage> {
             TabBarViewPrinciples(database: widget.database),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: Icon(Icons.album_outlined),
+          backgroundColor: ConfigDatas.appBlueColor,
+        ),
       ),
     );
   }
