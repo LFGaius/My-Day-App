@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_day_app/configs/config_datas.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
 import 'package:pedantic/pedantic.dart';
@@ -66,14 +67,14 @@ class _StartPageState extends State<StartPage> {
       // });
 
 
-      if(prefs.getBool('myday_already_opened')==null){//first time connection
-        prefs.setBool('myday_already_opened',true);
-        Navigator.of(context).popAndPushNamed(
-          '/onboarding',
-            arguments:{'database':db}
-        );
-      }else
-        Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':db});
+      // if(prefs.getBool('myday_already_opened')==null){//first time connection TO DO: Uncomment
+      //   prefs.setBool('myday_already_opened',true);
+      //   Navigator.of(context).popAndPushNamed(
+      //     '/onboarding',
+      //       arguments:{'database':db}
+      //   );
+      // }else
+      //   Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':db});
     });
   }
 

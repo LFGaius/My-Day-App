@@ -99,7 +99,13 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         contentsAlign: ContentsAlign.alternating,
         oppositeContentsBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(activities.length==index?'Add activity':activities[index].time),
+          child: Text(
+              activities.length==index?'Add activity':activities[index].time,
+            // style: TextStyle(
+            //   fontFamily: 'Freestyle Script Regular',
+            //   fontSize: 25
+            // ),
+          ),
         ),
 
         contentsBuilder: (context, index) => activities.length==index?GestureDetector(

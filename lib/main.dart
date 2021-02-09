@@ -92,11 +92,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'My Day',
+        // theme: ThemeData(
+        //   // Use the old theme but apply the following three changes
+        //     textTheme: Theme.of(context).textTheme.apply(
+        //         fontFamily: 'Freestyle Script Regular',
+        //         )),
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: '/',
+        initialRoute: '/goals',
         onGenerateRoute: MyRouteBuilder.buildRoute
     );
   }
