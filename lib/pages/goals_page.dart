@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
-import 'package:my_day_app/models/emergency.dart';
+import 'package:my_day_app/models/goal.dart';
+import 'package:my_day_app/models/goal.dart';
 import 'package:my_day_app/models/principle.dart';
+import 'package:my_day_app/widgets/card_action_list.dart';
 import 'package:my_day_app/widgets/tab_bar_view_emergencies.dart';
 import 'package:my_day_app/widgets/tab_bar_view_principles.dart';
 import 'package:my_day_app/widgets/tab_bar_view_timeline.dart';
@@ -28,14 +30,32 @@ class GoalsPage extends StatefulWidget {
 
 class _GoalsPageState extends State<GoalsPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
-  ScrollController _controller;
+  TextEditingController descriptionController = TextEditingController();
+  int isPinned=0;
+  List<Goal> goals=[];
+  var subscription;
 
   @override
   void initState() {
-    _controller = ScrollController();
     // _controller.addListener(_scrollListener);//the listener for up and down.
     // TODO: implement initState
     super.initState();
+    var store = intMapStoreFactory.store('goals');
+    var finder = Finder(
+        sortOrders: [SortOrder('isPinned',true)]);
+    var query = store.query(finder: finder);
+    subscription = query.onSnapshots(widget.database).listen((snapshots) {
+      // snapshots always contains the list of records matching the query
+      setState(() {
+        goals = snapshots.map((snapshot) {
+          var goal = new Goal(
+              snapshot.key,
+              snapshot.value['description'],
+              snapshot.value['isPinned']);
+          return goal;
+        }).toList();
+      });
+    });
   }
 
 
@@ -56,40 +76,57 @@ class _GoalsPageState extends State<GoalsPage> {
           ],
         ),
         centerTitle: true,
-        leading: Icon(
-          Icons.arrow_back_ios
+        leading: FlatButton(
+          onPressed: () {
+            Navigator.of(context).popAndPushNamed(
+                '/home',
+                arguments:{'database':widget.database}
+            );
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
         )
       ),
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SizedBox(height: MediaQuery.of(context).size.height*0.05,),
-          Center(
-            child:Text(
-              'Your Goals',
-              style: TextStyle(
-                color: ConfigDatas.appBlueColor,
-                fontSize: 60,
-                fontFamily: 'Freestyle Script Regular',
+          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.album_outlined,
+                size: 40,
+                color: ConfigDatas.appDarkBlueColor,
               ),
-            )
+              Text(
+                'Your Goals',
+                style: TextStyle(
+                  color: ConfigDatas.appBlueColor,
+                  fontSize: 60,
+                  fontFamily: 'Freestyle Script Regular',
+                ),
+              ),
+            ],
           ),
           Container(
-            height:MediaQuery.of(context).size.height*0.55,
+            height:MediaQuery.of(context).size.height*0.5,
             // padding: const EdgeInsets.all(8.0),
             child: ListView.builder(
-                shrinkWrap: true ,
+              shrinkWrap: true ,
               scrollDirection: Axis.horizontal,
-              itemCount: 4,
+              itemCount: goals.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   width: MediaQuery.of(context).size.width*0.8,
                   margin: EdgeInsets.all(20),
                   padding: EdgeInsets.only(left:10),
                   decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
+                   boxShadow: [
+                     BoxShadow(
+                      color: Colors.black26,
                       blurRadius:8,
                       spreadRadius:1,
                           offset: Offset(4,4)
@@ -104,26 +141,49 @@ class _GoalsPageState extends State<GoalsPage> {
                       color: ConfigDatas.appBlueColor,
                       borderRadius: BorderRadius.circular(10)
                   ),
-                  child: Center(
-                    child: Scrollbar(
-                      radius: Radius.circular(10),
-                      child: TextField(
-                        controller: TextEditingController(text: ' Your Objectives $index'*20),
-                        maxLines: null,
-                        readOnly: true,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35,
-                          fontFamily: 'Freestyle Script Regular',
-                        ),
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          labelText:null,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding:EdgeInsets.only(top:20),
+                        child: CardActionList(
+                          variant: 'goal',
+                          onDelete: () async{
+                            var store = intMapStoreFactory.store('goals');
+                            await store.record(goals[index].id).delete(widget.database);
+                          },
+                          onEdit: () {
+                            _onAlertWithCustomContentPressed(context,'edit',goals[index]);
+                          },
                         ),
                       ),
-                    ),
+                      Container(
+                        width: MediaQuery.of(context).size.width*0.7,
+                        padding:EdgeInsets.all(5),
+                        child: Center(
+                          child: Scrollbar(
+                            radius: Radius.circular(10),
+                            child: TextField(
+                              controller: TextEditingController(text: goals[index].description),
+                              maxLines: null,
+                              readOnly: true,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontFamily: 'Freestyle Script Regular',
+                              ),
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText:null,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    ],
                   ),
                 );
               }
@@ -134,23 +194,87 @@ class _GoalsPageState extends State<GoalsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Add your onPressed code here!
+          _onAlertWithCustomContentPressed(context,'create',new Goal(
+              null,
+              '',
+              0
+          ));
         },
         child: Icon(Icons.add),
         backgroundColor: ConfigDatas.appDarkBlueColor,
       ),
     );
   }
-// var finder = Finder(
-//     sortOrders: [SortOrder('title')]);
-// var query = store.query(finder: finder);
-// var subscription = query.onSnapshots(widget.database).listen((snapshots) {
-//   // snapshots always contains the list of records matching the query
-//   print('fds $snapshots');
-//   // ...
-// });
-// var finder = Finder(
-//     filter: Filter.greaterThan('name', 'cat'),
-//     sortOrders: [SortOrder('name')]);
+
+  _onAlertWithCustomContentPressed(context,mode,Goal goal) {
+    isPinned = goal.isPinned;
+    descriptionController.text = goal.description;
+
+    Alert(
+        context: context,
+        style: AlertStyle(
+            titleStyle: TextStyle(
+              color: ConfigDatas.appBlueColor,
+              fontWeight: FontWeight.bold,
+              fontSize:30,
+            )
+        ),
+        title: mode=='create'?'Create goal':'Edit goal',
+        closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
+        content: Column(
+          children: <Widget>[
+            TextField(
+              controller: descriptionController,
+              minLines: 4,
+              maxLines: null,
+              readOnly: false,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                labelText: 'Goal',
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: ()  async=>{
+              await saveGoal(new Goal(
+                goal?.id,
+                descriptionController.text,
+                isPinned
+              )),
+              Navigator.pop(context)
+            },
+            color: ConfigDatas.appBlueColor,
+            width: 100,
+            child: Text(
+              "Save",
+              style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+            ),
+          )
+        ]).show();
+  }
+
+  saveGoal(Goal goal) async {
+    var store = intMapStoreFactory.store('goals');
+    if(goal.id==null)
+      await widget.database.transaction((txn) async {
+        print(goal.id);
+        print('ttt ${goal.id}');
+        await store.add(txn, {
+          'isPinned': goal.isPinned,
+          'description': goal.description
+        });
+      });
+    else
+      await widget.database.transaction((txn) async {
+        print(goal.id);
+        print('ttt ${goal.id}');
+        await store.record(goal.id).update(txn, {
+          'isPinned': goal.isPinned,
+          'description': goal.description
+        });
+      });
+  }
 
 }

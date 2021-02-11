@@ -67,14 +67,14 @@ class _StartPageState extends State<StartPage> {
       // });
 
 
-      // if(prefs.getBool('myday_already_opened')==null){//first time connection TO DO: Uncomment
-      //   prefs.setBool('myday_already_opened',true);
-      //   Navigator.of(context).popAndPushNamed(
-      //     '/onboarding',
-      //       arguments:{'database':db}
-      //   );
-      // }else
-      //   Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':db});
+      if(prefs.getBool('myday_already_opened')==null){//first time connection TO DO: Uncomment
+        prefs.setBool('myday_already_opened',true);
+        Navigator.of(context).popAndPushNamed(
+          '/onboarding',
+            arguments:{'database':db}
+        );
+      }else
+        Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':db});
     });
   }
 

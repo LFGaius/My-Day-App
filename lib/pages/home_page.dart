@@ -74,7 +74,10 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Add your onPressed code here!
+            Navigator.of(context).popAndPushNamed(
+                '/goals',
+                arguments:{'database':widget.database}
+            );
           },
           child: Icon(Icons.album_outlined),
           backgroundColor: ConfigDatas.appBlueColor,

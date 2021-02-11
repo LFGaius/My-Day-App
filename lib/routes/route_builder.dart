@@ -14,7 +14,7 @@ class MyRouteBuilder{
       case '/onboarding':
         return MaterialPageRoute(builder: (_)=>OnboardingScreen(database: args['database']));
       case '/goals':
-        return MaterialPageRoute(builder: (_)=>GoalsPage(database: null));//args['database']
+        return MaterialPageRoute(builder: (_)=>GoalsPage(database: args['database']));//args['database']
       case '/home':
         return MaterialPageRoute(builder: (_)=>HomePage(database: args['database']));
       default: return errorRoute();
