@@ -46,15 +46,16 @@ class _GoalsPageState extends State<GoalsPage> {
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
-      setState(() {
-        goals = snapshots.map((snapshot) {
-          var goal = new Goal(
-              snapshot.key,
-              snapshot.value['description'],
-              snapshot.value['isFavorite']);
-          return goal;
-        }).toList();
-      });
+      if (mounted)
+        setState(() {
+          goals = snapshots.map((snapshot) {
+            var goal = new Goal(
+                snapshot.key,
+                snapshot.value['description'],
+                snapshot.value['isFavorite']);
+            return goal;
+          }).toList();
+        });
     });
   }
 
