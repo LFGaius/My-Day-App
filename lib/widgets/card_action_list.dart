@@ -9,10 +9,12 @@ class CardActionList extends StatelessWidget {
   final Function onDelete;
   final Function onView;
   final Function onEdit;
+  final Function onSwitchFavorite;
   final String variant;
+  final int isFavorite;
 
 
-  const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit}) : super(key: key);
+  const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit, this.isFavorite, this.onSwitchFavorite}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return variant=='goal'?
@@ -63,6 +65,30 @@ class CardActionList extends StatelessWidget {
                 Icons.delete,
                 size: 18,
                 color: Colors.white,
+              ),
+            ),
+          ),
+          SizedBox(height: 12),
+          GestureDetector(
+            onTap: onSwitchFavorite,
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color:Colors.black.withOpacity(0.4
+                        ),
+                        offset: Offset(0,5),
+                        blurRadius: 6
+                    )
+                  ],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20)
+              ),
+              child: Icon(
+                isFavorite==1?Icons.favorite:Icons.favorite_border,
+                size: 18,
+                color: ConfigDatas.appBlueColor,
               ),
             ),
           ),

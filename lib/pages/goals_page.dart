@@ -31,7 +31,7 @@ class GoalsPage extends StatefulWidget {
 class _GoalsPageState extends State<GoalsPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   TextEditingController descriptionController = TextEditingController();
-  int isPinned=0;
+  int isFavorite=0;
   List<Goal> goals=[];
   var subscription;
 
@@ -42,7 +42,7 @@ class _GoalsPageState extends State<GoalsPage> {
     super.initState();
     var store = intMapStoreFactory.store('goals');
     var finder = Finder(
-        sortOrders: [SortOrder('isPinned',true)]);
+        sortOrders: [SortOrder('isFavorite',false)]);
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
@@ -51,7 +51,7 @@ class _GoalsPageState extends State<GoalsPage> {
           var goal = new Goal(
               snapshot.key,
               snapshot.value['description'],
-              snapshot.value['isPinned']);
+              snapshot.value['isFavorite']);
           return goal;
         }).toList();
       });
@@ -148,6 +148,18 @@ class _GoalsPageState extends State<GoalsPage> {
                         padding:EdgeInsets.only(top:20),
                         child: CardActionList(
                           variant: 'goal',
+                          isFavorite:goals[index].isFavorite,
+                          onSwitchFavorite:() async{
+                            var store = intMapStoreFactory.store('goals');
+                            await widget.database.transaction((txn) async {
+                              print(goals[index].id);
+                              print('ttt ${goals[index].id}');
+                              print('ttt ${goals[index].isFavorite}');
+                              await store.record(goals[index].id).update(txn, {
+                                'isFavorite': goals[index].isFavorite==1?0:1
+                              });
+                            });
+                          },
                           onDelete: () async{
                             var store = intMapStoreFactory.store('goals');
                             await store.record(goals[index].id).delete(widget.database);
@@ -207,7 +219,7 @@ class _GoalsPageState extends State<GoalsPage> {
   }
 
   _onAlertWithCustomContentPressed(context,mode,Goal goal) {
-    isPinned = goal.isPinned;
+    isFavorite = goal.isFavorite;
     descriptionController.text = goal.description;
 
     Alert(
@@ -241,7 +253,7 @@ class _GoalsPageState extends State<GoalsPage> {
               await saveGoal(new Goal(
                 goal?.id,
                 descriptionController.text,
-                isPinned
+                isFavorite
               )),
               Navigator.pop(context)
             },
@@ -262,7 +274,7 @@ class _GoalsPageState extends State<GoalsPage> {
         print(goal.id);
         print('ttt ${goal.id}');
         await store.add(txn, {
-          'isPinned': goal.isPinned,
+          'isFavorite': goal.isFavorite,
           'description': goal.description
         });
       });
@@ -271,7 +283,7 @@ class _GoalsPageState extends State<GoalsPage> {
         print(goal.id);
         print('ttt ${goal.id}');
         await store.record(goal.id).update(txn, {
-          'isPinned': goal.isPinned,
+          'isFavorite': goal.isFavorite,
           'description': goal.description
         });
       });
