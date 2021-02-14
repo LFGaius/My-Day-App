@@ -38,15 +38,16 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
-      setState(() {
-        principles = snapshots.map((snapshot) {
-          var emer = new Principle(
-              snapshot.key,
-              snapshot.value['title'],
-              snapshot.value['description']);
-          return emer;
-        }).toList();
-      });
+      if(mounted)
+        setState(() {
+          principles = snapshots.map((snapshot) {
+            var emer = new Principle(
+                snapshot.key,
+                snapshot.value['title'],
+                snapshot.value['description']);
+            return emer;
+          }).toList();
+        });
     });
   }
 

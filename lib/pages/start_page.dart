@@ -74,7 +74,7 @@ class _StartPageState extends State<StartPage> {
             arguments:{'database':db}
         );
       }else
-        Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':db});
+        Navigator.of(context).pushNamedAndRemoveUntil('/goalremind',(Route<dynamic> route) => false, arguments:{'database':db});
     });
   }
 

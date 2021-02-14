@@ -70,20 +70,21 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
       var temp='';
-      setState(() {
-        activities = snapshots.where((e) => e.value['date']=='${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}').map((snapshot) {
-          temp+=';'+snapshot.value['time'];
-          var act = new Activity(
-              snapshot.key,
-              snapshot.value['title'],
-              snapshot.value['description'],
-              snapshot.value['type'],
-              snapshot.value['time'],
-              snapshot.value['date']);
-          return act;
-        }).toList();
-        timesCHain=temp;
-      });
+      if(mounted)
+        setState(() {
+          activities = snapshots.where((e) => e.value['date']=='${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}').map((snapshot) {
+            temp+=';'+snapshot.value['time'];
+            var act = new Activity(
+                snapshot.key,
+                snapshot.value['title'],
+                snapshot.value['description'],
+                snapshot.value['type'],
+                snapshot.value['time'],
+                snapshot.value['date']);
+            return act;
+          }).toList();
+          timesCHain=temp;
+        });
     });
   }
 

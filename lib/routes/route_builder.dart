@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_day_app/pages/goal_remind_page.dart';
 import 'package:my_day_app/pages/goals_page.dart';
 import 'package:my_day_app/pages/home_page.dart';
 import 'package:my_day_app/pages/onboarding_screen.dart';
@@ -15,6 +16,8 @@ class MyRouteBuilder{
         return MaterialPageRoute(builder: (_)=>OnboardingScreen(database: args['database']));
       case '/goals':
         return MaterialPageRoute(builder: (_)=>GoalsPage(database: args['database']));//args['database']
+      case '/goalremind':
+        return MaterialPageRoute(builder: (_)=>GoalRemindPage(database: args['database']));
       case '/home':
         return MaterialPageRoute(builder: (_)=>HomePage(database: args['database']));
       default: return errorRoute();
