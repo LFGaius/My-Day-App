@@ -83,7 +83,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                   gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      colors: [Color.fromRGBO(255, 102, 51, 1), Color.fromRGBO(255, 153 , 51, 1)]
+                      colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange]
                   )
               ),
               child: Padding(
@@ -106,7 +106,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                 gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
-                    colors: [Color.fromRGBO(255, 102, 51, 1), Color.fromRGBO(255, 153 , 51, 1)]
+                    colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange ]
                 )
             ),
             child: Padding(
@@ -128,7 +128,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Icon(
-                          Icons.warning,
+                          Icons.admin_panel_settings,
                           size: 35,
                           color: Colors.white,
                         ),
