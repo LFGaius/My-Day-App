@@ -42,6 +42,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     const ActivityTypeItem('Professional',Icon(Icons.corporate_fare,color:  Color.fromRGBO(51, 102, 255, 1))),
   ];
   String selectedActivityType;
+  bool isAccomplished=false;
   var subscription;
   String timesCHain;//Use to concatenate all the activities times
 
@@ -82,7 +83,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                 snapshot.value['type'],
                 snapshot.value['time'],
                 snapshot.value['date'],
-                snapshot.value['duration']
+                snapshot.value['duration'],
+                snapshot.value['isAccomplished']
             );
             return act;
           }).toList();
@@ -120,7 +122,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               'Other',
               '00:00',
               'dd-mm-yy',
-              '00:00'
+              '00:00',
+              false
           )),
           child: Card(
             color: ConfigDatas.appBlueColor,
@@ -152,10 +155,18 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                     await store.record(activities[index].id).delete(widget.database);
                     cancelNotification(notifId);
                   },
-                  onView: () {
-                    _onAlertWithCustomContentPressed(context,'view',activity: activities[index]);
+                  onSwitchAccomplished: () async{
+                    print('isAccomplished ${activities[index].isAccomplished}');
+                    var store = intMapStoreFactory.store('activities');
+                    await widget.database.transaction((txn) async {
+                      await store.record(activities[index].id).update(txn, {
+                        'isAccomplished': !activities[index].isAccomplished
+                      });
+                    });
                   },
+                  isAccomplished: activities[index].isAccomplished
                 ),
+                SizedBox(height: 10),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children:[
@@ -172,6 +183,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                           color: Colors.white
                       ),
                     ),
+                    SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -224,6 +236,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         timeController.text=activity.time;
         durationController.text=activity.duration;
         selectedActivityType=activity.type;
+        isAccomplished=activity.isAccomplished;
       }
       Alert(
           context: context,
@@ -354,7 +367,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                         selectedActivityType,
                         timeController.text,
                         '${_now.day}-${_now.month}-${_now.year}',
-                        durationController.text
+                        durationController.text,
+                        isAccomplished
                     ));
                     int secondsToSchedule = ((targetDt.millisecondsSinceEpoch -
                         _now.millisecondsSinceEpoch) / 1000).toInt();
@@ -461,7 +475,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'type': activity.type,
             'time': activity.time,
             'date': activity.date,
-            'duration': activity.duration
+            'duration': activity.duration,
+            'isAccomplished': activity.isAccomplished
           });
         });
       }else {
@@ -472,7 +487,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'description': activity.description,
             'type': activity.type,
             'time': activity.date,
-            'duration': activity.duration
+            'duration': activity.duration,
+            'isAccomplished': activity.isAccomplished
           });
         });
       }

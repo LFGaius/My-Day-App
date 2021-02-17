@@ -6,5 +6,6 @@ class Activity {
   final String time;
   final String date;
   final String duration;
-  Activity(this.id,this.title,this.description, this.type, this.time, this.date, this.duration);
+  final bool isAccomplished;
+  Activity(this.id,this.title,this.description, this.type, this.time, this.date, this.duration, this.isAccomplished);
 }

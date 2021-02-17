@@ -10,11 +10,50 @@ class CardActionList extends StatelessWidget {
   final Function onView;
   final Function onEdit;
   final Function onSwitchFavorite;
+  final Function onSwitchAccomplished;
   final String variant;
   final int isFavorite;
+  final bool isAccomplished;
 
 
-  const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit, this.isFavorite, this.onSwitchFavorite}) : super(key: key);
+  const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit, this.isFavorite, this.onSwitchFavorite, this.isAccomplished, this.onSwitchAccomplished}) : super(key: key);
+  _onConfirmDeleteAction(context,message) {
+    Alert(
+      context: context,
+      style: AlertStyle(
+          titleStyle: TextStyle(
+              color: Colors.redAccent,
+              fontWeight: FontWeight.bold,
+              fontSize: 30
+          )
+      ),
+      type: AlertType.warning,
+      title: "Warning",
+      desc: message,
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Confirm",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            onDelete();
+            Navigator.pop(context);
+          },
+          color: Colors.redAccent
+        ),
+        DialogButton(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          color: ConfigDatas.appBlueColor,
+        )
+      ],
+    ).show();
+  }
+
   @override
   Widget build(BuildContext context) {
     return variant=='goal'?
@@ -113,6 +152,21 @@ class CardActionList extends StatelessWidget {
             ),
           ),
           GestureDetector(
+            onTap: onSwitchAccomplished,
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                  color: isAccomplished?Colors.green:Colors.black54,
+                  borderRadius: BorderRadius.circular(20)
+              ),
+              child: Icon(
+                Icons.check,
+                size: 15,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          GestureDetector(
             onTap: () {
               _onConfirmDeleteAction(context,'Are you sure you want to delete this element?');
             },
@@ -131,43 +185,6 @@ class CardActionList extends StatelessWidget {
           ),
         ],
       );
-  }
-
-  _onConfirmDeleteAction(context,message) {
-    Alert(
-      context: context,
-      style: AlertStyle(
-          titleStyle: TextStyle(
-              color: Colors.redAccent,
-              fontWeight: FontWeight.bold,
-              fontSize: 30
-          )
-      ),
-      type: AlertType.warning,
-      title: "Warning",
-      desc: message,
-      buttons: [
-        DialogButton(
-          child: Text(
-            "Confirm",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () {
-            onDelete();
-            Navigator.pop(context);
-          },
-          color: Colors.redAccent
-        ),
-        DialogButton(
-          child: Text(
-            "Cancel",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () => Navigator.pop(context),
-          color: ConfigDatas.appBlueColor,
-        )
-      ],
-    ).show();
   }
 
 }
