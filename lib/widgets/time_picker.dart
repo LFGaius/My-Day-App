@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 class TimePicker extends StatefulWidget {
   final TextEditingController timeController;
   final bool readOnly;
+  final String label;
 
-  const TimePicker({Key key, this.timeController, this.readOnly}) : super(key: key);
+  const TimePicker({Key key, this.timeController, this.readOnly, this.label}) : super(key: key);
   @override
   _TimePickerState createState() => _TimePickerState();
 }
@@ -19,6 +20,12 @@ class _TimePickerState extends State<TimePicker> {
   Future<Null> _selectTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
+      builder: (BuildContext context, Widget child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child,
+        );
+      },
       initialTime: selectedTime,
     );
     if (picked != null) {
@@ -50,7 +57,7 @@ class _TimePickerState extends State<TimePicker> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Time',
+                widget.label,
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontWeight: FontWeight.normal,

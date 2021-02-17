@@ -29,6 +29,7 @@ class TabBarViewTimeline extends StatefulWidget {
 
 class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
   TextEditingController timeController = TextEditingController();
+  TextEditingController durationController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   List<Activity> activities=[];
@@ -80,7 +81,9 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                 snapshot.value['description'],
                 snapshot.value['type'],
                 snapshot.value['time'],
-                snapshot.value['date']);
+                snapshot.value['date'],
+                snapshot.value['duration']
+            );
             return act;
           }).toList();
           timesCHain=temp;
@@ -116,7 +119,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               '',
               'Other',
               '00:00',
-               'dd-mm-yy'
+              'dd-mm-yy',
+              '00:00'
           )),
           child: Card(
             color: ConfigDatas.appBlueColor,
@@ -136,7 +140,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           color: Colors.orangeAccent,
           child: Container(
             width: MediaQuery.of(context).size.width*0.3,
-            height: 90,
+            // height: 90,
             padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -167,6 +171,25 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                           fontWeight: FontWeight.bold,
                           color: Colors.white
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.access_time_sharp,
+                          size: 12,
+                          color: Colors.black87,
+                        ),
+                        Text(
+                          activities[index].duration,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87
+                          ),
+                        ),
+                      ],
                     ),
                   ]
                 )
@@ -199,6 +222,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         titleController.text = activity.title;
         descriptionController.text = activity.description;
         timeController.text=activity.time;
+        durationController.text=activity.duration;
         selectedActivityType=activity.type;
       }
       Alert(
@@ -256,9 +280,11 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                   labelText: 'Description',
                 ),
               ),
-              SizedBox(height: 40,),
-              TimePicker(readOnly: mode=='view',timeController: timeController),
-              SizedBox(height: 40,),
+              SizedBox(height: 40),
+              TimePicker(label:'Start time',readOnly: mode=='view',timeController: timeController),
+              SizedBox(height: 40),
+              TimePicker(label:'Duration',readOnly: mode=='view',timeController: durationController),
+              SizedBox(height: 40),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -316,17 +342,36 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                 var targetDt=tz.TZDateTime.local(now.year,now.month,now.day,int.parse(timeController.text.split(':')[0]),int.parse(timeController.text.split(':')[1]));
                 print('now: ${now} targetDt: ${targetDt}');
                 if(_now.isBefore(targetDt)){
-                  int activityId=await saveActivity(new Activity(
-                      activity?.id,
-                      titleController.text,
-                      descriptionController.text,
-                      selectedActivityType,
-                      timeController.text,
-                      '${_now.day}-${_now.month}-${_now.year}'
-                  ));
-                  int secondsToSchedule=((targetDt.millisecondsSinceEpoch-_now.millisecondsSinceEpoch)/1000).toInt();
-                  scheduleAlarm(activityId, activity.time,secondsToSchedule==0?1:secondsToSchedule,titleController.text);
-                  Navigator.pop(context);
+                  List<String> dSplited=durationController.text.split(':');
+                  var _hours=int.parse(dSplited[0]);
+                  var _minutes=int.parse(dSplited[1]);
+                  var endTime=_now.add(Duration(hours: _hours,minutes: _minutes));
+                  if((_hours+_minutes)>0 && endTime.isBefore(DateTime(now.year,now.month,now.day,23,59,59))) {
+                    int activityId = await saveActivity(new Activity(
+                        activity?.id,
+                        titleController.text,
+                        descriptionController.text,
+                        selectedActivityType,
+                        timeController.text,
+                        '${_now.day}-${_now.month}-${_now.year}',
+                        durationController.text
+                    ));
+                    int secondsToSchedule = ((targetDt.millisecondsSinceEpoch -
+                        _now.millisecondsSinceEpoch) / 1000).toInt();
+                    scheduleAlarm(activityId, activity.time,
+                        secondsToSchedule == 0 ? 1 : secondsToSchedule,
+                        titleController.text);
+                    Navigator.pop(context);
+                  }else
+                    Fluttertoast.showToast(
+                        msg: "Invalid duration! Please enter a duration greater than 0 and less than the remaining time in the day",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.redAccent,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
                 }else{
                   Fluttertoast.showToast(
                       msg: "Time passed! Please enter a future time",
@@ -415,7 +460,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'description': activity.description,
             'type': activity.type,
             'time': activity.time,
-            'date': activity.date
+            'date': activity.date,
+            'duration': activity.duration
           });
         });
       }else {
@@ -425,7 +471,8 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
             'title': activity.title,
             'description': activity.description,
             'type': activity.type,
-            'time': activity.date
+            'time': activity.date,
+            'duration': activity.duration
           });
         });
       }

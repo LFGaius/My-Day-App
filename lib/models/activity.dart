@@ -5,5 +5,6 @@ class Activity {
   final String type;
   final String time;
   final String date;
-  Activity(this.id,this.title,this.description, this.type, this.time, this.date);
+  final String duration;
+  Activity(this.id,this.title,this.description, this.type, this.time, this.date, this.duration);
 }

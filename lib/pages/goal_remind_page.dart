@@ -84,8 +84,9 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: ConfigDatas.appBlueColor,
-                fontSize: 50,
-                fontFamily: 'Freestyle Script Regular',
+                fontSize: 30,
+                fontWeight: FontWeight.bold
+                // fontFamily: 'Freestyle Script Regular',
               ),
             ),
             Container(
@@ -99,7 +100,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                     return Container(
                       width: MediaQuery.of(context).size.width*0.8,
                       margin: EdgeInsets.all(20),
-                      padding: EdgeInsets.only(left:10),
+                      // padding: EdgeInsets.only(left:10),
                       decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
@@ -120,7 +121,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                       ),
                       child: Container(
                         width: MediaQuery.of(context).size.width*0.7,
-                        padding:EdgeInsets.all(5),
+                        padding:EdgeInsets.all(35),
                         child: Center(
                           child: Scrollbar(
                             radius: Radius.circular(10),
