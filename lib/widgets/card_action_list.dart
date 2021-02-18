@@ -151,21 +151,21 @@ class CardActionList extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: onSwitchAccomplished,
-            child: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                  color: isAccomplished?Colors.green:Colors.black54,
-                  borderRadius: BorderRadius.circular(20)
-              ),
-              child: Icon(
-                Icons.check,
-                size: 15,
-                color: Colors.white,
+          if(variant!='principle')  GestureDetector(
+              onTap: onSwitchAccomplished,
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                    color: isAccomplished?Colors.green:Colors.black54,
+                    borderRadius: BorderRadius.circular(20)
+                ),
+                child: Icon(
+                  Icons.check,
+                  size: 15,
+                  color: Colors.white,
+                ),
               ),
             ),
-          ),
           GestureDetector(
             onTap: () {
               _onConfirmDeleteAction(context,'Are you sure you want to delete this element?');

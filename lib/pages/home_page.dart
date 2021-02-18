@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
               Tab(icon: Icon(Icons.today),text: 'Today',),
               Tab(icon: Icon(Icons.warning_amber_rounded),text: 'Emergencies'),
               Tab(icon: Icon(Icons.rule),text: 'Principles'),
+              Tab(icon: Icon(Icons.history_edu_sharp),text: 'Stories'),
             ],
           ),
         ),
@@ -69,6 +70,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             TabBarViewTimeline(database: widget.database),
             TabBarViewEmergencies(database: widget.database),
+            TabBarViewPrinciples(database: widget.database),
             TabBarViewPrinciples(database: widget.database),
           ],
         ),

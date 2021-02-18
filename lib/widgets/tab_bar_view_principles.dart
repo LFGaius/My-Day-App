@@ -122,6 +122,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                     onView: () {
                       _onAlertWithCustomContentPressed(context,'view',principle: principles[index-1]);
                     },
+                    variant: 'principle',
                   ),
                   Expanded(
                     child: Column(

@@ -190,15 +190,16 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                         Icon(
                           Icons.access_time_sharp,
                           size: 12,
-                          color: Colors.black87,
+                          color: Colors.black.withOpacity(0.7),
                         ),
+                        SizedBox(width:3),
                         Text(
                           activities[index].duration,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87
+                            color: Colors.black.withOpacity(0.7)
                           ),
                         ),
                       ],

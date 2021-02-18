@@ -43,7 +43,8 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
             var emer = new Emergency(
                 snapshot.key,
                 snapshot.value['title'],
-                snapshot.value['description']);
+                snapshot.value['description'],
+                snapshot.value['isAccomplished']);
             return emer;
           }).toList();
         });
@@ -74,7 +75,8 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
             onTap: ()=>_onAlertWithCustomContentPressed(context,'create',emergency:new Emergency(
                 null,
                 '',
-                ''
+                '',
+                false
             )),
             child: Container(
               decoration: BoxDecoration(
@@ -118,9 +120,19 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
                       var store = intMapStoreFactory.store('emergencies');
                       await store.record(emergencies[index-1].id).delete(widget.database);
                     },
+                    onSwitchAccomplished: () async{
+                      print('isAccomplished ${emergencies[index-1].isAccomplished}');
+                      var store = intMapStoreFactory.store('emergencies');
+                      await widget.database.transaction((txn) async {
+                        await store.record(emergencies[index-1].id).update(txn, {
+                          'isAccomplished': !emergencies[index-1].isAccomplished
+                        });
+                      });
+                    },
                     onView: () {
                       _onAlertWithCustomContentPressed(context,'view',emergency: emergencies[index-1]);
                     },
+                    isAccomplished: emergencies[index-1].isAccomplished
                   ),
                   Expanded(
                     child: Column(
@@ -222,7 +234,8 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
               await saveEmergency(new Emergency(
                   emergency?.id,
                   titleController.text,
-                  descriptionController.text
+                  descriptionController.text,
+                  emergency.isAccomplished
               )),
               Navigator.pop(context)
             },
@@ -244,7 +257,8 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
         print('ttt ${emergency.id}');
         await store.add(txn, {
           'title': emergency.title,
-          'description': emergency.description
+          'description': emergency.description,
+          'isAccomplished':false
         });
       });
     else
@@ -253,7 +267,8 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
         print('ttt ${emergency.id}');
         await store.record(emergency.id).update(txn, {
           'title': emergency.title,
-          'description': emergency.description
+          'description': emergency.description,
+          'isAccomplished':emergency.isAccomplished
         });
       });
   }
