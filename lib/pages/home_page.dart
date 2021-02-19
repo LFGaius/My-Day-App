@@ -9,6 +9,7 @@ import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/models/principle.dart';
 import 'package:my_day_app/widgets/tab_bar_view_emergencies.dart';
 import 'package:my_day_app/widgets/tab_bar_view_principles.dart';
+import 'package:my_day_app/widgets/tab_bar_view_stories.dart';
 import 'package:my_day_app/widgets/tab_bar_view_timeline.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
@@ -71,7 +72,7 @@ class _HomePageState extends State<HomePage> {
             TabBarViewTimeline(database: widget.database),
             TabBarViewEmergencies(database: widget.database),
             TabBarViewPrinciples(database: widget.database),
-            TabBarViewPrinciples(database: widget.database),
+            TabBarViewStories(database: widget.database),
           ],
         ),
         floatingActionButton: FloatingActionButton(

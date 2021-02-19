@@ -54,9 +54,12 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     Stream timer = Stream.periodic( Duration(seconds: 1), (i){
       var now='${DateTime.now().hour}:${DateTime.now().minute}';
       if(timesCHain.contains(now)){
-        setState(() {
+        if(mounted)
+          setState(() {
+            timesCHain=timesCHain.replaceFirst(now,'');
+          });
+        else
           timesCHain=timesCHain.replaceFirst(now,'');
-        });
       }
       current = current.add(Duration(seconds: 15));
       return current;
@@ -72,24 +75,29 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
       var temp='';
+      List<Activity> activities_temp = snapshots.where((e) => e.value['date']=='${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}').map((snapshot) {
+        temp+=';'+snapshot.value['time'];
+        var act = new Activity(
+            snapshot.key,
+            snapshot.value['title'],
+            snapshot.value['description'],
+            snapshot.value['type'],
+            snapshot.value['time'],
+            snapshot.value['date'],
+            snapshot.value['duration'],
+            snapshot.value['isAccomplished']
+        );
+        return act;
+      }).toList();
       if(mounted)
         setState(() {
-          activities = snapshots.where((e) => e.value['date']=='${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}').map((snapshot) {
-            temp+=';'+snapshot.value['time'];
-            var act = new Activity(
-                snapshot.key,
-                snapshot.value['title'],
-                snapshot.value['description'],
-                snapshot.value['type'],
-                snapshot.value['time'],
-                snapshot.value['date'],
-                snapshot.value['duration'],
-                snapshot.value['isAccomplished']
-            );
-            return act;
-          }).toList();
+          activities = activities_temp;
           timesCHain=temp;
         });
+      else {
+        activities = activities_temp;
+        timesCHain = temp;
+      }
     });
   }
 

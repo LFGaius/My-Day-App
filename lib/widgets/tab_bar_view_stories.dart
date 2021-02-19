@@ -11,47 +11,62 @@ import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timelines/timelines.dart';
 
-class TabBarViewPrinciples extends StatefulWidget {
+class TabBarViewStories extends StatefulWidget {
 
   final Database database;
 
-  const TabBarViewPrinciples({Key key, this.database}) : super(key: key);
+  const TabBarViewStories({Key key, this.database}) : super(key: key);
 
   @override
-  _TabBarViewPrinciplesState createState() => _TabBarViewPrinciplesState();
+  _TabBarViewStoriesState createState() => _TabBarViewStoriesState();
 }
 
-class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
+class _TabBarViewStoriesState extends State<TabBarViewStories> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   List<Principle> principles=[];
+  List<String> days=[];
+  Map<int,Color> weekDaysColorMap={
+    1:Colors.red,
+    2:Colors.yellow,
+    3:Colors.orange,
+    4:Colors.black87,
+    5:Colors.purple,
+    6:Colors.green,
+    7:Colors.lightBlueAccent,
+  };
   var subscription;
+
+  generateDays() async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    print('myday_start_date ${prefs.getString('myday_start_date')}');
+    List<String> startdate=prefs.getString('myday_start_date').split('-');
+    print('myday_start_date ${prefs.getString('myday_start_date').split('-')}');
+    DateTime dt=DateTime(int.parse(startdate[2]),int.parse(startdate[1]),int.parse(startdate[0]));
+    DateTime now=DateTime.now();
+    List<String> days_temp=[];
+    while(dt.isBefore(DateTime(now.year,now.month,now.day))){
+      print('current ${dt}');
+      print('dt ${dt.add(Duration(days:1))}');
+      days_temp.add('${dt.day}-${dt.month}-${dt.year}');
+      dt=dt.add(Duration(days:1));
+    }
+    print('days ${days}');
+    if(mounted)//if the widget is already built
+      setState(() {
+        days=days_temp;
+      });
+    else
+      days=days_temp;
+  }
 
   @override
   void initState(){
     super.initState();
-    var store = intMapStoreFactory.store('principles');
-    var finder = Finder(
-        sortOrders: [SortOrder('title',true)]);
-    var query = store.query(finder: finder);
-    subscription = query.onSnapshots(widget.database).listen((snapshots) {
-      // snapshots always contains the list of records matching the query
-      List<Principle> principles_temp = snapshots.map((snapshot) {
-        var emer = new Principle(
-            snapshot.key,
-            snapshot.value['title'],
-            snapshot.value['description']);
-        return emer;
-      }).toList();
-      if(mounted)
-        setState(() {
-          principles = principles_temp;
-        });
-      else
-        principles = principles_temp;
-    });
+    generateDays();
   }
 
   @override
@@ -65,8 +80,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
-        itemCount: principles.length+1,
-
+        itemCount: days.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10.0,
@@ -74,89 +88,99 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
         ),
         itemBuilder: (BuildContext context, int index) {
           print('index: $index');
-          return index==0?GestureDetector(
-            onTap: ()=>_onAlertWithCustomContentPressed(context,'create',principle:new Principle(
-                null,
-                '',
-                ''
-            )),
+          return GestureDetector(
+            onTap: () {},
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
-                  gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange]
-                  )
+                  color: getWeekDayColor(days[index])
+                  // gradient: LinearGradient(
+                  //     begin: Alignment.bottomCenter,
+                  //     end: Alignment.topCenter,
+                  //     colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange ]
+                  // )
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.add_circle,
-                      size: 50,
-                      color: Colors.white,
+                    // CardActionList(
+                    //   onDelete: () async{
+                    //     var store = intMapStoreFactory.store('principles');
+                    //     await store.record(principles[index].id).delete(widget.database);
+                    //   },
+                    //   onView: () {
+                    //     _onAlertWithCustomContentPressed(context,'view',principle: principles[index]);
+                    //   },
+                    //   variant: 'principle',
+                    // ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            'DAY',
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white
+                            ),
+                          ),
+                          Text(
+                            getDateWithMoreText(days[index]),//principles[index].title,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
+                            ),
+                          )
+                        ],
+                      ),
                     )
+
                   ],
                 ),
-              ),
-            ),
-          ):Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange ]
-                )
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CardActionList(
-                    onDelete: () async{
-                      var store = intMapStoreFactory.store('principles');
-                      await store.record(principles[index-1].id).delete(widget.database);
-                    },
-                    onView: () {
-                      _onAlertWithCustomContentPressed(context,'view',principle: principles[index-1]);
-                    },
-                    variant: 'principle',
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(
-                          Icons.admin_panel_settings,
-                          size: 35,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          principles[index-1].title,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-
-                ],
               ),
             ),
           );
         },
       ),
     );
+  }
+
+  Color getWeekDayColor(String date){
+    List<String> date_splited=date.split('-');
+    return weekDaysColorMap[DateTime(int.parse(date_splited[2]),int.parse(date_splited[1]),int.parse(date_splited[0])).weekday];
+  }
+
+  getDateWithMoreText(String date){
+    List<String> date_splited=date.split('-');
+    int month=int.parse(date_splited[1]);
+    String day=date_splited[0],year=date_splited[2];
+    switch(month){
+      case 1:return '${day} Jan ${year}';
+      case 2:return '${day} Feb ${year}';
+      case 3:return '${day} Mar ${year}';
+      case 4:return '${day} Apr ${year}';
+      case 5:return '${day} May ${year}';
+      case 6:return '${day} Jun ${year}';
+      case 7:return '${day} Jul ${year}';
+      case 8:return '${day} Aug ${year}';
+      case 9:return '${day} Sep ${year}';
+      case 10:return '${day} Oct ${year}';
+      case 11:return '${day} Nov ${year}';
+      case 12:return '${day} Dec ${year}';
+    }
   }
 
   _onAlertWithCustomContentPressed(context,mode,{Principle principle}) {

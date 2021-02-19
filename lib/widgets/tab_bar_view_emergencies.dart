@@ -37,17 +37,20 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
+      List<Emergency> emergencies_temp = snapshots.map((snapshot) {
+        var emer = new Emergency(
+            snapshot.key,
+            snapshot.value['title'],
+            snapshot.value['description'],
+            snapshot.value['isAccomplished']);
+        return emer;
+      }).toList();
       if(mounted)
         setState(() {
-          emergencies = snapshots.map((snapshot) {
-            var emer = new Emergency(
-                snapshot.key,
-                snapshot.value['title'],
-                snapshot.value['description'],
-                snapshot.value['isAccomplished']);
-            return emer;
-          }).toList();
+          emergencies = emergencies_temp;
         });
+      else
+        emergencies = emergencies_temp;
     });
   }
 
