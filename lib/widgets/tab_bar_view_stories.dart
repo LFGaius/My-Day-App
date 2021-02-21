@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/principle.dart';
@@ -89,7 +90,13 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
         itemBuilder: (BuildContext context, int index) {
           print('index: $index');
           return GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamedAndRemoveUntil('/story',(Route<dynamic> route) => false,
+              arguments:{
+                'database':widget.database,
+                'date':days[index]
+              });
+            },
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
@@ -135,7 +142,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                             ),
                           ),
                           Text(
-                            getDateWithMoreText(days[index]),//principles[index].title,
+                            GlobalProcedures.getDateWithMoreText(days[index]),//principles[index].title,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -161,26 +168,6 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
   Color getWeekDayColor(String date){
     List<String> date_splited=date.split('-');
     return weekDaysColorMap[DateTime(int.parse(date_splited[2]),int.parse(date_splited[1]),int.parse(date_splited[0])).weekday];
-  }
-
-  getDateWithMoreText(String date){
-    List<String> date_splited=date.split('-');
-    int month=int.parse(date_splited[1]);
-    String day=date_splited[0],year=date_splited[2];
-    switch(month){
-      case 1:return '${day} Jan ${year}';
-      case 2:return '${day} Feb ${year}';
-      case 3:return '${day} Mar ${year}';
-      case 4:return '${day} Apr ${year}';
-      case 5:return '${day} May ${year}';
-      case 6:return '${day} Jun ${year}';
-      case 7:return '${day} Jul ${year}';
-      case 8:return '${day} Aug ${year}';
-      case 9:return '${day} Sep ${year}';
-      case 10:return '${day} Oct ${year}';
-      case 11:return '${day} Nov ${year}';
-      case 12:return '${day} Dec ${year}';
-    }
   }
 
   _onAlertWithCustomContentPressed(context,mode,{Principle principle}) {

@@ -11,18 +11,18 @@ class MyRouteBuilder{
     final Map<String,dynamic> args=settings.arguments;
 
     switch(settings.name){
-      // case '/':
-      //   return MaterialPageRoute(builder: (_)=>StartPage());
-      // case '/onboarding':
-      //   return MaterialPageRoute(builder: (_)=>OnboardingScreen(database: args['database']));
-      // case '/goals':
-      //   return MaterialPageRoute(builder: (_)=>GoalsPage(database: args['database']));//args['database']
+      case '/':
+        return MaterialPageRoute(builder: (_)=>StartPage());
+      case '/onboarding':
+        return MaterialPageRoute(builder: (_)=>OnboardingScreen(database: args['database']));
+      case '/goals':
+        return MaterialPageRoute(builder: (_)=>GoalsPage(database: args['database']));//args['database']
       case '/story':
-        return MaterialPageRoute(builder: (_)=>StoryPage(database: null));//args['database']
-      // case '/goalremind':
-      //   return MaterialPageRoute(builder: (_)=>GoalRemindPage(database: args['database']));
-      // case '/home':
-      //   return MaterialPageRoute(builder: (_)=>HomePage(database: args['database']));
+        return MaterialPageRoute(builder: (_)=>StoryPage(database: args['database'],date: args['date'],));
+      case '/goalremind':
+        return MaterialPageRoute(builder: (_)=>GoalRemindPage(database: args['database']));
+      case '/home':
+        return MaterialPageRoute(builder: (_)=>HomePage(database: args['database']));
       default: return errorRoute();
     }
   }

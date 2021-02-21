@@ -1,8 +1,10 @@
 
+import 'package:expandable/expandable.dart';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/goal.dart';
@@ -108,7 +110,7 @@ class _StoryPageState extends State<StoryPage> {
               ),
               SizedBox(width: 10),
               Text(
-                '02 Jun 2021',
+                GlobalProcedures.getDateWithMoreText(widget.date),
                 style: TextStyle(
                   color: ConfigDatas.appBlueColor,
                   fontSize: MediaQuery.of(context).size.height*0.07,
@@ -151,7 +153,7 @@ class _StoryPageState extends State<StoryPage> {
                             Text(
                               '2 activities accomplished',
                               style: TextStyle(
-                                color: ConfigDatas.appBlueColor,
+                                // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
                                 // fontFamily: 'Freestyle Script Regular',
                               ),
@@ -161,12 +163,12 @@ class _StoryPageState extends State<StoryPage> {
                         SizedBox(height:5 ),
                         Row(
                           children: [
-                            Indicator.dot(color: Colors.redAccent),
+                            Indicator.dot(color: Colors.orange),
                             SizedBox(width: 5),
                             Text(
                               '0 activities not accomplished',
                               style: TextStyle(
-                                color: ConfigDatas.appBlueColor,
+                                // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
                                 // fontFamily: 'Freestyle Script Regular',
                               ),
@@ -207,7 +209,7 @@ class _StoryPageState extends State<StoryPage> {
                             Text(
                               '2 emergencies accomplished',
                               style: TextStyle(
-                                color: ConfigDatas.appBlueColor,
+                                // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
                                 // fontFamily: 'Freestyle Script Regular',
                               ),
@@ -217,12 +219,12 @@ class _StoryPageState extends State<StoryPage> {
                         SizedBox(height:5 ),
                         Row(
                           children: [
-                            Indicator.dot(color: Colors.redAccent),
+                            Indicator.dot(color: Colors.orange),
                             SizedBox(width: 5),
                             Text(
                               '0 emergencies not accomplished',
                               style: TextStyle(
-                                color: ConfigDatas.appBlueColor,
+                                // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
                                 // fontFamily: 'Freestyle Script Regular',
                               ),
@@ -233,7 +235,77 @@ class _StoryPageState extends State<StoryPage> {
                     )
                   ],
                 ),
-                Text('container'*500)
+                SizedBox(height: 15),
+                ExpandablePanel(
+                  headerAlignment:  ExpandablePanelHeaderAlignment.center,
+                  header: Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.all(10),
+                          height:30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                              color: ConfigDatas.appBlueColor,
+                              borderRadius: BorderRadius.circular(30)
+                          ),
+
+                          child: Center(child: Text(
+                            'A',
+                            style: TextStyle(color: Colors.white),
+                          ))
+                      ),
+                      Text(
+                        'Activities',
+                        style: TextStyle(
+                          color: ConfigDatas.appBlueColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20
+                        ),
+                      ),
+                    ],
+                  ),
+                  // collapsed: Text('zerrz', softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                  expanded: Text('container'*500),
+                  tapHeaderToExpand: true,
+                  hasIcon: true,
+                ),
+                ExpandablePanel(
+                  headerAlignment:  ExpandablePanelHeaderAlignment.center,
+                  header: Row(
+                    children: [
+                      Container(
+                          margin: EdgeInsets.all(10),
+                          height:30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                              color: ConfigDatas.appBlueColor,
+                              borderRadius: BorderRadius.circular(30)
+                          ),
+
+                          child: Center(
+                            child: Icon(
+                              Icons.warning_rounded,
+                              color: Colors.white,
+                              size: 19,
+                            ),
+                          )
+                      ),
+                      Text(
+                        'Emergencies',
+                        style: TextStyle(
+                          color: ConfigDatas.appBlueColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20
+                        ),
+                      ),
+                    ],
+                  ),
+                  // collapsed: Text('zerrz', softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                  expanded: Text('container'*500),
+                  tapHeaderToExpand: true,
+                  hasIcon: true,
+                ),
+
               ],
             ),
           ),
