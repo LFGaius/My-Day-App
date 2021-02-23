@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/widgets/card_action_list.dart';
@@ -23,8 +24,7 @@ class TabBarViewEmergencies extends StatefulWidget {
 }
 
 class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
+
   List<Emergency> emergencies=[];
   var subscription;
 
@@ -42,7 +42,9 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
             snapshot.key,
             snapshot.value['title'],
             snapshot.value['description'],
-            snapshot.value['isAccomplished']);
+            snapshot.value['isAccomplished'],
+            snapshot.value['date']
+        );
         return emer;
       }).toList();
       if(mounted)
@@ -75,12 +77,13 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
         itemBuilder: (BuildContext context, int index) {
           print('index: $index');
           return index==0?GestureDetector(
-            onTap: ()=>_onAlertWithCustomContentPressed(context,'create',emergency:new Emergency(
+            onTap: ()=>PopupFunctions.onAlertWithCustomContentPressed(context,'create',emergency:new Emergency(
                 null,
                 '',
                 '',
-                false
-            )),
+                false,
+                'dd-mm-yy'
+            ),database:widget.database),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
@@ -133,7 +136,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
                       });
                     },
                     onView: () {
-                      _onAlertWithCustomContentPressed(context,'view',emergency: emergencies[index-1]);
+                      PopupFunctions.onAlertWithCustomContentPressed(context,'view',emergency: emergencies[index-1],database:widget.database);
                     },
                     isAccomplished: emergencies[index-1].isAccomplished
                   ),
@@ -167,113 +170,6 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
         },
       ),
     );
-  }
-
-  _onAlertWithCustomContentPressed(context,mode,{Emergency emergency}) {
-    if(emergency!=null) {
-      titleController.text = emergency.title;
-      descriptionController.text = emergency.description;
-    }
-    Alert(
-        context: context,
-        style: AlertStyle(
-            titleStyle: TextStyle(
-                color: ConfigDatas.appBlueColor,
-                fontWeight: FontWeight.bold,
-                fontSize: mode!='view'?30:0,
-            )
-        ),
-        title: mode!='view'?(mode=='create'?'Add emergency':'Edit emergency'):'',
-        closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-        content: Column(
-          children: <Widget>[
-            if(mode=='view') GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                _onAlertWithCustomContentPressed(context,'edit',emergency: emergency);
-              },
-              child: Container(
-                width: 80,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    color: ConfigDatas.appBlueColor,
-                    borderRadius: BorderRadius.circular(20)
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.edit,color: Colors.white),
-                    Text(
-                      'Edit',
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            TextField(
-              controller: titleController,
-              readOnly: mode=='view',
-              decoration: InputDecoration(
-                labelText: 'Title',
-              ),
-            ),
-            TextField(
-              controller: descriptionController,
-              minLines: 4,
-              maxLines: null,
-              readOnly: mode=='view',
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                labelText: 'Description',
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          if(mode!='view') DialogButton(
-            onPressed: ()  async=>{
-              await saveEmergency(new Emergency(
-                  emergency?.id,
-                  titleController.text,
-                  descriptionController.text,
-                  emergency.isAccomplished
-              )),
-              Navigator.pop(context)
-            },
-            color: ConfigDatas.appBlueColor,
-            width: 100,
-            child: Text(
-              "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-            ),
-          )
-        ]).show();
-  }
-
-  saveEmergency(Emergency emergency) async {
-    var store = intMapStoreFactory.store('emergencies');
-    if(emergency.id==null)
-      await widget.database.transaction((txn) async {
-        print(emergency.id);
-        print('ttt ${emergency.id}');
-        await store.add(txn, {
-          'title': emergency.title,
-          'description': emergency.description,
-          'isAccomplished':false
-        });
-      });
-    else
-      await widget.database.transaction((txn) async {
-        print(emergency.id);
-        print('ttt ${emergency.id}');
-        await store.record(emergency.id).update(txn, {
-          'title': emergency.title,
-          'description': emergency.description,
-          'isAccomplished':emergency.isAccomplished
-        });
-      });
   }
 // var
 }

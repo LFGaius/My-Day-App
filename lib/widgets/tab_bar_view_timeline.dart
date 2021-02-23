@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/main.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
@@ -179,7 +180,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children:[
                     Icon(
-                        getIcon(activities[index].type),
+                        GlobalProcedures.getIcon(activities[index].type),
                         color: Colors.white
                     ),
                     Text(
@@ -454,22 +455,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     );
   }
 
-    dynamic getIcon(type){
-      switch(type){
-        case 'Other': return Icons.wysiwyg_sharp;
-        break;
-        case 'Rest': return Icons.airline_seat_flat;
-        break;
-        case 'Hobby': return Icons.accessible_forward_outlined;
-        break;
-        case 'Study': return Icons.menu_book;
-        break;
-        case 'Spiritual': return Icons.accessibility_new;
-        break;
-        case 'Professional': return Icons.corporate_fare;
-        break;
-      }
-    }
+
 
     Future<int> saveActivity(Activity activity) async {
       var store = intMapStoreFactory.store('activities');

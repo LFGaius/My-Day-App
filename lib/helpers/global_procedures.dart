@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class GlobalProcedures{
   static String getDateWithMoreText(String date){
     List<String> date_splited=date.split('-');
@@ -16,6 +18,23 @@ class GlobalProcedures{
       case 10:return '${day} Oct ${year}';
       case 11:return '${day} Nov ${year}';
       case 12:return '${day} Dec ${year}';
+    }
+  }
+
+  static dynamic getIcon(type){
+    switch(type){
+      case 'Other': return Icons.wysiwyg_sharp;
+      break;
+      case 'Rest': return Icons.airline_seat_flat;
+      break;
+      case 'Hobby': return Icons.accessible_forward_outlined;
+      break;
+      case 'Study': return Icons.menu_book;
+      break;
+      case 'Spiritual': return Icons.accessibility_new;
+      break;
+      case 'Professional': return Icons.corporate_fare;
+      break;
     }
   }
 }

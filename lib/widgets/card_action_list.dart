@@ -11,12 +11,13 @@ class CardActionList extends StatelessWidget {
   final Function onEdit;
   final Function onSwitchFavorite;
   final Function onSwitchAccomplished;
+  final Function onRestore;
   final String variant;
   final int isFavorite;
   final bool isAccomplished;
 
 
-  const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit, this.isFavorite, this.onSwitchFavorite, this.isAccomplished, this.onSwitchAccomplished}) : super(key: key);
+  const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit, this.isFavorite, this.onSwitchFavorite, this.isAccomplished, this.onSwitchAccomplished, this.onRestore}) : super(key: key);
   _onConfirmDeleteAction(context,message) {
     Alert(
       context: context,
@@ -166,7 +167,23 @@ class CardActionList extends StatelessWidget {
                 ),
               ),
             ),
-          GestureDetector(
+          if(variant=='story')
+            GestureDetector(
+              onTap: onRestore,
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(20)
+                ),
+                child: Icon(
+                    Icons.restore,
+                    size: 15,
+                    color: Colors.white,
+                ),
+              ),
+            )
+          else GestureDetector(
             onTap: () {
               _onConfirmDeleteAction(context,'Are you sure you want to delete this element?');
             },
