@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/principle.dart';
@@ -75,11 +76,11 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
         itemBuilder: (BuildContext context, int index) {
           print('index: $index');
           return index==0?GestureDetector(
-            onTap: ()=>_onAlertWithCustomContentPressed(context,'create',principle:new Principle(
+            onTap: ()=>PopupFunctions.onAlertWithCustomContentPressed(context,'create','principle',element:new Principle(
                 null,
                 '',
                 ''
-            )),
+            ),database: widget.database),
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
@@ -123,7 +124,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                       await store.record(principles[index-1].id).delete(widget.database);
                     },
                     onView: () {
-                      _onAlertWithCustomContentPressed(context,'view',principle: principles[index-1]);
+                      PopupFunctions.onAlertWithCustomContentPressed(context,'view','principle',element:principles[index-1],database:widget.database);
                     },
                     variant: 'principle',
                   ),

@@ -22,7 +22,7 @@ class PopupFunctions{
     bool isAccomplished=false;
     titleController.text = element?.title;
     descriptionController.text = element?.description;
-    isAccomplished=element?.isAccomplished;
+    if(variant!='principle') isAccomplished=element?.isAccomplished;
     if(variant=='activity') {
       timeController.text = element?.time;
       durationController.text = element?.duration;
@@ -151,16 +151,22 @@ class PopupFunctions{
           if(mode!='view') DialogButton(
             onPressed: () async{
               if(variant=='emergency')
-                onSaveEmergency({
+                savePrincipleOrEmergency({
                   'id':element?.id,'title':titleController.text,
                   'description':descriptionController.text,'isAccomplished':element.isAccomplished,
-                },database,context);
+                },database,'emergencies',context);
               else
-                onSaveActivity({
-                  'id':element?.id,'title':titleController.text,
-                  'description':descriptionController.text,'isAccomplished':element.isAccomplished,
-                  'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
-                },database,context);
+                if(variant=='principle')
+                  savePrincipleOrEmergency({
+                    'id':element?.id,'title':titleController.text,
+                    'description':descriptionController.text,
+                  },database,'principles',context);
+                 else
+                  onSaveActivity({
+                    'id':element?.id,'title':titleController.text,
+                    'description':descriptionController.text,'isAccomplished':element.isAccomplished,
+                    'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
+                  },database,context);
             },
             color: ConfigDatas.appBlueColor,
             width: 100,
@@ -170,18 +176,6 @@ class PopupFunctions{
             ),
           )
         ]).show();
-  }
-
-  static onSaveEmergency(emergency,database,context) async{
-    DateTime _now=DateTime.now();
-    await saveEmergency(new Emergency(
-        emergency['id'],
-        emergency['title'],
-        emergency['description'],
-        emergency['isAccomplished'],
-        '${_now.day}-${_now.month}-${_now.year}'
-    ),database);
-    Navigator.pop(context);
   }
 
   static onSaveActivity(activity,database,context) async{
@@ -300,29 +294,31 @@ class PopupFunctions{
     return activityId;
   }
 
-  static saveEmergency(Emergency emergency,database) async {
-    var store = intMapStoreFactory.store('emergencies');
-    if(emergency.id==null)
+  static savePrincipleOrEmergency(element,database,variant,context) async {
+    DateTime _now=DateTime.now();
+    var store = intMapStoreFactory.store(variant);
+    if(element['id']==null)
       await database.transaction((txn) async {
-        print(emergency.id);
-        print('ttt ${emergency.id}');
+        print(element['id']);
+        print('ttt ${element['id']}');
         await store.add(txn, {
-          'title': emergency.title,
-          'description': emergency.description,
-          'isAccomplished':false,
-          'date': emergency.date
+          'title': element['title'],
+          'description': element['description'],
+          if(variant=='emergencies') 'isAccomplished':false,
+          if(variant=='emergencies') 'date': '${_now.day}-${_now.month}-${_now.year}'
         });
       });
     else
       await database.transaction((txn) async {
-        print(emergency.id);
-        print('ttt ${emergency.id}');
-        await store.record(emergency.id).update(txn, {
-          'title': emergency.title,
-          'description': emergency.description,
-          'isAccomplished':emergency.isAccomplished,
-          'date': emergency.date
+        print(element['id']);
+        print('ttt ${element['id']}');
+        await store.record(element['id']).update(txn, {
+          'title': element['title'],
+          'description': element['description'],
+          if(variant=='emergencies') 'isAccomplished':element['isAccomplished'],
+          if(variant=='emergencies') 'date': '${_now.day}-${_now.month}-${_now.year}'
         });
       });
+    Navigator.pop(context);
   }
 }
