@@ -77,7 +77,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
         itemBuilder: (BuildContext context, int index) {
           print('index: $index');
           return index==0?GestureDetector(
-            onTap: ()=>PopupFunctions.onAlertWithCustomContentPressed(context,'create',emergency:new Emergency(
+            onTap: ()=>PopupFunctions.onAlertWithCustomContentPressed(context,'create','emergency',element:new Emergency(
                 null,
                 '',
                 '',
@@ -136,7 +136,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
                       });
                     },
                     onView: () {
-                      PopupFunctions.onAlertWithCustomContentPressed(context,'view',emergency: emergencies[index-1],database:widget.database);
+                      PopupFunctions.onAlertWithCustomContentPressed(context,'view','emergency',element: emergencies[index-1],database:widget.database);
                     },
                     isAccomplished: emergencies[index-1].isAccomplished
                   ),

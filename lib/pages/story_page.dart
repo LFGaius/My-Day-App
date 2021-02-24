@@ -48,8 +48,10 @@ class _StoryPageState extends State<StoryPage> {
     // TODO: implement initState
     super.initState();
     var store = intMapStoreFactory.store('emergencies');
+    print('widget.date '+widget.date);
     var finder = Finder(
-        filter: Filter.equals('date', '${widget.date}')
+      limit: 10,
+        // filter: Filter.equals('date', '${widget.date}')
     );
     var query = store.query(finder: finder);
     subscriptionEmergencies = query.onSnapshots(widget.database).listen((snapshots) {
@@ -461,9 +463,11 @@ class _StoryPageState extends State<StoryPage> {
               lvcontroller.jumpTo(lvcontroller.offset + value.overscroll);
               return true;
             },
-            child: GridView.builder(
+            child: elements.length==0?Center(
+              child: Text(variant=='emergency'?'No Emergencies':'No Activities'),
+            ):GridView.builder(
               shrinkWrap: true,
-              itemCount: 10,//elements.length,
+              itemCount: elements.length,
 
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
@@ -494,21 +498,21 @@ class _StoryPageState extends State<StoryPage> {
 
                           },
                           onView: () {
-                            PopupFunctions.onAlertWithCustomContentPressed(context,'view',emergency: elements[index],database:widget.database);
+                            PopupFunctions.onAlertWithCustomContentPressed(context,'view',variant,element: elements[index],database:widget.database);
                           },
-                          isAccomplished: true,//elements[index].isAccomplished
+                          isAccomplished: elements[index].isAccomplished
                         ),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Icon(
-                                variant=='emergency'?Icons.warning:Icons.wysiwyg_sharp/*GlobalProcedures.getIcon(elements[index].type)*/,
+                                variant=='emergency'?Icons.warning:GlobalProcedures.getIcon(elements[index].type),
                                 size: 35,
                                 color: Colors.white,
                               ),
                               Text(
-                                'test',//elements[index-1].title,
+                                elements[index].title,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(

@@ -153,7 +153,7 @@ class CardActionList extends StatelessWidget {
             ),
           ),
           if(variant!='principle')  GestureDetector(
-              onTap: onSwitchAccomplished,
+              onTap: (variant=='story')?onSwitchAccomplished:null,
               child: Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(

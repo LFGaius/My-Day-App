@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/global_procedures.dart';
+import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:my_day_app/main.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
@@ -124,7 +125,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         ),
 
         contentsBuilder: (context, index) => activities.length==index?GestureDetector(
-          onTap: ()=>_onAlertWithCustomContentPressed(context,'create',activity:new Activity(
+          onTap: ()=>PopupFunctions.onAlertWithCustomContentPressed(context,'create','activity',element:new Activity(
               null,
               '',
               '',
@@ -133,7 +134,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               'dd-mm-yy',
               '00:00',
               false
-          )),
+          ),database:widget.database),
           child: Card(
             color: ConfigDatas.appBlueColor,
             child: Padding(
@@ -239,255 +240,255 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     );
   }
 
-    _onAlertWithCustomContentPressed(context,mode,{Activity activity}){
-      if(activity!=null) {
-        titleController.text = activity.title;
-        descriptionController.text = activity.description;
-        timeController.text=activity.time;
-        durationController.text=activity.duration;
-        selectedActivityType=activity.type;
-        isAccomplished=activity.isAccomplished;
-      }
-      Alert(
-          context: context,
-          style: AlertStyle(
-              titleStyle: TextStyle(
-                  color: ConfigDatas.appBlueColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: mode!='view'?30:0,
-              )
-          ),
-          title: mode!='view'?(mode=='create'?'Add activity':'Edit activity'):'',
-          closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-          content: Column(
-            children: <Widget>[
-              if(mode=='view') GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                  _onAlertWithCustomContentPressed(context,'edit',activity: activity);
-                },
-                child: Container(
-                  width: 80,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: ConfigDatas.appBlueColor,
-                    borderRadius: BorderRadius.circular(20)
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit,color: Colors.white),
-                      Text(
-                        'Edit',
-                        style: TextStyle(
-                            color: Colors.white
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              TextField(
-                controller: titleController,
-                readOnly: mode=='view',
-                decoration: InputDecoration(
-                  labelText: 'Title',
-                ),
-              ),
-              TextField(
-                controller: descriptionController,
-                minLines: 4,
-                maxLines: null,
-                readOnly: mode=='view',
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                ),
-              ),
-              SizedBox(height: 40),
-              TimePicker(label:'Start time',readOnly: mode=='view',timeController: timeController),
-              SizedBox(height: 40),
-              TimePicker(label:'Duration',readOnly: mode=='view',timeController: durationController),
-              SizedBox(height: 40),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'Type',
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 17,
-                        color: Colors.black54
-                    ),
-                  ),
-
-                  StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      return DropdownButton<String>(
-
-                        hint:  Text("Select type"),
-                        value: selectedActivityType,
-                        onChanged: (String value) {
-                          if(mode!='view')
-                          setState(() {
-                            print('----------$value---------');
-                            selectedActivityType = value;
-                          });
-                        },
-                        items: activitytypes.map((ActivityTypeItem activitytype) {
-                          return  DropdownMenuItem<String>(
-                            value: activitytype.name,
-                            child: Row(
-                              children: <Widget>[
-                                activitytype.icon,
-                                SizedBox(width: 10,),
-                                Text(
-                                  activitytype.name,
-                                  style:  TextStyle(color: Colors.black),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-
-            ],
-          ),
-          buttons: [
-            if(mode!='view') DialogButton(
-              onPressed: ()  async{
-                var now=DateTime.now();
-                tz.TZDateTime _now=tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second);
-                var targetDt=tz.TZDateTime.local(now.year,now.month,now.day,int.parse(timeController.text.split(':')[0]),int.parse(timeController.text.split(':')[1]));
-                print('now: ${now} targetDt: ${targetDt}');
-                if(_now.isBefore(targetDt)){
-                  List<String> dSplited=durationController.text.split(':');
-                  var _hours=int.parse(dSplited[0]);
-                  var _minutes=int.parse(dSplited[1]);
-                  var endTime=_now.add(Duration(hours: _hours,minutes: _minutes));
-                  if((_hours+_minutes)>0 && endTime.isBefore(DateTime(now.year,now.month,now.day,23,59,59))) {
-                    int activityId = await saveActivity(new Activity(
-                        activity?.id,
-                        titleController.text,
-                        descriptionController.text,
-                        selectedActivityType,
-                        timeController.text,
-                        '${_now.day}-${_now.month}-${_now.year}',
-                        durationController.text,
-                        isAccomplished
-                    ));
-                    int secondsToSchedule = ((targetDt.millisecondsSinceEpoch -
-                        _now.millisecondsSinceEpoch) / 1000).toInt();
-                    scheduleAlarm(activityId, activity.time,
-                        secondsToSchedule == 0 ? 1 : secondsToSchedule,
-                        titleController.text);
-                    Navigator.pop(context);
-                  }else
-                    Fluttertoast.showToast(
-                        msg: "Invalid duration! Please enter a duration greater than 0 and less than the remaining time in the day",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.redAccent,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                }else{
-                  Fluttertoast.showToast(
-                      msg: "Time passed! Please enter a future time",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.redAccent,
-                      textColor: Colors.white,
-                      fontSize: 16.0
-                  );
-                }
-              },
-              color: ConfigDatas.appBlueColor,
-              width: 100,
-              child: Text(
-                "Save",
-                style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-              ),
-            )
-          ]).show();
-    }
+    // _onAlertWithCustomContentPressed(context,mode,{Activity activity}){
+    //   if(activity!=null) {
+    //     titleController.text = activity.title;
+    //     descriptionController.text = activity.description;
+    //     timeController.text=activity.time;
+    //     durationController.text=activity.duration;
+    //     selectedActivityType=activity.type;
+    //     isAccomplished=activity.isAccomplished;
+    //   }
+    //   Alert(
+    //       context: context,
+    //       style: AlertStyle(
+    //           titleStyle: TextStyle(
+    //               color: ConfigDatas.appBlueColor,
+    //               fontWeight: FontWeight.bold,
+    //               fontSize: mode!='view'?30:0,
+    //           )
+    //       ),
+    //       title: mode!='view'?(mode=='create'?'Add activity':'Edit activity'):'',
+    //       closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
+    //       content: Column(
+    //         children: <Widget>[
+    //           if(mode=='view') GestureDetector(
+    //             onTap: () {
+    //               Navigator.pop(context);
+    //               _onAlertWithCustomContentPressed(context,'edit',activity: activity);
+    //             },
+    //             child: Container(
+    //               width: 80,
+    //               padding: EdgeInsets.all(5),
+    //               decoration: BoxDecoration(
+    //                 color: ConfigDatas.appBlueColor,
+    //                 borderRadius: BorderRadius.circular(20)
+    //               ),
+    //               child: Row(
+    //                 children: [
+    //                   Icon(Icons.edit,color: Colors.white),
+    //                   Text(
+    //                     'Edit',
+    //                     style: TextStyle(
+    //                         color: Colors.white
+    //                     ),
+    //                   )
+    //                 ],
+    //               ),
+    //             ),
+    //           ),
+    //           TextField(
+    //             controller: titleController,
+    //             readOnly: mode=='view',
+    //             decoration: InputDecoration(
+    //               labelText: 'Title',
+    //             ),
+    //           ),
+    //           TextField(
+    //             controller: descriptionController,
+    //             minLines: 4,
+    //             maxLines: null,
+    //             readOnly: mode=='view',
+    //             keyboardType: TextInputType.multiline,
+    //             decoration: InputDecoration(
+    //               labelText: 'Description',
+    //             ),
+    //           ),
+    //           SizedBox(height: 40),
+    //           TimePicker(label:'Start time',readOnly: mode=='view',timeController: timeController),
+    //           SizedBox(height: 40),
+    //           TimePicker(label:'Duration',readOnly: mode=='view',timeController: durationController),
+    //           SizedBox(height: 40),
+    //           Column(
+    //             crossAxisAlignment: CrossAxisAlignment.stretch,
+    //             children: [
+    //               Text(
+    //                 'Type',
+    //                 style: TextStyle(
+    //                     fontWeight: FontWeight.normal,
+    //                     fontSize: 17,
+    //                     color: Colors.black54
+    //                 ),
+    //               ),
+    //
+    //               StatefulBuilder(
+    //                 builder: (BuildContext context, StateSetter setState) {
+    //                   return DropdownButton<String>(
+    //
+    //                     hint:  Text("Select type"),
+    //                     value: selectedActivityType,
+    //                     onChanged: (String value) {
+    //                       if(mode!='view')
+    //                       setState(() {
+    //                         print('----------$value---------');
+    //                         selectedActivityType = value;
+    //                       });
+    //                     },
+    //                     items: activitytypes.map((ActivityTypeItem activitytype) {
+    //                       return  DropdownMenuItem<String>(
+    //                         value: activitytype.name,
+    //                         child: Row(
+    //                           children: <Widget>[
+    //                             activitytype.icon,
+    //                             SizedBox(width: 10,),
+    //                             Text(
+    //                               activitytype.name,
+    //                               style:  TextStyle(color: Colors.black),
+    //                             ),
+    //                           ],
+    //                         ),
+    //                       );
+    //                     }).toList(),
+    //                   );
+    //                 },
+    //               ),
+    //             ],
+    //           ),
+    //
+    //
+    //         ],
+    //       ),
+    //       buttons: [
+    //         if(mode!='view') DialogButton(
+    //           onPressed: ()  async{
+    //             var now=DateTime.now();
+    //             tz.TZDateTime _now=tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second);
+    //             var targetDt=tz.TZDateTime.local(now.year,now.month,now.day,int.parse(timeController.text.split(':')[0]),int.parse(timeController.text.split(':')[1]));
+    //             print('now: ${now} targetDt: ${targetDt}');
+    //             if(_now.isBefore(targetDt)){
+    //               List<String> dSplited=durationController.text.split(':');
+    //               var _hours=int.parse(dSplited[0]);
+    //               var _minutes=int.parse(dSplited[1]);
+    //               var endTime=_now.add(Duration(hours: _hours,minutes: _minutes));
+    //               if((_hours+_minutes)>0 && endTime.isBefore(DateTime(now.year,now.month,now.day,23,59,59))) {
+    //                 int activityId = await saveActivity(new Activity(
+    //                     activity?.id,
+    //                     titleController.text,
+    //                     descriptionController.text,
+    //                     selectedActivityType,
+    //                     timeController.text,
+    //                     '${_now.day}-${_now.month}-${_now.year}',
+    //                     durationController.text,
+    //                     isAccomplished
+    //                 ));
+    //                 int secondsToSchedule = ((targetDt.millisecondsSinceEpoch -
+    //                     _now.millisecondsSinceEpoch) / 1000).toInt();
+    //                 scheduleAlarm(activityId, activity.time,
+    //                     secondsToSchedule == 0 ? 1 : secondsToSchedule,
+    //                     titleController.text);
+    //                 Navigator.pop(context);
+    //               }else
+    //                 Fluttertoast.showToast(
+    //                     msg: "Invalid duration! Please enter a duration greater than 0 and less than the remaining time in the day",
+    //                     toastLength: Toast.LENGTH_SHORT,
+    //                     gravity: ToastGravity.CENTER,
+    //                     timeInSecForIosWeb: 1,
+    //                     backgroundColor: Colors.redAccent,
+    //                     textColor: Colors.white,
+    //                     fontSize: 16.0
+    //                 );
+    //             }else{
+    //               Fluttertoast.showToast(
+    //                   msg: "Time passed! Please enter a future time",
+    //                   toastLength: Toast.LENGTH_SHORT,
+    //                   gravity: ToastGravity.CENTER,
+    //                   timeInSecForIosWeb: 1,
+    //                   backgroundColor: Colors.redAccent,
+    //                   textColor: Colors.white,
+    //                   fontSize: 16.0
+    //               );
+    //             }
+    //           },
+    //           color: ConfigDatas.appBlueColor,
+    //           width: 100,
+    //           child: Text(
+    //             "Save",
+    //             style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+    //           ),
+    //         )
+    //       ]).show();
+    // }
 
   cancelNotification(int notificationId) async{
     await flutterLocalNotificationsPlugin.cancel(notificationId);
   }
 
-  void scheduleAlarm(int id,String time,int secondsToSchedule,String activityTitle) async {
-    print('wait $secondsToSchedule');
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'alarm_notif',
-      'alarm_notif',
-      'Channel for Alarm notification',
-      icon: 'logo',
-      // sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
-      largeIcon: DrawableResourceAndroidBitmap('logo'),
-    );
+  // void scheduleAlarm(int id,String time,int secondsToSchedule,String activityTitle) async {
+  //   print('wait $secondsToSchedule');
+  //   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+  //     'alarm_notif',
+  //     'alarm_notif',
+  //     'Channel for Alarm notification',
+  //     icon: 'logo',
+  //     // sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+  //     largeIcon: DrawableResourceAndroidBitmap('logo'),
+  //   );
+  //
+  //   // var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+  //   //     // sound: 'a_long_cold_sting.wav',
+  //   //     presentAlert: true,
+  //   //     presentBadge: true,
+  //   //     // presentSound: true
+  //   // );
+  //   var platformChannelSpecifics = NotificationDetails(
+  //       android:androidPlatformChannelSpecifics,
+  //       // iOS:iOSPlatformChannelSpecifics
+  //   );
+  //   var now=DateTime.now();
+  //   var offset=now.timeZoneOffset;
+  //   print('schedule ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second)} ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(Duration(seconds: secondsToSchedule))}');
+  //   await flutterLocalNotificationsPlugin.zonedSchedule(
+  //       id, 'Activity started', activityTitle,
+  //     tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(-offset).add(Duration(seconds: secondsToSchedule)),//with -offset, we avoid the effect of the offset because in background, the offset is added(conversion to UTC) and compared to the local time(Weird package behavior)
+  //     platformChannelSpecifics,
+  //     androidAllowWhileIdle: true,
+  //     uiLocalNotificationDateInterpretation:UILocalNotificationDateInterpretation.absoluteTime
+  //   );
+  // }
 
-    // var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-    //     // sound: 'a_long_cold_sting.wav',
-    //     presentAlert: true,
-    //     presentBadge: true,
-    //     // presentSound: true
-    // );
-    var platformChannelSpecifics = NotificationDetails(
-        android:androidPlatformChannelSpecifics,
-        // iOS:iOSPlatformChannelSpecifics
-    );
-    var now=DateTime.now();
-    var offset=now.timeZoneOffset;
-    print('schedule ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second)} ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(Duration(seconds: secondsToSchedule))}');
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        id, 'Activity started', activityTitle,
-      tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(-offset).add(Duration(seconds: secondsToSchedule)),//with -offset, we avoid the effect of the offset because in background, the offset is added(conversion to UTC) and compared to the local time(Weird package behavior)
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:UILocalNotificationDateInterpretation.absoluteTime
-    );
-  }
 
 
-
-    Future<int> saveActivity(Activity activity) async {
-      var store = intMapStoreFactory.store('activities');
-      int activityId;
-      if (activity.id == null){
-        await widget.database.transaction((txn) async {
-          print(activity.id);
-          print('ttt ${activity.id}');
-          activityId=await store.add(txn, {
-            'title': activity.title,
-            'description': activity.description,
-            'type': activity.type,
-            'time': activity.time,
-            'date': activity.date,
-            'duration': activity.duration,
-            'isAccomplished': activity.isAccomplished
-          });
-        });
-      }else {
-        activityId=activity.id;
-        await widget.database.transaction((txn) async {
-          await store.record(activity.id).update(txn, {
-            'title': activity.title,
-            'description': activity.description,
-            'type': activity.type,
-            'time': activity.date,
-            'duration': activity.duration,
-            'isAccomplished': activity.isAccomplished
-          });
-        });
-      }
-      return activityId;
-    }
+    // Future<int> saveActivity(Activity activity) async {
+    //   var store = intMapStoreFactory.store('activities');
+    //   int activityId;
+    //   if (activity.id == null){
+    //     await widget.database.transaction((txn) async {
+    //       print(activity.id);
+    //       print('ttt ${activity.id}');
+    //       activityId=await store.add(txn, {
+    //         'title': activity.title,
+    //         'description': activity.description,
+    //         'type': activity.type,
+    //         'time': activity.time,
+    //         'date': activity.date,
+    //         'duration': activity.duration,
+    //         'isAccomplished': activity.isAccomplished
+    //       });
+    //     });
+    //   }else {
+    //     activityId=activity.id;
+    //     await widget.database.transaction((txn) async {
+    //       await store.record(activity.id).update(txn, {
+    //         'title': activity.title,
+    //         'description': activity.description,
+    //         'type': activity.type,
+    //         'time': activity.date,
+    //         'duration': activity.duration,
+    //         'isAccomplished': activity.isAccomplished
+    //       });
+    //     });
+    //   }
+    //   return activityId;
+    // }
       // var
 }
