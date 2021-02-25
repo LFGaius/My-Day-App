@@ -13,7 +13,7 @@ import 'package:timelines/timelines.dart';import 'package:timezone/data/latest.d
 import 'package:timezone/timezone.dart' as tz;
 
 class PopupFunctions{
-  static onAlertWithCustomContentPressed(context,mode,variant,{element,database}) {
+  static onAlertWithCustomContentPressed(context,mode,variant,{element,database,storyMode:false}) {
     TextEditingController titleController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
     TextEditingController timeController = TextEditingController();
@@ -37,17 +37,38 @@ class PopupFunctions{
               fontSize: mode!='view'?30:0,
             )
         ),
-        title: mode!='view'?(mode=='create'?'Add $variant':'Edit $variant'):'',
+        title: mode!='view'?(mode=='create'?'Add $variant':(mode=='edit'?'Edit $variant':'Restore $variant')):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Column(
           children: <Widget>[
             if(mode=='view') GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                onAlertWithCustomContentPressed(context,'edit',variant,element: element,database: database);
+              onTap: () async{
+                if(!storyMode) {
+                  Navigator.pop(context);
+                  onAlertWithCustomContentPressed(
+                      context, 'edit', variant, element: element,
+                      database: database);
+                }else {
+                  DateTime _now = DateTime.now();
+                  if (variant == 'emergency') {
+                    savePrincipleOrEmergency({
+                      'id': element?.id,
+                      'title': titleController.text,
+                      'date': '${_now.day}-${_now.month}-${_now.year}',
+                      'description': descriptionController.text,
+                      'isAccomplished': element.isAccomplished,
+                    }, database, 'emergencies', context);
+                    print('emergency restored');
+                  } else {
+                    Navigator.pop(context);
+                    onAlertWithCustomContentPressed(
+                        context, 'restore', variant, element: element,
+                        database: database);
+                  }
+                }
               },
               child: Container(
-                width: 80,
+                width: storyMode?190:80,
                 padding: EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: ConfigDatas.appBlueColor,
@@ -55,9 +76,9 @@ class PopupFunctions{
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.edit,color: Colors.white),
+                    Icon(storyMode?Icons.restore:Icons.edit,color: Colors.white),
                     Text(
-                      'Edit',
+                      storyMode?'Restore for today':'Edit',
                       style: TextStyle(
                           color: Colors.white
                       ),
@@ -152,7 +173,7 @@ class PopupFunctions{
             onPressed: () async{
               if(variant=='emergency')
                 savePrincipleOrEmergency({
-                  'id':element?.id,'title':titleController.text,
+                  'id':element?.id,'title':titleController.text,'date':element.date,
                   'description':descriptionController.text,'isAccomplished':element.isAccomplished,
                 },database,'emergencies',context);
               else
@@ -161,12 +182,14 @@ class PopupFunctions{
                     'id':element?.id,'title':titleController.text,
                     'description':descriptionController.text,
                   },database,'principles',context);
-                 else
+                 else{
+                   DateTime _now = DateTime.now();
                   onSaveActivity({
-                    'id':element?.id,'title':titleController.text,
+                    'id':element?.id,'title':titleController.text,'date':mode=='restore'?'${_now.day}-${_now.month}-${_now.year}':element.date,
                     'description':descriptionController.text,'isAccomplished':element.isAccomplished,
                     'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
                   },database,context);
+                 }
             },
             color: ConfigDatas.appBlueColor,
             width: 100,
@@ -195,7 +218,7 @@ class PopupFunctions{
             activity['description'],
             activity['type'],
             activity['time'],
-            '${_now.day}-${_now.month}-${_now.year}',
+            activity['date'],
             activity['duration'],
             activity['isAccomplished']
         ),database);
@@ -316,7 +339,7 @@ class PopupFunctions{
           'title': element['title'],
           'description': element['description'],
           if(variant=='emergencies') 'isAccomplished':element['isAccomplished'],
-          if(variant=='emergencies') 'date': '${_now.day}-${_now.month}-${_now.year}'
+          if(variant=='emergencies') 'date': element['date']
         });
       });
     Navigator.pop(context);

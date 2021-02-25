@@ -76,7 +76,7 @@ class _StoryPageState extends State<StoryPage> {
 
     var storeAct = intMapStoreFactory.store('activities');
     var finderAct = Finder(
-        filter: Filter.equals('date', '${widget.date}'),
+        // filter: Filter.equals('date', '${widget.date}'),
         sortOrders: [SortOrder('time',true)]
     );
     var queryAct = storeAct.query(finder: finderAct);
@@ -311,7 +311,7 @@ class _StoryPageState extends State<StoryPage> {
                     ],
                   ),
                   // collapsed: Text('zerrz', softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
-                  expanded: expandedWidget(emergencies,'activity'),
+                  expanded: expandedWidget(activities,'activity'),
                   tapHeaderToExpand: true,
                   hasIcon: true,
                 ),
@@ -498,9 +498,9 @@ class _StoryPageState extends State<StoryPage> {
 
                           },
                           onView: () {
-                            PopupFunctions.onAlertWithCustomContentPressed(context,'view',variant,element: elements[index],database:widget.database);
+                            PopupFunctions.onAlertWithCustomContentPressed(context,'view',variant,element: elements[index],database:widget.database,storyMode:true);
                           },
-                          isAccomplished: elements[index].isAccomplished
+                          isAccomplished: elements[index].isAccomplished!=null?elements[index].isAccomplished:false
                         ),
                         Expanded(
                           child: Column(
