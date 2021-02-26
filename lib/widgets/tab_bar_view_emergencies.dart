@@ -33,6 +33,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
     super.initState();
     var store = intMapStoreFactory.store('emergencies');
     var finder = Finder(
+        filter: Filter.equals('date', '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}'),
         sortOrders: [SortOrder('title',true)]);
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {

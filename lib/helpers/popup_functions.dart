@@ -41,7 +41,7 @@ class PopupFunctions{
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Column(
           children: <Widget>[
-            if(mode=='view') GestureDetector(
+            if(mode=='view' && (variant=='principle' || ((variant=='activity' || variant=='emergency') && !(element.isAccomplished!=null?element.isAccomplished:false)))) GestureDetector(
               onTap: () async{
                 if(!storyMode) {
                   Navigator.pop(context);
@@ -49,22 +49,23 @@ class PopupFunctions{
                       context, 'edit', variant, element: element,
                       database: database);
                 }else {
-                  DateTime _now = DateTime.now();
-                  if (variant == 'emergency') {
-                    savePrincipleOrEmergency({
-                      'id': element?.id,
-                      'title': titleController.text,
-                      'date': '${_now.day}-${_now.month}-${_now.year}',
-                      'description': descriptionController.text,
-                      'isAccomplished': element.isAccomplished,
-                    }, database, 'emergencies', context);
-                    print('emergency restored');
-                  } else {
-                    Navigator.pop(context);
-                    onAlertWithCustomContentPressed(
-                        context, 'restore', variant, element: element,
-                        database: database);
-                  }
+                  performRestoreProcess(variant,element,database,context,title:titleController.text,description:descriptionController.text);
+                  // DateTime _now = DateTime.now();
+                  // if (variant == 'emergency') {
+                  //   savePrincipleOrEmergency({
+                  //     'id': element?.id,
+                  //     'title': titleController.text,
+                  //     'date': '${_now.day}-${_now.month}-${_now.year}',
+                  //     'description': descriptionController.text,
+                  //     'isAccomplished': element.isAccomplished,
+                  //   }, database, 'emergencies', context);
+                  //   print('emergency restored');
+                  // } else {
+                  //   Navigator.pop(context);
+                  //   onAlertWithCustomContentPressed(
+                  //       context, 'restore', variant, element: element,
+                  //       database: database);
+                  // }
                 }
               },
               child: Container(
@@ -201,6 +202,25 @@ class PopupFunctions{
         ]).show();
   }
 
+  static performRestoreProcess(variant,element,database,context,{externalCall:false,title,description}){//externalCall for calls external to this class
+    DateTime _now = DateTime.now();
+    if (variant == 'emergency') {
+      savePrincipleOrEmergency({
+        'id': element?.id,
+        'title': title,
+        'date': '${_now.day}-${_now.month}-${_now.year}',
+        'description': description,
+        'isAccomplished': element.isAccomplished,
+      }, database, 'emergencies', context);
+      print('emergency restored');
+    } else {
+      if(!externalCall) Navigator.pop(context);
+      onAlertWithCustomContentPressed(
+      context, 'restore', variant, element: element,
+      database: database);
+    }
+  }
+
   static onSaveActivity(activity,database,context) async{
     var now=DateTime.now();
     tz.TZDateTime _now=tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second);
@@ -222,6 +242,7 @@ class PopupFunctions{
             activity['duration'],
             activity['isAccomplished']
         ),database);
+        print('saved date: '+ activity['date']);
         int secondsToSchedule = ((targetDt.millisecondsSinceEpoch - _now.millisecondsSinceEpoch) / 1000).toInt();
         scheduleAlarm(activityId, activity['time'],
             secondsToSchedule == 0 ? 1 : secondsToSchedule,
@@ -287,6 +308,7 @@ class PopupFunctions{
   static Future<int> saveActivity(Activity activity,database) async {
     var store = intMapStoreFactory.store('activities');
     int activityId;
+    print('date: ${activity.date} activity.id: ${activity.id}');
     if (activity.id == null){
       await database.transaction((txn) async {
         print(activity.id);
@@ -308,9 +330,10 @@ class PopupFunctions{
           'title': activity.title,
           'description': activity.description,
           'type': activity.type,
-          'time': activity.date,
+          'time': activity.time,
+          'date': activity.date,
           'duration': activity.duration,
-          'isAccomplished': activity.isAccomplished
+          'isAccomplished': activity.isAccomplished!=null?activity.isAccomplished:false
         });
       });
     }
@@ -338,7 +361,7 @@ class PopupFunctions{
         await store.record(element['id']).update(txn, {
           'title': element['title'],
           'description': element['description'],
-          if(variant=='emergencies') 'isAccomplished':element['isAccomplished'],
+          if(variant=='emergencies') 'isAccomplished':element['isAccomplished']!=null?element['isAccomplished']:false,
           if(variant=='emergencies') 'date': element['date']
         });
       });

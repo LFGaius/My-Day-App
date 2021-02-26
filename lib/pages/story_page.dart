@@ -51,7 +51,7 @@ class _StoryPageState extends State<StoryPage> {
     print('widget.date '+widget.date);
     var finder = Finder(
       limit: 10,
-        // filter: Filter.equals('date', '${widget.date}')
+      filter: Filter.equals('date', '${widget.date}')
     );
     var query = store.query(finder: finder);
     subscriptionEmergencies = query.onSnapshots(widget.database).listen((snapshots) {
@@ -76,7 +76,7 @@ class _StoryPageState extends State<StoryPage> {
 
     var storeAct = intMapStoreFactory.store('activities');
     var finderAct = Finder(
-        // filter: Filter.equals('date', '${widget.date}'),
+        filter: Filter.equals('date', '${widget.date}'),
         sortOrders: [SortOrder('time',true)]
     );
     var queryAct = storeAct.query(finder: finderAct);
@@ -495,12 +495,13 @@ class _StoryPageState extends State<StoryPage> {
                         CardActionList(
                           variant:'story',
                           onRestore: () {
-
+                            PopupFunctions.performRestoreProcess(variant,elements[index],widget.database,context,externalCall:true,title:elements[index].title,description:elements[index].description);
                           },
                           onView: () {
                             PopupFunctions.onAlertWithCustomContentPressed(context,'view',variant,element: elements[index],database:widget.database,storyMode:true);
                           },
-                          isAccomplished: elements[index].isAccomplished!=null?elements[index].isAccomplished:false
+                          isAccomplished: elements[index].isAccomplished!=null?elements[index].isAccomplished:false,
+                          restoreHidden:elements[index].isAccomplished!=null?elements[index].isAccomplished:false,
                         ),
                         Expanded(
                           child: Column(

@@ -69,6 +69,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
 
     timer.listen((data)=> {});
     var store = intMapStoreFactory.store('activities');
+    print('search act date! '+'${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}');
     var finder = Finder(
         filter: Filter.equals('date', '${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}'),
         sortOrders: [SortOrder('time',true)]
@@ -76,6 +77,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
     var query = store.query(finder: finder);
     subscription = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
+      print('search act ! ${snapshots}');
       var temp='';
       List<Activity> activities_temp = snapshots.where((e) => e.value['date']=='${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}').map((snapshot) {
         temp+=';'+snapshot.value['time'];
