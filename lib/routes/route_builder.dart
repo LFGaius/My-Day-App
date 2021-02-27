@@ -22,7 +22,7 @@ class MyRouteBuilder{
       case '/goalremind':
         return MaterialPageRoute(builder: (_)=>GoalRemindPage(database: args['database']));
       case '/home':
-        return MaterialPageRoute(builder: (_)=>HomePage(database: args['database']));
+        return MaterialPageRoute(builder: (_)=>HomePage(database: args['database'],startTab:args['startTab'] ,));
       default: return errorRoute();
     }
   }

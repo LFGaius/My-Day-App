@@ -8,6 +8,7 @@ class ConfigDatas{
   static final Color appBlueColor=Color.fromRGBO(51, 102, 255, 1);
   static final Color appDarkBlueColor=Color.fromRGBO(22, 80, 255, 1);
   static final Color appBlueColorDotDeactivated=Color.fromRGBO(51, 102, 255,0.3);
+  static final int storiesTabOrder=3;
   static final List<ActivityTypeItem> activitytypes = <ActivityTypeItem>[
     const ActivityTypeItem('Other',Icon(Icons.wysiwyg_sharp,color:  const Color.fromRGBO(51, 102, 255, 1))),
     const ActivityTypeItem('Rest',Icon(Icons.airline_seat_flat,color:  const Color.fromRGBO(51, 102, 255, 1))),

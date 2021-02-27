@@ -20,8 +20,9 @@ import 'package:timelines/timelines.dart';
 class HomePage extends StatefulWidget {
 
   final Database database;
+  final int startTab;
 
-  const HomePage({this.database, Key key}) : super(key: key);
+  const HomePage({this.database, Key key, this.startTab}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -29,10 +30,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
-  int activeTab=0;
+  int activeTab;
   @override
   void initState() {
     // TODO: implement initState
+    activeTab=widget.startTab!=null?widget.startTab:0;
+    print('activeTab  $activeTab');
     super.initState();
   }
 
@@ -42,6 +45,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
+      initialIndex: activeTab,
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(

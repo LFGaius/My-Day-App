@@ -186,7 +186,7 @@ class PopupFunctions{
                  else{
                    DateTime _now = DateTime.now();
                   onSaveActivity({
-                    'id':element?.id,'title':titleController.text,'date':mode=='restore'?'${_now.day}-${_now.month}-${_now.year}':element.date,
+                    'id':element?.id,'title':titleController.text,'date':(mode=='restore' || mode=='create')?'${_now.day}-${_now.month}-${_now.year}':element.date,
                     'description':descriptionController.text,'isAccomplished':element.isAccomplished,
                     'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
                   },database,context);

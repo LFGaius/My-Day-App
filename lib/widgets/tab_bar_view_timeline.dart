@@ -161,6 +161,9 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CardActionList(
+                  onView: () {
+                    PopupFunctions.onAlertWithCustomContentPressed(context,'view','activity',element: activities[index],database:widget.database);
+                  },
                   onDelete: () async{
                     var notifId=activities[index].id;
                     var store = intMapStoreFactory.store('activities');

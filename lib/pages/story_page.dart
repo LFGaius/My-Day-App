@@ -38,6 +38,10 @@ class _StoryPageState extends State<StoryPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   List<Activity> activities=[];
   List<Emergency> emergencies=[];
+  num numberActivitiesAccomplished=0;
+  num numberActivitiesNotAccomplished=0;
+  num numberEmergenciesAccomplished=0;
+  num numberEmergenciesNotAccomplished=0;
   var subscriptionEmergencies;
   var subscriptionActivities;
   final ScrollController lvcontroller=ScrollController();
@@ -57,6 +61,8 @@ class _StoryPageState extends State<StoryPage> {
     subscriptionEmergencies = query.onSnapshots(widget.database).listen((snapshots) {
       // snapshots always contains the list of records matching the query
       List<Emergency> emergencies_temp = snapshots.map((snapshot) {
+        if(snapshot.value['isAccomplished']) numberEmergenciesAccomplished++;
+        else numberEmergenciesNotAccomplished++;
         var emer = new Emergency(
           snapshot.key,
           snapshot.value['title'],
@@ -82,6 +88,8 @@ class _StoryPageState extends State<StoryPage> {
     var queryAct = storeAct.query(finder: finderAct);
     subscriptionActivities = queryAct.onSnapshots(widget.database).listen((snapshots) {
       List<Activity> activities_temp = snapshots.map((snapshot) {
+        if(snapshot.value['isAccomplished']) numberActivitiesAccomplished++;
+        else numberActivitiesNotAccomplished++;
         var act = new Activity(
             snapshot.key,
             snapshot.value['title'],
@@ -133,7 +141,7 @@ class _StoryPageState extends State<StoryPage> {
             onPressed: () {
               Navigator.of(context).popAndPushNamed(
                   '/home',
-                  arguments:{'database':widget.database}
+                  arguments:{'database':widget.database,'startTab':ConfigDatas.storiesTabOrder}
               );
             },
             child: Icon(
@@ -197,7 +205,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.green),
                             SizedBox(width: 5),
                             Text(
-                              '2 activities accomplished',
+                              '${numberActivitiesAccomplished} activities accomplished',
                               style: TextStyle(
                                 // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
@@ -212,7 +220,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.orange),
                             SizedBox(width: 5),
                             Text(
-                              '0 activities not accomplished',
+                              '${numberActivitiesNotAccomplished} activities not accomplished',
                               style: TextStyle(
                                 // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
@@ -253,7 +261,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.green),
                             SizedBox(width: 5),
                             Text(
-                              '2 emergencies accomplished',
+                              '${numberEmergenciesAccomplished} emergencies accomplished',
                               style: TextStyle(
                                 // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
@@ -268,7 +276,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.orange),
                             SizedBox(width: 5),
                             Text(
-                              '0 emergencies not accomplished',
+                              '${numberEmergenciesNotAccomplished} emergencies not accomplished',
                               style: TextStyle(
                                 // color: ConfigDatas.appBlueColor,
                                 fontSize: 15,
