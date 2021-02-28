@@ -30,15 +30,6 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
   TextEditingController descriptionController = TextEditingController();
   List<Principle> principles=[];
   List<String> days=[];
-  Map<int,Color> weekDaysColorMap={
-    1:Colors.red,
-    2:Colors.yellow,
-    3:Colors.orange,
-    4:Colors.black87,
-    5:Colors.purple,
-    6:Colors.green,
-    7:Colors.lightBlueAccent,
-  };
   var subscription;
   String storiesOpened;
 
@@ -187,7 +178,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
 
   Color getWeekDayColor(String date){
     List<String> date_splited=date.split('-');
-    return weekDaysColorMap[DateTime(int.parse(date_splited[2]),int.parse(date_splited[1]),int.parse(date_splited[0])).weekday];
+    return ConfigDatas.weekDaysColorMap[DateTime(int.parse(date_splited[2]),int.parse(date_splited[1]),int.parse(date_splited[0])).weekday];
   }
 
   _onAlertWithCustomContentPressed(context,mode,{Principle principle}) {

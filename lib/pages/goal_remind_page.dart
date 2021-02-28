@@ -79,14 +79,17 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
             //   size: 40,
             //   color: ConfigDatas.appDarkBlueColor,
             // ),
-            Text(
-              'Always remember your goals',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: ConfigDatas.appBlueColor,
-                fontSize: 30,
-                fontWeight: FontWeight.bold
-                // fontFamily: 'Freestyle Script Regular',
+            Padding(
+              padding: const EdgeInsets.only(left:20,right: 20),
+              child: Text(
+                'Always remember your goals',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: ConfigDatas.appBlueColor,
+                  fontSize: 50,
+                  // fontWeight: FontWeight.bold,
+                  fontFamily: 'Freestyle Script Regular',
+                ),
               ),
             ),
             Container(
@@ -99,7 +102,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       width: MediaQuery.of(context).size.width*0.8,
-                      margin: EdgeInsets.all(20),
+                      margin: EdgeInsets.all(40),
                       // padding: EdgeInsets.only(left:10),
                       decoration: BoxDecoration(
                           boxShadow: [
@@ -121,7 +124,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                       ),
                       child: Container(
                         width: MediaQuery.of(context).size.width*0.7,
-                        padding:EdgeInsets.all(35),
+                        padding:EdgeInsets.all(20),
                         child: Center(
                           child: Scrollbar(
                             radius: Radius.circular(10),
@@ -132,6 +135,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                                   color: Colors.white,
                                   size: 40,
                                 ),
+                                SizedBox(height: 15),
                                 TextField(
                                   controller: TextEditingController(text: goals[index].description),
                                   maxLines: null,
@@ -139,8 +143,9 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 35,
-                                    fontFamily: 'Freestyle Script Regular',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold
+                                    // fontFamily: 'Freestyle Script Regular',
                                   ),
                                   keyboardType: TextInputType.multiline,
                                   decoration: InputDecoration(

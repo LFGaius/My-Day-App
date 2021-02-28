@@ -17,4 +17,13 @@ class ConfigDatas{
     const ActivityTypeItem('Spiritual',Icon(Icons.accessibility_new,color:  Color.fromRGBO(51, 102, 255, 1))),
     const ActivityTypeItem('Professional',Icon(Icons.corporate_fare,color:  Color.fromRGBO(51, 102, 255, 1))),
   ];
+  static final Map<int,Color> weekDaysColorMap={
+    1:Colors.red,
+    2:Colors.amber,
+    3:Colors.orange,
+    4:Colors.black87,
+    5:Colors.purple,
+    6:Colors.green,
+    7:Colors.cyan,
+  };
 }
