@@ -19,11 +19,11 @@ class ConfigDatas{
   ];
   static final Map<int,Color> weekDaysColorMap={
     1:Colors.red,
-    2:Colors.amber,
+    2:Colors.cyan,
     3:Colors.orange,
     4:Colors.black87,
     5:Colors.purple,
     6:Colors.green,
-    7:Colors.cyan,
+    7:Colors.amber,
   };
 }

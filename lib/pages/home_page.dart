@@ -79,16 +79,37 @@ class _HomePageState extends State<HomePage> {
             TabBarViewStories(database: widget.database),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).popAndPushNamed(
-                '/goals',
-                arguments:{'database':widget.database}
-            );
-          },
-          child: Icon(Icons.album_outlined),
-          backgroundColor: ConfigDatas.appBlueColor,
-        ),
+        floatingActionButton: Stack(
+          children: <Widget>[
+            Positioned(
+              bottom: 80,
+              right: 0,
+              child: FloatingActionButton(
+                heroTag: 'blacklist',
+                backgroundColor:Colors.black87,
+                onPressed: () {},
+                child: Icon(
+                    Icons.list,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 10,
+              right: 0,
+              child: FloatingActionButton(
+                heroTag: 'goals',
+                onPressed: () {
+                  Navigator.of(context).popAndPushNamed(
+                      '/goals',
+                      arguments:{'database':widget.database}
+                  );
+                },
+                child: Icon(Icons.album_outlined),
+                backgroundColor: ConfigDatas.appBlueColor,
+              )
+            )
+          ],
+        )
       ),
     );
   }

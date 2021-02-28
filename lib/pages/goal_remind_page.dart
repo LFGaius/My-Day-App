@@ -102,7 +102,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       width: MediaQuery.of(context).size.width*0.8,
-                      margin: EdgeInsets.all(40),
+                      margin: EdgeInsets.only(left:40,right: 40,top: 40),
                       // padding: EdgeInsets.only(left:10),
                       decoration: BoxDecoration(
                           boxShadow: [
@@ -171,7 +171,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
           Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':widget.database});
         },
         child: Icon(Icons.home),
-        backgroundColor: ConfigDatas.appDarkBlueColor,
+        backgroundColor: Colors.teal,
       ),
     );
   }

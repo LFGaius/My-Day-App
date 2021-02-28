@@ -217,7 +217,7 @@ class _GoalsPageState extends State<GoalsPage> {
           ));
         },
         child: Icon(Icons.add),
-        backgroundColor: ConfigDatas.appDarkBlueColor,
+        backgroundColor: Colors.teal,
       ),
     );
   }
