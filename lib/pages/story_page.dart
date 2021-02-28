@@ -20,6 +20,7 @@ import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timelines/timelines.dart';
 
 class StoryPage extends StatefulWidget {
@@ -51,6 +52,13 @@ class _StoryPageState extends State<StoryPage> {
     // _controller.addListener(_scrollListener);//the listener for up and down.
     // TODO: implement initState
     super.initState();
+    SharedPreferences.getInstance().then((prefs){
+      String storiesOpened=prefs.getString('myday_stories_opened')!=null?prefs.getString('myday_stories_opened'):'';
+      print('${storiesOpened};$widget.date');
+      if(!storiesOpened.contains(widget.date))
+        prefs.setString('myday_stories_opened','${storiesOpened};${widget.date}');//to store the dates of stories already opened
+    });
+
     var store = intMapStoreFactory.store('emergencies');
     print('widget.date '+widget.date);
     var finder = Finder(

@@ -40,6 +40,8 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
     7:Colors.lightBlueAccent,
   };
   var subscription;
+  String storiesOpened;
+
 
   generateDays() async{
     SharedPreferences prefs=await SharedPreferences.getInstance();
@@ -68,6 +70,13 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
   void initState(){
     super.initState();
     generateDays();
+    SharedPreferences.getInstance().then((prefs){
+      print('storiesOpened $storiesOpened');
+      if(mounted)
+        setState(() {
+          storiesOpened=prefs.getString('myday_stories_opened')!=null?prefs.getString('myday_stories_opened'):'';
+        });
+    });
   }
 
   @override
@@ -81,6 +90,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GridView.builder(
+        padding: EdgeInsets.only(top:5),
         itemCount: days.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
@@ -97,67 +107,77 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                 'date':days[index]
               });
             },
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: getWeekDayColor(days[index])
-                  // gradient: LinearGradient(
-                  //     begin: Alignment.bottomCenter,
-                  //     end: Alignment.topCenter,
-                  //     colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange ]
-                  // )
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // CardActionList(
-                    //   onDelete: () async{
-                    //     var store = intMapStoreFactory.store('principles');
-                    //     await store.record(principles[index].id).delete(widget.database);
-                    //   },
-                    //   onView: () {
-                    //     _onAlertWithCustomContentPressed(context,'view',principle: principles[index]);
-                    //   },
-                    //   variant: 'principle',
-                    // ),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.calendar_today,
-                            size: 30,
-                            color: Colors.white,
+            child: Stack(
+              overflow: Overflow.visible,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: getWeekDayColor(days[index])
+                    // gradient: LinearGradient(
+                    //     begin: Alignment.bottomCenter,
+                    //     end: Alignment.topCenter,
+                    //     colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange ]
+                    // )
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // CardActionList(
+                        //   onDelete: () async{
+                        //     var store = intMapStoreFactory.store('principles');
+                        //     await store.record(principles[index].id).delete(widget.database);
+                        //   },
+                        //   onView: () {
+                        //     _onAlertWithCustomContentPressed(context,'view',principle: principles[index]);
+                        //   },
+                        //   variant: 'principle',
+                        // ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                'DAY',
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white
+                                ),
+                              ),
+                              Text(
+                                GlobalProcedures.getDateWithMoreText(days[index]),//principles[index].title,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white
+                                ),
+                              )
+                            ],
                           ),
-                          Text(
-                            'DAY',
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white
-                            ),
-                          ),
-                          Text(
-                            GlobalProcedures.getDateWithMoreText(days[index]),//principles[index].title,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white
-                            ),
-                          )
-                        ],
-                      ),
-                    )
+                        )
 
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+                if(!storiesOpened.contains(days[index])) Positioned(//not opened indicator
+                  top: -5,
+                  right: 3,
+                  child: Indicator.dot(color: ConfigDatas.appBlueColor,size: 15,)
+                ),
+              ],
             ),
           );
         },
