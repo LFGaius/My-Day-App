@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_day_app/pages/blacklist_page.dart';
 import 'package:my_day_app/pages/goal_remind_page.dart';
 import 'package:my_day_app/pages/goals_page.dart';
 import 'package:my_day_app/pages/home_page.dart';
@@ -19,6 +20,8 @@ class MyRouteBuilder{
         return MaterialPageRoute(builder: (_)=>GoalsPage(database: args['database']));//args['database']
       case '/story':
         return MaterialPageRoute(builder: (_)=>StoryPage(database: args['database'],date: args['date'],));
+      case '/blacklist':
+        return MaterialPageRoute(builder: (_)=>BlacklistPage(database: args['database']));
       case '/goalremind':
         return MaterialPageRoute(builder: (_)=>GoalRemindPage(database: args['database']));
       case '/home':

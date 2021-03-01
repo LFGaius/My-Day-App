@@ -136,9 +136,9 @@ class CardActionList extends StatelessWidget {
         ],
       ):
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment:variant!='taboo'?MainAxisAlignment.spaceBetween:MainAxisAlignment.center,
         children: [
-          GestureDetector(
+          if(variant!='taboo') GestureDetector(
             onTap: onView,
             child: Container(
               padding: EdgeInsets.all(4),
@@ -153,7 +153,23 @@ class CardActionList extends StatelessWidget {
               ),
             ),
           ),
-          if(variant!='principle')  GestureDetector(
+          if(variant=='taboo') GestureDetector(
+            onTap: onEdit,
+            child: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                  color: ConfigDatas.appBlueColor,
+                  borderRadius: BorderRadius.circular(20)
+              ),
+              child: Icon(
+                Icons.edit,
+                size: 15,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          if(variant=='taboo') SizedBox(width: 15),
+          if(variant!='principle' && variant!='taboo')  GestureDetector(
               onTap: (variant!='story')?onSwitchAccomplished:null,
               child: Container(
                 padding: EdgeInsets.all(4),

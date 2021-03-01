@@ -87,7 +87,12 @@ class _HomePageState extends State<HomePage> {
               child: FloatingActionButton(
                 heroTag: 'blacklist',
                 backgroundColor:Colors.black87,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).popAndPushNamed(
+                      '/blacklist',
+                      arguments:{'database':widget.database}
+                  );
+                },
                 child: Icon(
                     Icons.list,
                 ),

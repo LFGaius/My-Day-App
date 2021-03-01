@@ -62,7 +62,7 @@ class _StoryPageState extends State<StoryPage> {
     var store = intMapStoreFactory.store('emergencies');
     print('widget.date '+widget.date);
     var finder = Finder(
-      limit: 10,
+      // limit: 10,
       filter: Filter.equals('date', '${widget.date}')
     );
     var query = store.query(finder: finder);
