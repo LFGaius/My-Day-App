@@ -73,14 +73,14 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.1),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
             // Icon(
             //   Icons.album_outlined,
             //   size: 40,
             //   color: ConfigDatas.appDarkBlueColor,
             // ),
             Padding(
-              padding: const EdgeInsets.only(left:20,right: 20),
+              padding: const EdgeInsets.only(left:20,right: 20,bottom: 10),
               child: Text(
                 'Always remember your goals',
                 textAlign: TextAlign.center,
@@ -93,8 +93,11 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
               ),
             ),
             Container(
-              height:MediaQuery.of(context).size.height*0.7,
+              height:MediaQuery.of(context).size.height*0.73,
               // padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: ConfigDatas.appBlueColor.withOpacity(0.05),
+              ),
               child: ListView.builder(
                   shrinkWrap: true ,
                   scrollDirection: Axis.vertical,
@@ -116,8 +119,8 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
-                            colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
-                            stops: [0.3,0.9],
+                            colors: [Colors.deepPurple,Colors.deepPurpleAccent],
+                            stops: [0,1],
                           ),
                           color: ConfigDatas.appBlueColor,
                           borderRadius: BorderRadius.circular(10)
@@ -171,7 +174,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
           Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':widget.database});
         },
         child: Icon(Icons.home),
-        backgroundColor: Colors.teal,
+        backgroundColor: ConfigDatas.appDarkBlueColor,
       ),
     );
   }

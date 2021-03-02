@@ -181,6 +181,7 @@ class _StoryPageState extends State<StoryPage> {
               ),
             ],
           ),
+          SizedBox(height: 10),
           Expanded(
             child: ListView(
                 controller:lvcontroller,
@@ -295,6 +296,29 @@ class _StoryPageState extends State<StoryPage> {
                         ),
                       ],
                     )
+                  ],
+                ),
+                SizedBox(height: 15),
+                Column(
+                  children: [
+                    Text(
+                      '${
+                          ((numberActivitiesAccomplished+numberEmergenciesAccomplished)
+                           /
+                          (activities.length+emergencies.length))*100}%',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 60
+                      ),
+                    ),
+                    Text(
+                      'ACCOMPLISHMENTS',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        color: Colors.black.withOpacity(0.7)
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 15),

@@ -95,7 +95,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
               Navigator.of(context).pushNamedAndRemoveUntil('/story',(Route<dynamic> route) => false,
               arguments:{
                 'database':widget.database,
-                'date':days[index]
+                'date':days[days.length-index-1]
               });
             },
             child: Stack(
@@ -104,7 +104,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                 Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: getWeekDayColor(days[index])
+                      color: getWeekDayColor(days[days.length-index-1])
                     // gradient: LinearGradient(
                     //     begin: Alignment.bottomCenter,
                     //     end: Alignment.topCenter,
@@ -146,7 +146,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                                 ),
                               ),
                               Text(
-                                GlobalProcedures.getDateWithMoreText(days[index]),//principles[index].title,
+                                GlobalProcedures.getDateWithMoreText(days[days.length-index-1]),//principles[index].title,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -163,7 +163,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                     ),
                   ),
                 ),
-                if(!storiesOpened.contains(days[index])) Positioned(//not opened indicator
+                if(!storiesOpened.contains(days[days.length-index-1])) Positioned(//not opened indicator
                   top: -5,
                   right: 3,
                   child: Indicator.dot(color: ConfigDatas.appBlueColor,size: 15,)

@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
                 child: Icon(Icons.album_outlined),
-                backgroundColor: ConfigDatas.appBlueColor,
+                backgroundColor: Colors.blue.withOpacity(0.8),
               )
             )
           ],
