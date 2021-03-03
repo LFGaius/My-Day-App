@@ -43,10 +43,17 @@ class _StoryPageState extends State<StoryPage> {
   num numberActivitiesNotAccomplished=0;
   num numberEmergenciesAccomplished=0;
   num numberEmergenciesNotAccomplished=0;
-  num accomplishmentRate=0;
+  // num accomplishmentRate=0;
   var subscriptionEmergencies;
   var subscriptionActivities;
   final ScrollController lvcontroller=ScrollController();
+  get actEmerLength{
+    return activities.length+emergencies.length;
+  }
+  
+  get accomplishmentRate{
+    return actEmerLength>0?((numberActivitiesAccomplished+numberEmergenciesAccomplished)/actEmerLength)*100:0.0;
+  }
 
   @override
   void initState() {
@@ -111,8 +118,7 @@ class _StoryPageState extends State<StoryPage> {
         );
         return act;
       }).toList();
-      accomplishmentRate=((numberActivitiesAccomplished+numberEmergenciesAccomplished)/
-                          (activities.length+emergencies.length))*100;
+
       if (mounted)
         setState(() {
           activities = activities_temp;
