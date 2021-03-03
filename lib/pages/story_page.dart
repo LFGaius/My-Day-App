@@ -43,6 +43,7 @@ class _StoryPageState extends State<StoryPage> {
   num numberActivitiesNotAccomplished=0;
   num numberEmergenciesAccomplished=0;
   num numberEmergenciesNotAccomplished=0;
+  num accomplishmentRate=0;
   var subscriptionEmergencies;
   var subscriptionActivities;
   final ScrollController lvcontroller=ScrollController();
@@ -110,6 +111,8 @@ class _StoryPageState extends State<StoryPage> {
         );
         return act;
       }).toList();
+      accomplishmentRate=((numberActivitiesAccomplished+numberEmergenciesAccomplished)/
+                          (activities.length+emergencies.length))*100;
       if (mounted)
         setState(() {
           activities = activities_temp;
@@ -180,6 +183,49 @@ class _StoryPageState extends State<StoryPage> {
                 ),
               ),
             ],
+          ),
+          SizedBox(height: 10),
+          if(accomplishmentRate<50) Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(40)
+            ),
+            child: Text(
+              '😑 BAD PRODUCTIVITY',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+          ),
+          if(accomplishmentRate>=50 && accomplishmentRate<80) Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(40)
+            ),
+            child: Text(
+              '🙂 MEDIUM PRODUCTIVITY',
+              style: TextStyle(
+                  color: Colors.orange,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
+          ),
+          if(accomplishmentRate>=80) Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(40)
+            ),
+            child: Text(
+              '😲 AMAZING PRODUCTIVITY',
+              style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
           ),
           SizedBox(height: 10),
           Expanded(
@@ -302,10 +348,7 @@ class _StoryPageState extends State<StoryPage> {
                 Column(
                   children: [
                     Text(
-                      '${
-                          ((numberActivitiesAccomplished+numberEmergenciesAccomplished)
-                           /
-                          (activities.length+emergencies.length))*100}%',
+                      '${accomplishmentRate}%',
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 60
