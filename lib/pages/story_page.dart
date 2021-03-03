@@ -50,7 +50,7 @@ class _StoryPageState extends State<StoryPage> {
   get actEmerLength{
     return activities.length+emergencies.length;
   }
-  
+
   get accomplishmentRate{
     return actEmerLength>0?((numberActivitiesAccomplished+numberEmergenciesAccomplished)/actEmerLength)*100:0.0;
   }

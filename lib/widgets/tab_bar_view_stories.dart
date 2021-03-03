@@ -165,8 +165,8 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                 ),
                 if(!storiesOpened.contains(days[days.length-index-1])) Positioned(//not opened indicator
                   top: -5,
-                  right: 3,
-                  child: Indicator.dot(color: ConfigDatas.appBlueColor,size: 15,)
+                  right: 10,
+                  child: Indicator.dot(color: Colors.red,size: 15,)
                 ),
               ],
             ),

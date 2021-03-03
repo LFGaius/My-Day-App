@@ -15,6 +15,7 @@ import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timelines/timelines.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,11 +32,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   int activeTab;
+  String storiesOpened='';
+  get yesterdayStoryAvailableButNotOpened{
+    DateTime yesterday=DateTime.now().add(Duration(days: -1));
+    return !storiesOpened.contains('${yesterday.day}-${yesterday.month}-${yesterday.year}');
+  }
   @override
   void initState() {
     // TODO: implement initState
     activeTab=widget.startTab!=null?widget.startTab:0;
-    print('activeTab  $activeTab');
+    SharedPreferences.getInstance().then((prefs){
+      print('storiesOpened $storiesOpened');
+      if(mounted)
+        setState(() {
+          storiesOpened=prefs.getString('myday_stories_opened')!=null?prefs.getString('myday_stories_opened'):'';
+        });
+    });
     super.initState();
   }
 
@@ -63,10 +75,64 @@ class _HomePageState extends State<HomePage> {
             indicatorColor: Colors.white,
             indicatorWeight: 5,
             tabs: [
-              Tab(icon: Icon(Icons.today),text: 'Today',),
-              Tab(icon: Icon(Icons.warning_amber_rounded),text: 'Emergencies'),
-              Tab(icon: Icon(Icons.rule),text: 'Principles'),
-              Tab(icon: Icon(Icons.history_edu_sharp),text: 'Stories'),
+              Tab(child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.today),
+                  Text(
+                      'Today',
+                    style: TextStyle(
+                      fontSize: 12
+                    ),
+                  )
+                ],
+              )),
+              Tab(child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Icon(Icons.warning_amber_rounded),
+                    ],
+                  ),
+                  Text(
+                      'Emergencies',
+                    style: TextStyle(
+                      fontSize: 12,
+
+                    ),
+                  )
+                ],
+              )),
+              Tab(child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.rule),
+                  Text(
+                      'Principles',
+                    style: TextStyle(
+                      fontSize: 12
+                    ),
+                  )
+                ],
+              )),
+              Tab(child:  Stack(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(Icons.history_edu_sharp),
+                        Text(
+                            'Stories',
+                          style: TextStyle(
+                            fontSize: 12
+                          ),
+                        )
+                      ],
+                    ),
+                    if(yesterdayStoryAvailableButNotOpened) Positioned(top:0,child: Indicator.dot(color: Colors.red)),
+                  ]
+              )),
             ],
           ),
         ),
