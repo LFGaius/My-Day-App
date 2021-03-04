@@ -80,20 +80,20 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
             //   color: ConfigDatas.appDarkBlueColor,
             // ),
             Padding(
-              padding: const EdgeInsets.only(left:20,right: 20,bottom: 10),
+              padding: const EdgeInsets.only(left:30,right: 30,bottom: 30,top: 10),
               child: Text(
                 'Always remember your goals',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: ConfigDatas.appBlueColor,
-                  fontSize: 50,
-                  // fontWeight: FontWeight.bold,
-                  fontFamily: 'Freestyle Script Regular',
+                  fontSize: 35,
+                  fontWeight: FontWeight.w900,
+                  // fontFamily: 'Freestyle Script Regular',
                 ),
               ),
             ),
             Container(
-              height:MediaQuery.of(context).size.height*0.73,
+              height:MediaQuery.of(context).size.height*0.77,
               // padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                 color: ConfigDatas.appBlueColor.withOpacity(0.05),
@@ -105,7 +105,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       width: MediaQuery.of(context).size.width*0.8,
-                      margin: EdgeInsets.only(left:40,right: 40,top: 40),
+                      margin: EdgeInsets.only(left:40,right: 40,top: 20,bottom: 20),
                       // padding: EdgeInsets.only(left:10),
                       decoration: BoxDecoration(
                           boxShadow: [
@@ -119,7 +119,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
-                            colors: [Colors.deepPurple,Colors.deepPurpleAccent],
+                            colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
                             stops: [0,1],
                           ),
                           color: ConfigDatas.appBlueColor,
@@ -127,7 +127,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                       ),
                       child: Container(
                         width: MediaQuery.of(context).size.width*0.7,
-                        padding:EdgeInsets.all(20),
+                        padding:EdgeInsets.all(40),
                         child: Center(
                           child: Scrollbar(
                             radius: Radius.circular(10),
@@ -146,9 +146,9 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold
-                                    // fontFamily: 'Freestyle Script Regular',
+                                    fontSize: 40,
+                                    // fontWeight: FontWeight.bold,
+                                    fontFamily: 'Freestyle Script Regular',
                                   ),
                                   keyboardType: TextInputType.multiline,
                                   decoration: InputDecoration(
@@ -174,7 +174,8 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
           Navigator.of(context).pushNamedAndRemoveUntil('/home',(Route<dynamic> route) => false, arguments:{'database':widget.database});
         },
         child: Icon(Icons.home),
-        backgroundColor: ConfigDatas.appDarkBlueColor,
+        backgroundColor: Colors.black.withOpacity(0.8),
+        
       ),
     );
   }

@@ -102,30 +102,16 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
               overflow: Overflow.visible,
               children: [
                 Container(
+                  width: MediaQuery.of(context).size.width*0.3,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: getWeekDayColor(days[days.length-index-1])
-                    // gradient: LinearGradient(
-                    //     begin: Alignment.bottomCenter,
-                    //     end: Alignment.topCenter,
-                    //     colors: [Color.fromRGBO(255, 153 , 51, 1),Colors.orange ]
-                    // )
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        // CardActionList(
-                        //   onDelete: () async{
-                        //     var store = intMapStoreFactory.store('principles');
-                        //     await store.record(principles[index].id).delete(widget.database);
-                        //   },
-                        //   onView: () {
-                        //     _onAlertWithCustomContentPressed(context,'view',principle: principles[index]);
-                        //   },
-                        //   variant: 'principle',
-                        // ),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -181,108 +167,4 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
     return ConfigDatas.weekDaysColorMap[DateTime(int.parse(date_splited[2]),int.parse(date_splited[1]),int.parse(date_splited[0])).weekday];
   }
 
-  _onAlertWithCustomContentPressed(context,mode,{Principle principle}) {
-    if(principle!=null) {
-      titleController.text = principle.title;
-      descriptionController.text = principle.description;
-    }
-    Alert(
-        context: context,
-        style: AlertStyle(
-            titleStyle: TextStyle(
-              color: ConfigDatas.appBlueColor,
-              fontWeight: FontWeight.bold,
-              fontSize: mode!='view'?30:0,
-            )
-        ),
-        title: mode!='view'?(mode=='create'?'Add principle':'Edit principle'):'',
-        closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-        content: Column(
-          children: <Widget>[
-            if(mode=='view') GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                _onAlertWithCustomContentPressed(context,'edit',principle: principle);
-              },
-              child: Container(
-                width: 80,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    color: ConfigDatas.appBlueColor,
-                    borderRadius: BorderRadius.circular(20)
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.edit,color: Colors.white),
-                    Text(
-                      'Edit',
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            TextField(
-              controller: titleController,
-              readOnly: mode=='view',
-              decoration: InputDecoration(
-                labelText: 'Title',
-              ),
-            ),
-            TextField(
-              controller: descriptionController,
-              minLines: 4,
-              maxLines: null,
-              readOnly: mode=='view',
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                labelText: 'Description',
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          if(mode!='view') DialogButton(
-            onPressed: ()  async=>{
-              await savePrinciple(new Principle(
-                  principle?.id,
-                  titleController.text,
-                  descriptionController.text
-              )),
-              Navigator.pop(context)
-            },
-            color: ConfigDatas.appBlueColor,
-            width: 100,
-            child: Text(
-              "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-            ),
-          )
-        ]).show();
-  }
-
-  savePrinciple(Principle principle) async {
-    var store = intMapStoreFactory.store('principles');
-    if(principle.id==null)
-      await widget.database.transaction((txn) async {
-        print(principle.id);
-        print('ttt ${principle.id}');
-        await store.add(txn, {
-          'title': principle.title,
-          'description': principle.description
-        });
-      });
-    else
-      await widget.database.transaction((txn) async {
-        print(principle.id);
-        print('ttt ${principle.id}');
-        await store.record(principle.id).update(txn, {
-          'title': principle.title,
-          'description': principle.description
-        });
-      });
-  }
-// var
 }
