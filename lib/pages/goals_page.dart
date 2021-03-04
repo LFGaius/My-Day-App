@@ -115,94 +115,96 @@ class _GoalsPageState extends State<GoalsPage> {
               ),
             ],
           ),
-          Container(
-            height:MediaQuery.of(context).size.height*0.5,
-            // padding: const EdgeInsets.all(8.0),
-            child: ListView.builder(
-              shrinkWrap: true ,
-              scrollDirection: Axis.horizontal,
-              itemCount: goals.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  width: MediaQuery.of(context).size.width*0.8,
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.only(left:10),
-                  decoration: BoxDecoration(
-                   boxShadow: [
-                     BoxShadow(
-                      color: Colors.black26,
-                      blurRadius:8,
-                      spreadRadius:1,
-                          offset: Offset(4,4)
-                        )
-                      ],
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
-                        stops: [0.3,0.9],
-                      ),
-                      color: ConfigDatas.appBlueColor,
-                      borderRadius: BorderRadius.circular(10)
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding:EdgeInsets.only(top:20),
-                        child: CardActionList(
-                          variant: 'goal',
-                          isFavorite:goals[index].isFavorite,
-                          onSwitchFavorite:() async{
-                            var store = intMapStoreFactory.store('goals');
-                            await widget.database.transaction((txn) async {
-                              print(goals[index].id);
-                              print('ttt ${goals[index].id}');
-                              print('ttt ${goals[index].isFavorite}');
-                              await store.record(goals[index].id).update(txn, {
-                                'isFavorite': goals[index].isFavorite==1?0:1
-                              });
-                            });
-                          },
-                          onDelete: () async{
-                            var store = intMapStoreFactory.store('goals');
-                            await store.record(goals[index].id).delete(widget.database);
-                          },
-                          onEdit: () {
-                            _onAlertWithCustomContentPressed(context,'edit',goals[index]);
-                          },
+          Expanded(
+            child: Container(
+              height:MediaQuery.of(context).size.height*0.5,
+              // padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                shrinkWrap: true ,
+                scrollDirection: Axis.horizontal,
+                itemCount: goals.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    width: MediaQuery.of(context).size.width*0.8,
+                    margin: EdgeInsets.only(bottom:150,left: 20,top:20),
+                    padding: EdgeInsets.only(left:10),
+                    decoration: BoxDecoration(
+                     boxShadow: [
+                       BoxShadow(
+                        color: Colors.black26,
+                        blurRadius:8,
+                        spreadRadius:1,
+                            offset: Offset(4,4)
+                          )
+                        ],
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
+                          stops: [0.3,0.9],
                         ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width*0.7,
-                        padding:EdgeInsets.all(5),
-                        child: Center(
-                          child: Scrollbar(
-                            radius: Radius.circular(10),
-                            child: TextField(
-                              controller: TextEditingController(text: goals[index].description),
-                              maxLines: null,
-                              readOnly: true,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35,
-                                fontFamily: 'Freestyle Script Regular',
-                              ),
-                              keyboardType: TextInputType.multiline,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                labelText:null,
+                        color: ConfigDatas.appBlueColor,
+                        borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding:EdgeInsets.only(top:20),
+                          child: CardActionList(
+                            variant: 'goal',
+                            isFavorite:goals[index].isFavorite,
+                            onSwitchFavorite:() async{
+                              var store = intMapStoreFactory.store('goals');
+                              await widget.database.transaction((txn) async {
+                                print(goals[index].id);
+                                print('ttt ${goals[index].id}');
+                                print('ttt ${goals[index].isFavorite}');
+                                await store.record(goals[index].id).update(txn, {
+                                  'isFavorite': goals[index].isFavorite==1?0:1
+                                });
+                              });
+                            },
+                            onDelete: () async{
+                              var store = intMapStoreFactory.store('goals');
+                              await store.record(goals[index].id).delete(widget.database);
+                            },
+                            onEdit: () {
+                              _onAlertWithCustomContentPressed(context,'edit',goals[index]);
+                            },
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width*0.7,
+                          padding:EdgeInsets.all(5),
+                          child: Center(
+                            child: Scrollbar(
+                              radius: Radius.circular(10),
+                              child: TextField(
+                                controller: TextEditingController(text: goals[index].description),
+                                maxLines: null,
+                                readOnly: true,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 35,
+                                  fontFamily: 'Freestyle Script Regular',
+                                ),
+                                keyboardType: TextInputType.multiline,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  labelText:null,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
 
-                    ],
-                  ),
-                );
-              }
+                      ],
+                    ),
+                  );
+                }
+              ),
             ),
           ),
 

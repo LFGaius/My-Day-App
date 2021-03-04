@@ -139,52 +139,54 @@ class BlacklistyPageState extends State<BlacklistPage> {
                   ),
                 ),
               ),
-              Container(
-                height:MediaQuery.of(context).size.height*0.7,
-                // padding: const EdgeInsets.all(8.0),
-                child: GridView.builder(
-                    shrinkWrap: true ,
-                    scrollDirection: Axis.vertical,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 2,
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 1.0,
-                      mainAxisSpacing: 0.0
-                    ),
+              Expanded(
+                child: Container(
+                  height:MediaQuery.of(context).size.height*0.7,
+                  // padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                      shrinkWrap: true ,
+                      scrollDirection: Axis.vertical,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 2,
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 1.0,
+                        mainAxisSpacing: 0.0
+                      ),
 
-                    itemCount: taboos.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          Center(
-                            child: Text(
-                              taboos[index].word,
-                              style: TextStyle(
-                                color: Colors.white,
-                                decoration: TextDecoration.lineThrough,
-                                decorationThickness: 2,
-                                decorationColor: Colors.black,
-                                fontSize: 40.0,
-                                // fontWeight: FontWeight.bold
-                                fontFamily: 'Freestyle Script Regular',
+                      itemCount: taboos.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Column(
+                          children: [
+                            Center(
+                              child: Text(
+                                taboos[index].word,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  decoration: TextDecoration.lineThrough,
+                                  decorationThickness: 2,
+                                  decorationColor: Colors.black,
+                                  fontSize: 40.0,
+                                  // fontWeight: FontWeight.bold
+                                  fontFamily: 'Freestyle Script Regular',
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: CardActionList(
-                              variant: 'taboo',
-                              onDelete: () async{
-                                var store = intMapStoreFactory.store('taboos');
-                                await store.record(taboos[index].id).delete(widget.database);
-                              },
-                              onEdit: () {
-                                _onAlertWithCustomContentPressed(context,'edit',taboos[index]);
-                              },
+                            Expanded(
+                              child: CardActionList(
+                                variant: 'taboo',
+                                onDelete: () async{
+                                  var store = intMapStoreFactory.store('taboos');
+                                  await store.record(taboos[index].id).delete(widget.database);
+                                },
+                                onEdit: () {
+                                  _onAlertWithCustomContentPressed(context,'edit',taboos[index]);
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      );
-                    }
+                          ],
+                        );
+                      }
+                  ),
                 ),
               ),
 
