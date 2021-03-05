@@ -147,7 +147,7 @@ class BlacklistyPageState extends State<BlacklistPage> {
                       shrinkWrap: true ,
                       scrollDirection: Axis.vertical,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 2,
+                        childAspectRatio: 1.5,
                         crossAxisCount: 3,
                         crossAxisSpacing: 1.0,
                         mainAxisSpacing: 0.0
@@ -156,32 +156,33 @@ class BlacklistyPageState extends State<BlacklistPage> {
                       itemCount: taboos.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Center(
-                              child: Text(
-                                taboos[index].word,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  decoration: TextDecoration.lineThrough,
-                                  decorationThickness: 2,
-                                  decorationColor: Colors.black,
-                                  fontSize: 40.0,
-                                  // fontWeight: FontWeight.bold
-                                  fontFamily: 'Freestyle Script Regular',
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  taboos[index].word,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.lineThrough,
+                                    decorationThickness: 2,
+                                    decorationColor: Colors.black,
+                                    fontSize: 40.0,
+                                    // fontWeight: FontWeight.bold
+                                    fontFamily: 'Freestyle Script Regular',
+                                  ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: CardActionList(
-                                variant: 'taboo',
-                                onDelete: () async{
-                                  var store = intMapStoreFactory.store('taboos');
-                                  await store.record(taboos[index].id).delete(widget.database);
-                                },
-                                onEdit: () {
-                                  _onAlertWithCustomContentPressed(context,'edit',taboos[index]);
-                                },
-                              ),
+                            CardActionList(
+                              variant: 'taboo',
+                              onDelete: () async{
+                                var store = intMapStoreFactory.store('taboos');
+                                await store.record(taboos[index].id).delete(widget.database);
+                              },
+                              onEdit: () {
+                                _onAlertWithCustomContentPressed(context,'edit',taboos[index]);
+                              },
                             ),
                           ],
                         );

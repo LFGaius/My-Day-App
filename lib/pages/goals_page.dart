@@ -117,16 +117,17 @@ class _GoalsPageState extends State<GoalsPage> {
           ),
           Expanded(
             child: Container(
-              height:MediaQuery.of(context).size.height*0.5,
+              height:MediaQuery.of(context).size.height*0.726,
               // padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
                 shrinkWrap: true ,
-                scrollDirection: Axis.horizontal,
+                scrollDirection: Axis.vertical,
                 itemCount: goals.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
-                    width: MediaQuery.of(context).size.width*0.8,
-                    margin: EdgeInsets.only(bottom:150,left: 20,top:20),
+                    width: MediaQuery.of(context).size.width*0.4,
+                    height: MediaQuery.of(context).size.width*0.4,
+                    margin: EdgeInsets.only(left:MediaQuery.of(context).size.width*0.1,right:MediaQuery.of(context).size.width*0.1,top: 10,bottom: 20),
                     padding: EdgeInsets.only(left:10),
                     decoration: BoxDecoration(
                      boxShadow: [

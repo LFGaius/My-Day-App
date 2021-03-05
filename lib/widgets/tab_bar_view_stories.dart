@@ -102,7 +102,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
               overflow: Overflow.visible,
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width*0.3,
+                  width: MediaQuery.of(context).size.width*0.35,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: getWeekDayColor(days[days.length-index-1])
@@ -118,7 +118,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                             children: [
                               Icon(
                                 Icons.calendar_today,
-                                size: 30,
+                                size: 25,
                                 color: Colors.white,
                               ),
                               Text(
@@ -126,7 +126,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 40,
+                                    fontSize: 35,
                                     fontWeight: FontWeight.w900,
                                     color: Colors.white
                                 ),
@@ -136,7 +136,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white
                                 ),
@@ -151,7 +151,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                 ),
                 if(!storiesOpened.contains(days[days.length-index-1])) Positioned(//not opened indicator
                   top: -5,
-                  right: 10,
+                  right: 0,
                   child: Indicator.dot(color: Colors.red,size: 15,)
                 ),
               ],

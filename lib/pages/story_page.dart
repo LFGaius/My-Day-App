@@ -52,7 +52,8 @@ class _StoryPageState extends State<StoryPage> {
   }
 
   get accomplishmentRate{
-    return actEmerLength>0?((numberActivitiesAccomplished+numberEmergenciesAccomplished)/actEmerLength)*100:0.0;
+    double d=actEmerLength>0?((numberActivitiesAccomplished+numberEmergenciesAccomplished)/actEmerLength)*100:0.0;
+    return d.toStringAsFixed(2);
   }
 
   @override
@@ -191,7 +192,7 @@ class _StoryPageState extends State<StoryPage> {
             ],
           ),
           SizedBox(height: 10),
-          if(accomplishmentRate<50) Container(
+          if(double.parse(accomplishmentRate)<50) Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.red,
@@ -205,30 +206,30 @@ class _StoryPageState extends State<StoryPage> {
               ),
             ),
           ),
-          if(accomplishmentRate>=50 && accomplishmentRate<80) Container(
+          if(double.parse(accomplishmentRate)>=50 && double.parse(accomplishmentRate)<80) Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
-                color: Colors.red,
+                color: Colors.orange,
                 borderRadius: BorderRadius.circular(40)
             ),
             child: Text(
               '🙂 MEDIUM PRODUCTIVITY',
               style: TextStyle(
-                  color: Colors.orange,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold
               ),
             ),
           ),
-          if(accomplishmentRate>=80) Container(
+          if(double.parse(accomplishmentRate)>=80) Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
-                color: Colors.red,
+                color: Colors.green,
                 borderRadius: BorderRadius.circular(40)
             ),
             child: Text(
               '😲 AMAZING PRODUCTIVITY',
               style: TextStyle(
-                  color: Colors.green,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold
               ),
             ),

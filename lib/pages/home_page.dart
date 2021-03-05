@@ -33,20 +33,26 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   int activeTab;
   String storiesOpened='';
-  get yesterdayStoryAvailableButNotOpened{
-    DateTime yesterday=DateTime.now().add(Duration(days: -1));
-    return !storiesOpened.contains('${yesterday.day}-${yesterday.month}-${yesterday.year}');
-  }
+  bool yesterdayStoryAvailableButNotOpened=false;
+
   @override
   void initState() {
     // TODO: implement initState
     activeTab=widget.startTab!=null?widget.startTab:0;
     SharedPreferences.getInstance().then((prefs){
-      print('storiesOpened $storiesOpened');
+      DateTime now=DateTime.now();
+      DateTime yesterday=DateTime.now().add(Duration(days: -1));
+      String _storiesOpened=prefs.getString('myday_stories_opened')!=null?prefs.getString('myday_stories_opened'):'';
+      bool _yesterdayStoryAvailableButNotOpened=(prefs.getString('myday_start_date')!='${now.day}-${now.month}-${now.year}' && !_storiesOpened.contains('${yesterday.day}-${yesterday.month}-${yesterday.year}'));
       if(mounted)
         setState(() {
-          storiesOpened=prefs.getString('myday_stories_opened')!=null?prefs.getString('myday_stories_opened'):'';
+          storiesOpened=_storiesOpened;
+          yesterdayStoryAvailableButNotOpened=_yesterdayStoryAvailableButNotOpened;
         });
+      else{
+        storiesOpened=_storiesOpened;
+        yesterdayStoryAvailableButNotOpened=_yesterdayStoryAvailableButNotOpened;
+      }
     });
     super.initState();
   }
@@ -96,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Text(
-                      'Emergencies',
+                      'Urgencies',
                     style: TextStyle(
                       fontSize: 12,
 
