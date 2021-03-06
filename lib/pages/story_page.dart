@@ -448,69 +448,120 @@ class _StoryPageState extends State<StoryPage> {
 
         ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     _onAlertWithCustomContentPressed(context,'create',new Goal(
-      //         null,
-      //         '',
-      //         0
-      //     ));
-      //   },
-      //   child: Icon(Icons.add),
-      //   backgroundColor: ConfigDatas.appDarkBlueColor,
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _onAlertWithCustomContentPressed(context,'create',new Goal(
+              null,
+              '',
+              0
+          ));
+        },
+        child: Icon(Icons.comment),
+        backgroundColor: ConfigDatas.appBlueColor,
+      ),
     );
   }
 
-  // _onAlertWithCustomContentPressed(context,mode,Goal goal) {
-  //   isFavorite = goal.isFavorite;
-  //   descriptionController.text = goal.description;
-  //
-  //   Alert(
-  //       context: context,
-  //       style: AlertStyle(
-  //           titleStyle: TextStyle(
-  //             color: ConfigDatas.appBlueColor,
-  //             fontWeight: FontWeight.bold,
-  //             fontSize:30,
-  //           )
-  //       ),
-  //       title: mode=='create'?'Create goal':'Edit goal',
-  //       closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-  //       content: Column(
-  //         children: <Widget>[
-  //           TextField(
-  //             controller: descriptionController,
-  //             minLines: 4,
-  //             maxLines: null,
-  //             readOnly: false,
-  //             keyboardType: TextInputType.multiline,
-  //             decoration: InputDecoration(
-  //               labelText: 'Goal',
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       buttons: [
-  //         DialogButton(
-  //           onPressed: ()  async=>{
-  //             await saveGoal(new Goal(
-  //                 goal?.id,
-  //                 descriptionController.text,
-  //                 isFavorite
-  //             )),
-  //             Navigator.pop(context)
-  //           },
-  //           color: ConfigDatas.appBlueColor,
-  //           width: 100,
-  //           child: Text(
-  //             "Save",
-  //             style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-  //           ),
-  //         )
-  //       ]).show();
-  // }
-
+  _onAlertWithCustomContentPressed(context,mode,Goal goal) {
+    Alert(
+        context: context,
+        style: AlertStyle(
+          backgroundColor: ConfigDatas.appBlueColor,
+            alertPadding: EdgeInsets.all(5),
+            isButtonVisible: false,
+            titleStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              fontSize:35,
+            )
+        ),
+        title: 'Story comments',
+        closeIcon: Icon(Icons.close_outlined,color: Colors.white),
+        content: Container(
+          height: MediaQuery.of(context).size.height*0.7,
+          width: MediaQuery.of(context).size.width*0.85,
+          padding: EdgeInsets.only(left:10,right: 10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [false?ConfigDatas.appBlueColor:ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
+              stops: [0,0.7],
+            ),
+          ),
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () {},
+                child: Center(
+                  child: Icon(
+                    Icons.add_box,
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Scrollbar(
+                  child: false?Center(
+                    child: Text(
+                      'No Comments',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ):ListView.builder(
+                      shrinkWrap: true ,
+                      scrollDirection: Axis.vertical,
+                      itemCount: 20,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          // width: MediaQuery.of(context).size.width*0.5,
+                          margin: EdgeInsets.only(bottom: 20),
+                          padding: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                              // gradient: LinearGradient(
+                              //   begin: Alignment.bottomCenter,
+                              //   end: Alignment.topCenter,
+                              //   colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
+                              //   stops: [0,1],
+                              // ),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(50)
+                          ),
+                          child: Center(
+                            child: Scrollbar(
+                              radius: Radius.circular(10),
+                              child: Column(
+                                children: [
+                                  TextField(
+                                    controller: TextEditingController(text: 'do better'*5),
+                                    maxLines: null,
+                                    readOnly: true,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: ConfigDatas.appDarkBlueColor,
+                                      fontSize: 40,
+                                      // fontWeight: FontWeight.bold,
+                                      fontFamily: 'Freestyle Script Regular',
+                                    ),
+                                    keyboardType: TextInputType.multiline,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      labelText:null,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )).show();
+  }
 
 
   saveGoal(Goal goal) async {

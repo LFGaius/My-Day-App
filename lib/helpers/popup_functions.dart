@@ -31,6 +31,7 @@ class PopupFunctions{
     Alert(
         context: context,
         style: AlertStyle(
+            alertPadding: EdgeInsets.all(5),
             titleStyle: TextStyle(
               color: ConfigDatas.appBlueColor,
               fontWeight: FontWeight.bold,
@@ -231,7 +232,7 @@ class PopupFunctions{
       var _hours=int.parse(dSplited[0]);
       var _minutes=int.parse(dSplited[1]);
       var endTime=_now.add(Duration(hours: _hours,minutes: _minutes));
-      if((_hours+_minutes)>0 && endTime.isBefore(DateTime(now.year,now.month,now.day,23,59,59))) {
+      if(/*(_hours+_minutes)>0 && */endTime.isBefore(DateTime(now.year,now.month,now.day,23,59,59))) {
         int activityId = await saveActivity(new Activity(
             activity['id'],
             activity['title'],

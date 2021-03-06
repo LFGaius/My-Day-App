@@ -30,8 +30,6 @@ class GoalsPage extends StatefulWidget {
 
 class _GoalsPageState extends State<GoalsPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
-  TextEditingController descriptionController = TextEditingController();
-  int isFavorite=0;
   List<Goal> goals=[];
   var subscription;
 
@@ -226,8 +224,8 @@ class _GoalsPageState extends State<GoalsPage> {
   }
 
   _onAlertWithCustomContentPressed(context,mode,Goal goal) {
-    isFavorite = goal.isFavorite;
-    descriptionController.text = goal.description;
+    TextEditingController descriptionController = TextEditingController(text:goal.description);
+    int isFavorite=goal.isFavorite;
 
     Alert(
         context: context,

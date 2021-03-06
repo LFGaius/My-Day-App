@@ -68,7 +68,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: ConfigDatas.appBlueColor,
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -85,7 +85,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                 'Always remember your goals',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: ConfigDatas.appBlueColor,
+                  color: Colors.white,
                   fontSize: 35,
                   fontWeight: FontWeight.w900,
                   // fontFamily: 'Freestyle Script Regular',
@@ -116,13 +116,13 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                                 offset: Offset(4,4)
                             )
                           ],
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
-                            stops: [0,1],
-                          ),
-                          color: ConfigDatas.appBlueColor,
+                          // gradient: LinearGradient(
+                          //   begin: Alignment.bottomCenter,
+                          //   end: Alignment.topCenter,
+                          //   colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
+                          //   stops: [0,1],
+                          // ),
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(10)
                       ),
                       child: Container(
@@ -135,7 +135,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                               children: [
                                 Icon(
                                   Icons.favorite,
-                                  color: Colors.white,
+                                  color: ConfigDatas.appBlueColor,
                                   size: 40,
                                 ),
                                 SizedBox(height: 15),
@@ -145,7 +145,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                                   readOnly: true,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: ConfigDatas.appDarkBlueColor,
                                     fontSize: 40,
                                     // fontWeight: FontWeight.bold,
                                     fontFamily: 'Freestyle Script Regular',
