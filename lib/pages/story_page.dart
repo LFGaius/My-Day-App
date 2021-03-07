@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:expandable/expandable.dart';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +10,7 @@ import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
+import 'package:my_day_app/models/comment.dart';
 import 'package:my_day_app/models/emergency.dart';
 import 'package:my_day_app/models/goal.dart';
 import 'package:my_day_app/models/goal.dart';
@@ -38,13 +41,16 @@ class StoryPage extends StatefulWidget {
 class _StoryPageState extends State<StoryPage> {
   GlobalKey<ScaffoldState> scaffoldKey= new GlobalKey<ScaffoldState>();
   List<Activity> activities=[];
+  List<Comment> comments=[];
   List<Emergency> emergencies=[];
+  StreamController<String> streamCommentsController = StreamController.broadcast();
   num numberActivitiesAccomplished=0;
   num numberActivitiesNotAccomplished=0;
   num numberEmergenciesAccomplished=0;
   num numberEmergenciesNotAccomplished=0;
   // num accomplishmentRate=0;
   var subscriptionEmergencies;
+  var subscriptionComments;
   var subscriptionActivities;
   final ScrollController lvcontroller=ScrollController();
   get actEmerLength{
@@ -128,6 +134,32 @@ class _StoryPageState extends State<StoryPage> {
         activities = activities_temp;
       }
     });
+
+    var storeCom = intMapStoreFactory.store('comments');
+    var finderCom = Finder(
+        filter: Filter.equals('storyDate', '${widget.date}')
+    );
+    var queryCom = storeCom.query(finder: finderCom);
+    subscriptionActivities = queryCom.onSnapshots(widget.database).listen((snapshots) {
+      List<Comment> comments_temp = snapshots.map((snapshot) {
+        print('snapshot $snapshot');
+        var act = new Comment(
+            snapshot.key,
+            snapshot.value['value'],
+            snapshot.value['storyDate']
+        );
+        return act;
+      }).toList();
+
+      if (mounted)
+        setState(() {
+          comments = comments_temp;
+          streamCommentsController.add('comments list updated');
+        });
+      else {
+        comments = comments_temp;
+      }
+    });
   }
 
   @override
@@ -135,6 +167,7 @@ class _StoryPageState extends State<StoryPage> {
     // TODO: implement dispose
     unawaited(subscriptionEmergencies?.cancel());
     unawaited(subscriptionActivities?.cancel());
+    unawaited(subscriptionComments?.cancel());
     super.dispose();
   }
 
@@ -450,11 +483,7 @@ class _StoryPageState extends State<StoryPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _onAlertWithCustomContentPressed(context,'create',new Goal(
-              null,
-              '',
-              0
-          ));
+          _onAlertWithCustomContentPressed(context);
         },
         child: Icon(Icons.comment),
         backgroundColor: ConfigDatas.appBlueColor,
@@ -462,7 +491,8 @@ class _StoryPageState extends State<StoryPage> {
     );
   }
 
-  _onAlertWithCustomContentPressed(context,mode,Goal goal) {
+  _onAlertWithCustomContentPressed(context) {
+    print(comments);
     Alert(
         context: context,
         style: AlertStyle(
@@ -480,19 +510,30 @@ class _StoryPageState extends State<StoryPage> {
         content: Container(
           height: MediaQuery.of(context).size.height*0.7,
           width: MediaQuery.of(context).size.width*0.85,
-          padding: EdgeInsets.only(left:10,right: 10),
+          padding: EdgeInsets.only(left:10,right: 10,bottom: 20),
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-              colors: [false?ConfigDatas.appBlueColor:ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
+              colors: [comments.length==0?ConfigDatas.appBlueColor:ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
               stops: [0,0.7],
             ),
           ),
           child: Column(
             children: [
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  print('comments $comments');
+                  // Navigator.pop(context);
+                  PopupFunctions.onAlertWithCustomContentPressed(
+                      context, 'create', 'storycomment', element: new Comment(
+                      null,
+                      '',
+                      widget.date
+                  ),
+                  database: widget.database);
+                },
                 child: Center(
                   child: Icon(
                     Icons.add_box,
@@ -501,89 +542,77 @@ class _StoryPageState extends State<StoryPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 5),
               Expanded(
                 child: Scrollbar(
-                  child: false?Center(
-                    child: Text(
-                      'No Comments',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ):ListView.builder(
-                      shrinkWrap: true ,
-                      scrollDirection: Axis.vertical,
-                      itemCount: 20,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          // width: MediaQuery.of(context).size.width*0.5,
-                          margin: EdgeInsets.only(bottom: 20),
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                              // gradient: LinearGradient(
-                              //   begin: Alignment.bottomCenter,
-                              //   end: Alignment.topCenter,
-                              //   colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
-                              //   stops: [0,1],
-                              // ),
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(50)
-                          ),
-                          child: Center(
-                            child: Scrollbar(
-                              radius: Radius.circular(10),
-                              child: Column(
-                                children: [
-                                  TextField(
-                                    controller: TextEditingController(text: 'do better'*5),
-                                    maxLines: null,
-                                    readOnly: true,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: ConfigDatas.appDarkBlueColor,
-                                      fontSize: 40,
-                                      // fontWeight: FontWeight.bold,
-                                      fontFamily: 'Freestyle Script Regular',
-                                    ),
-                                    keyboardType: TextInputType.multiline,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      labelText:null,
-                                    ),
-                                  ),
-                                ],
+                  child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      streamCommentsController.stream.listen((messages) => {//we stream on comments list changes because the popup keep on UI the effect when the popup was called
+                        print('change'),
+                        setState(() {
+                          comments=comments;
+                        })
+                      });
+                      return comments.length==0?Center(
+                        child: Text(
+                          'No Comments',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ):ListView.builder(
+                          shrinkWrap: true ,
+                          scrollDirection: Axis.vertical,
+                          itemCount: comments.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              // width: MediaQuery.of(context).size.width*0.5,
+                              margin: EdgeInsets.only(top: 20),
+                              padding: EdgeInsets.all(15),
+                              decoration: BoxDecoration(
+                                // gradient: LinearGradient(
+                                //   begin: Alignment.bottomCenter,
+                                //   end: Alignment.topCenter,
+                                //   colors: [ConfigDatas.appDarkBlueColor,ConfigDatas.appBlueColor],
+                                //   stops: [0,1],
+                                // ),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50)
                               ),
-                            ),
-                          ),
-                        );
-                      }
-                  ),
+                              child: Center(
+                                child: Scrollbar(
+                                  radius: Radius.circular(10),
+                                  child: Column(
+                                    children: [
+                                      TextField(
+                                        controller: TextEditingController(text: comments[index].value),
+                                        maxLines: null,
+                                        readOnly: true,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: ConfigDatas.appDarkBlueColor,
+                                          fontSize: 40,
+                                          // fontWeight: FontWeight.bold,
+                                          fontFamily: 'Freestyle Script Regular',
+                                        ),
+                                        keyboardType: TextInputType.multiline,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          labelText:null,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                      );
+                    },
+                  )
                 ),
               ),
             ],
           ),
         )).show();
-  }
-
-
-  saveGoal(Goal goal) async {
-    var store = intMapStoreFactory.store('goals');
-    if(goal.id==null)
-      await widget.database.transaction((txn) async {
-        print(goal.id);
-        print('ttt ${goal.id}');
-        await store.add(txn, {
-          'isFavorite': goal.isFavorite,
-          'description': goal.description
-        });
-      });
-    else
-      await widget.database.transaction((txn) async {
-        print(goal.id);
-        print('ttt ${goal.id}');
-        await store.record(goal.id).update(txn, {
-          'isFavorite': goal.isFavorite,
-          'description': goal.description
-        });
-      });
   }
 
   Widget expandedWidget(elements,variant){

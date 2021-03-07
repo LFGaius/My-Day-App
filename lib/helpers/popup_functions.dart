@@ -13,20 +13,25 @@ import 'package:timelines/timelines.dart';import 'package:timezone/data/latest.d
 import 'package:timezone/timezone.dart' as tz;
 
 class PopupFunctions{
-  static onAlertWithCustomContentPressed(context,mode,variant,{element,database,storyMode:false}) {
+  static Future<dynamic> onAlertWithCustomContentPressed(context,mode,variant,{element,database,storyMode:false}) {
+    TextEditingController commentController = TextEditingController();
     TextEditingController titleController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
     TextEditingController timeController = TextEditingController();
     TextEditingController durationController = TextEditingController();
     String selectedActivityType;
     bool isAccomplished=false;
-    titleController.text = element?.title;
-    descriptionController.text = element?.description;
-    if(variant!='principle') isAccomplished=element?.isAccomplished;
-    if(variant=='activity') {
-      timeController.text = element?.time;
-      durationController.text = element?.duration;
-      selectedActivityType = element?.type;
+    if(variant=='storycomment')
+      commentController.text = element?.value;
+    else{
+      titleController.text = element?.title;
+      descriptionController.text = element?.description;
+      if (variant != 'principle') isAccomplished = element?.isAccomplished;
+      if (variant == 'activity') {
+        timeController.text = element?.time;
+        durationController.text = element?.duration;
+        selectedActivityType = element?.type;
+      }
     }
     Alert(
         context: context,
@@ -38,7 +43,7 @@ class PopupFunctions{
               fontSize: mode!='view'?30:0,
             )
         ),
-        title: mode!='view'?(mode=='create'?'Add $variant':(mode=='edit'?'Edit $variant':'Restore $variant')):'',
+        title: mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='comment'?'comment':variant}':'Restore $variant')):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Column(
           children: <Widget>[
@@ -53,7 +58,7 @@ class PopupFunctions{
                   performRestoreProcess(variant,element,database,context,title:titleController.text,description:descriptionController.text);
                   // DateTime _now = DateTime.now();
                   // if (variant == 'emergency') {
-                  //   savePrincipleOrEmergency({
+                  //   savePrincipleOrEmergencyOrComment({
                   //     'id': element?.id,
                   //     'title': titleController.text,
                   //     'date': '${_now.day}-${_now.month}-${_now.year}',
@@ -89,23 +94,38 @@ class PopupFunctions{
                 ),
               ),
             ),
-            TextField(
-              controller: titleController,
-              readOnly: mode=='view',
-              decoration: InputDecoration(
-                labelText: 'Title',
+            if(variant=='storycomment')
+              TextField(
+                controller: commentController,
+                minLines: 4,
+                maxLines: null,
+                readOnly: mode=='view',
+                autofocus: true,
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  // labelText: 'Comment',
+                  fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
+                ),
               ),
-            ),
-            TextField(
-              controller: descriptionController,
-              minLines: 4,
-              maxLines: null,
-              readOnly: mode=='view',
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                labelText: 'Description',
+            if(variant!='storycomment')
+              TextField(
+                controller: titleController,
+                readOnly: mode=='view',
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                ),
               ),
-            ),
+            if(variant!='storycomment')
+              TextField(
+                controller: descriptionController,
+                minLines: 4,
+                maxLines: null,
+                readOnly: mode=='view',
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                ),
+              ),
             if(variant=='activity')
               SizedBox(height: 40),
             if(variant=='activity')
@@ -174,13 +194,17 @@ class PopupFunctions{
           if(mode!='view') DialogButton(
             onPressed: () async{
               if(variant=='emergency')
-                savePrincipleOrEmergency({
+                savePrincipleOrEmergencyOrComment({
                   'id':element?.id,'title':titleController.text,'date':element.date,
                   'description':descriptionController.text,'isAccomplished':element.isAccomplished,
                 },database,'emergencies',context);
+             else if(variant=='storycomment')
+                savePrincipleOrEmergencyOrComment({
+                  'id':element?.id,'value':commentController.text,'storyDate':element.storyDate
+                },database,'comments',context);
               else
                 if(variant=='principle')
-                  savePrincipleOrEmergency({
+                  savePrincipleOrEmergencyOrComment({
                     'id':element?.id,'title':titleController.text,
                     'description':descriptionController.text,
                   },database,'principles',context);
@@ -206,7 +230,7 @@ class PopupFunctions{
   static performRestoreProcess(variant,element,database,context,{externalCall:false,title,description}){//externalCall for calls external to this class
     DateTime _now = DateTime.now();
     if (variant == 'emergency') {
-      savePrincipleOrEmergency({
+      savePrincipleOrEmergencyOrComment({
         'id': element?.id,
         'title': title,
         'date': '${_now.day}-${_now.month}-${_now.year}',
@@ -341,7 +365,7 @@ class PopupFunctions{
     return activityId;
   }
 
-  static savePrincipleOrEmergency(element,database,variant,context) async {
+  static savePrincipleOrEmergencyOrComment(element,database,variant,context) async {
     DateTime _now=DateTime.now();
     var store = intMapStoreFactory.store(variant);
     if(element['id']==null)
@@ -349,8 +373,10 @@ class PopupFunctions{
         print(element['id']);
         print('ttt ${element['id']}');
         await store.add(txn, {
-          'title': element['title'],
-          'description': element['description'],
+          if(variant=='comments') 'value':element['value'],
+          if(variant=='comments') 'storyDate':element['storyDate'],
+          if(variant!='comments') 'title': element['title'],
+          if(variant!='comments') 'description': element['description'],
           if(variant=='emergencies') 'isAccomplished':false,
           if(variant=='emergencies') 'date': '${_now.day}-${_now.month}-${_now.year}'
         });
@@ -360,8 +386,10 @@ class PopupFunctions{
         print(element['id']);
         print('ttt ${element['id']}');
         await store.record(element['id']).update(txn, {
-          'title': element['title'],
-          'description': element['description'],
+          if(variant=='comments') 'value':element['value'],
+          if(variant=='comments') 'storyDate':element['storyDate'],
+          if(variant!='comments') 'title': element['title'],
+          if(variant!='comments') 'description': element['description'],
           if(variant=='emergencies') 'isAccomplished':element['isAccomplished']!=null?element['isAccomplished']:false,
           if(variant=='emergencies') 'date': element['date']
         });

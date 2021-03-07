@@ -105,7 +105,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       width: MediaQuery.of(context).size.width*0.8,
-                      margin: EdgeInsets.only(left:40,right: 40,top: 20,bottom: 20),
+                      margin: EdgeInsets.only(left:55,right: 55,top: 20,bottom: 20),
                       // padding: EdgeInsets.only(left:10),
                       decoration: BoxDecoration(
                           boxShadow: [
