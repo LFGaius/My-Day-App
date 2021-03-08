@@ -210,11 +210,21 @@ class PopupFunctions{
                   },database,'principles',context);
                  else{
                    DateTime _now = DateTime.now();
-                  onSaveActivity({
-                    'id':element?.id,'title':titleController.text,'date':(mode=='restore' || mode=='create')?'${_now.day}-${_now.month}-${_now.year}':element.date,
-                    'description':descriptionController.text,'isAccomplished':element.isAccomplished,
-                    'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
-                  },database,context);
+                    onSaveActivity({
+                      'id':mode=='restore'?null:element?.id,'title':titleController.text,'date':(mode=='restore' || mode=='create')?'${_now.day}-${_now.month}-${_now.year}':element.date,
+                      'description':descriptionController.text,'isAccomplished':element.isAccomplished,
+                      'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
+                    },database,context);
+                    String msg='Activity ${mode=='restore'?'restored':'saved'}';
+                    Fluttertoast.showToast(
+                       msg: msg,
+                       toastLength: Toast.LENGTH_SHORT,
+                       gravity: ToastGravity.CENTER,
+                       timeInSecForIosWeb: 1,
+                       backgroundColor: Colors.green,
+                       textColor: Colors.white,
+                       fontSize: 16.0
+                    );
                  }
             },
             color: ConfigDatas.appBlueColor,
@@ -227,19 +237,27 @@ class PopupFunctions{
         ]).show();
   }
 
-  static performRestoreProcess(variant,element,database,context,{externalCall:false,title,description}){//externalCall for calls external to this class
+  static performRestoreProcess(variant,element,database,context,{frompopup:false,title,description}){//externalCall for calls external to this class
     DateTime _now = DateTime.now();
     if (variant == 'emergency') {
       savePrincipleOrEmergencyOrComment({
-        'id': element?.id,
+        'id': null,
         'title': title,
         'date': '${_now.day}-${_now.month}-${_now.year}',
         'description': description,
         'isAccomplished': element.isAccomplished,
-      }, database, 'emergencies', context);
-      print('emergency restored');
+      }, database, 'emergencies', context,frompopup:frompopup);
+      Fluttertoast.showToast(
+         msg: "Emergency Restored",
+         toastLength: Toast.LENGTH_SHORT,
+         gravity: ToastGravity.CENTER,
+         timeInSecForIosWeb: 1,
+         backgroundColor: Colors.green,
+         textColor: Colors.white,
+         fontSize: 16.0
+      );
     } else {
-      if(!externalCall) Navigator.pop(context);
+      if(frompopup) Navigator.pop(context);
       onAlertWithCustomContentPressed(
       context, 'restore', variant, element: element,
       database: database);
@@ -365,7 +383,7 @@ class PopupFunctions{
     return activityId;
   }
 
-  static savePrincipleOrEmergencyOrComment(element,database,variant,context) async {
+  static savePrincipleOrEmergencyOrComment(element,database,variant,context,{frompopup:true}) async {
     DateTime _now=DateTime.now();
     var store = intMapStoreFactory.store(variant);
     if(element['id']==null)
@@ -394,6 +412,6 @@ class PopupFunctions{
           if(variant=='emergencies') 'date': element['date']
         });
       });
-    Navigator.pop(context);
+    if(frompopup) Navigator.pop(context);
   }
 }

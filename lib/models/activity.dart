@@ -1,5 +1,5 @@
 class Activity {
-  final int id;
+  int id;
   final String title;
   final String description;
   final String type;
@@ -8,4 +8,5 @@ class Activity {
   final String duration;
   final bool isAccomplished;
   Activity(this.id,this.title,this.description, this.type, this.time, this.date, this.duration, this.isAccomplished);
+
 }

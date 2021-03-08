@@ -483,7 +483,7 @@ class _StoryPageState extends State<StoryPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _onAlertWithCustomContentPressed(context);
+          showStoryCommentPopup(context);
         },
         child: Icon(Icons.comment),
         backgroundColor: ConfigDatas.appBlueColor,
@@ -491,8 +491,7 @@ class _StoryPageState extends State<StoryPage> {
     );
   }
 
-  _onAlertWithCustomContentPressed(context) {
-    print(comments);
+  showStoryCommentPopup(context) {
     Alert(
         context: context,
         style: AlertStyle(
@@ -680,7 +679,7 @@ class _StoryPageState extends State<StoryPage> {
                         CardActionList(
                           variant:'story',
                           onRestore: () {
-                            PopupFunctions.performRestoreProcess(variant,elements[index],widget.database,context,externalCall:true,title:elements[index].title,description:elements[index].description);
+                            PopupFunctions.performRestoreProcess(variant,elements[index],widget.database,context,frompopup:false,title:elements[index].title,description:elements[index].description);
                           },
                           onView: () {
                             PopupFunctions.onAlertWithCustomContentPressed(context,'view',variant,element: elements[index],database:widget.database,storyMode:true);
