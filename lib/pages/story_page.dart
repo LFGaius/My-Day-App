@@ -510,9 +510,9 @@ class _StoryPageState extends State<StoryPage> {
         content: Container(
           height: MediaQuery.of(context).size.height*0.7,
           width: MediaQuery.of(context).size.width*0.85,
-          padding: EdgeInsets.only(left:10,right: 10,bottom: 20),
+          padding: EdgeInsets.only(left:20,right: 20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(20),
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
@@ -549,9 +549,10 @@ class _StoryPageState extends State<StoryPage> {
                     builder: (BuildContext context, StateSetter setState) {
                       streamCommentsController.stream.listen((messages) => {//we stream on comments list changes because the popup keep on UI the effect when the popup was called
                         print('change'),
-                        setState(() {
-                          comments=comments;
-                        })
+                        if(mounted)
+                          setState(() {
+                            comments=comments;
+                          })
                       });
                       return comments.length==0?Center(
                         child: Text(
@@ -577,31 +578,45 @@ class _StoryPageState extends State<StoryPage> {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(50)
                               ),
-                              child: Center(
-                                child: Scrollbar(
-                                  radius: Radius.circular(10),
-                                  child: Column(
-                                    children: [
-                                      TextField(
-                                        controller: TextEditingController(text: comments[index].value),
-                                        maxLines: null,
-                                        readOnly: true,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: ConfigDatas.appDarkBlueColor,
-                                          fontSize: 40,
-                                          // fontWeight: FontWeight.bold,
-                                          fontFamily: 'Freestyle Script Regular',
-                                        ),
-                                        keyboardType: TextInputType.multiline,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          labelText:null,
-                                        ),
-                                      ),
-                                    ],
+                              child: Column(
+                                children: [
+                                  CardActionList(
+                                      variant:'storycomment',
+                                      onEdit: () {
+                                        PopupFunctions.onAlertWithCustomContentPressed(context,'edit','storycomment',element: comments[index],database:widget.database);
+                                      },
+                                      onDelete: () async{
+                                        var store = intMapStoreFactory.store('comments');
+                                        await store.record(comments[index].id).delete(widget.database);
+                                      },
                                   ),
-                                ),
+                                  Center(
+                                    child: Scrollbar(
+                                      radius: Radius.circular(10),
+                                      child: Column(
+                                        children: [
+                                          TextField(
+                                            controller: TextEditingController(text: comments[index].value),
+                                            maxLines: null,
+                                            readOnly: true,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: ConfigDatas.appDarkBlueColor,
+                                              fontSize: 40,
+                                              // fontWeight: FontWeight.bold,
+                                              fontFamily: 'Freestyle Script Regular',
+                                            ),
+                                            keyboardType: TextInputType.multiline,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              labelText:null,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             );
                           }
