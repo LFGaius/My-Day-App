@@ -215,16 +215,16 @@ class PopupFunctions{
                       'description':descriptionController.text,'isAccomplished':element.isAccomplished,
                       'time':timeController.text,'duration':durationController.text,'type':selectedActivityType
                     },database,context);
-                    String msg='Activity ${mode=='restore'?'restored':'saved'}';
-                    Fluttertoast.showToast(
-                       msg: msg,
-                       toastLength: Toast.LENGTH_SHORT,
-                       gravity: ToastGravity.CENTER,
-                       timeInSecForIosWeb: 1,
-                       backgroundColor: Colors.green,
-                       textColor: Colors.white,
-                       fontSize: 16.0
-                    );
+                    // String msg='Activity ${mode=='restore'?'restored':'saved'}';
+                    // Fluttertoast.showToast(
+                    //    msg: msg,
+                    //    toastLength: Toast.LENGTH_SHORT,
+                    //    gravity: ToastGravity.CENTER,
+                    //    timeInSecForIosWeb: 1,
+                    //    backgroundColor: Colors.green,
+                    //    textColor: Colors.white,
+                    //    fontSize: 16.0
+                    // );
                  }
             },
             color: ConfigDatas.appBlueColor,
@@ -322,8 +322,14 @@ class PopupFunctions{
       'alarm_notif',
       'Channel for Alarm notification',
       icon: 'logo',
-      // sound: RawResourceAndroidNotificationSound('a_long_cold_sting'),
+      sound: RawResourceAndroidNotificationSound('activitystartedmale'),
       largeIcon: DrawableResourceAndroidBitmap('logo'),
+      enableVibration: true,
+      importance: Importance.high,
+      playSound: true,
+      visibility: NotificationVisibility.public,
+      channelShowBadge: true,
+      fullScreenIntent: true
     );
 
     // var iOSPlatformChannelSpecifics = IOSNotificationDetails(
@@ -412,6 +418,15 @@ class PopupFunctions{
           if(variant=='emergencies') 'date': element['date']
         });
       });
+    Fluttertoast.showToast(
+        msg: 'Saved',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
     if(frompopup) Navigator.pop(context);
   }
 }

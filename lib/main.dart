@@ -20,12 +20,34 @@ Future<void> _configureLocalTimeZone() async {
   // tz.setLocalLocation(tz.getLocation(timeZoneName));
 }
 
+// void _requestPermissions() {
+//   flutterLocalNotificationsPlugin
+//       .resolvePlatformSpecificImplementation<
+//       IOSFlutterLocalNotificationsPlugin>()
+//       ?.requestPermissions(
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   );
+//   flutterLocalNotificationsPlugin
+//       .resolvePlatformSpecificImplementation<
+//       MacOSFlutterLocalNotificationsPlugin>()
+//       ?.requestPermissions(
+//     alert: true,
+//     badge: true,
+//     sound: true,
+//   );
+// }
+
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+  // _requestPermissions();
   await _configureLocalTimeZone();
   const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('logo');
+  AndroidInitializationSettings(
+      'logo'
+  );
   // final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
   //   requestAlertPermission: true,
   //   requestBadgePermission: true,

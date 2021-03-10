@@ -91,7 +91,7 @@ class BlacklistyPageState extends State<BlacklistPage> {
       Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
-            backgroundColor: ConfigDatas.appBlueColor,
+            backgroundColor: Colors.black,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -102,7 +102,7 @@ class BlacklistyPageState extends State<BlacklistPage> {
               ],
             ),
             centerTitle: true,
-            leading: FlatButton(
+            leading: TextButton(
               onPressed: () {
                 Navigator.of(context).popAndPushNamed(
                     '/home',

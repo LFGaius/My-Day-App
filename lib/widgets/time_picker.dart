@@ -26,6 +26,7 @@ class _TimePickerState extends State<TimePicker> {
           child: child,
         );
       },
+
       initialTime: selectedTime,
     );
     if (picked != null) {
