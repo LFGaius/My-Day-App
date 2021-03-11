@@ -87,9 +87,7 @@ class _HomePageState extends State<HomePage> {
                   Icon(Icons.today),
                   Text(
                       'Today',
-                    style: TextStyle(
-                      fontSize: 12
-                    ),
+                    style: Theme.of(context).textTheme.subtitle1
                   )
                 ],
               )),
@@ -103,10 +101,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Text(
                       'Urgencies',
-                    style: TextStyle(
-                      fontSize: 12,
-
-                    ),
+                    style: Theme.of(context).textTheme.subtitle1
                   )
                 ],
               )),
@@ -116,9 +111,7 @@ class _HomePageState extends State<HomePage> {
                   Icon(Icons.rule),
                   Text(
                       'Principles',
-                    style: TextStyle(
-                      fontSize: 12
-                    ),
+                    style: Theme.of(context).textTheme.subtitle1
                   )
                 ],
               )),
@@ -130,9 +123,7 @@ class _HomePageState extends State<HomePage> {
                         Icon(Icons.history_edu_sharp),
                         Text(
                             'Stories',
-                          style: TextStyle(
-                            fontSize: 12
-                          ),
+                          style: Theme.of(context).textTheme.subtitle1
                         )
                       ],
                     ),

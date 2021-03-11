@@ -80,5 +80,24 @@ flutter:
       fonts:
         - asset: assets/fonts/Freestyle-Script-Regular.ttf
 
+    - family: Metamora Demo Regular
+      fonts:
+        - asset: assets/fonts/MetamoraDemoRegular.ttf
+
+    - family: Hey Comic
+      fonts:
+        - asset: assets/fonts/HeyComic.ttf
+    - family: King Fruit Demo Regular
+      fonts:
+        - asset: assets/fonts/KingFruitDemoRegular.ttf
+    - family: Love Mint
+      fonts:
+        - asset: assets/fonts/LoveMint.ttf
+    - family: April Flowers
+      fonts:
+        - asset: assets/fonts/AprilFlowers.ttf
+
+
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

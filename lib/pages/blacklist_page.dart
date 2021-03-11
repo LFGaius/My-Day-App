@@ -129,14 +129,9 @@ class BlacklistyPageState extends State<BlacklistPage> {
               Padding(
                 padding: const EdgeInsets.only(left:20,right: 20),
                 child: Text(
-                  'TABOOLIST (${taboos.length})',
+                  'TABOOLIST',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Freestyle Script Regular',
-                  ),
+                  style: Theme.of(context).textTheme.headline2
                 ),
               ),
               Expanded(

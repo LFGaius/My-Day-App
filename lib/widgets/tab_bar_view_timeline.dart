@@ -119,10 +119,10 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
           padding: const EdgeInsets.all(8.0),
           child: Text(
               activities.length==index?'Add activity':activities[index].time,
-            // style: TextStyle(
-            //   fontFamily: 'Freestyle Script Regular',
-            //   fontSize: 25
-            // ),
+            style: activities.length==index?TextStyle(
+                // fontFamily: 'APril Flowers',
+              fontSize: 30
+            ):null,
           ),
         ),
 
@@ -193,9 +193,10 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                       activities[index].title,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 35,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white
+                          color: Colors.white,
+                        fontFamily: 'APril Flowers',
                       ),
                     ),
                     SizedBox(height: 10),

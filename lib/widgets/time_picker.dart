@@ -60,11 +60,7 @@ class _TimePickerState extends State<TimePicker> {
               Text(
                 widget.label,
                 textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 17,
-                  color: Colors.black54
-                )
+                style: Theme.of(context).textTheme.caption
               ),
               InkWell(
                 onTap: () {

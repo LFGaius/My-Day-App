@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/routes/route_builder.dart';
 import 'package:sembast/sembast.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -119,9 +120,30 @@ class MyApp extends StatelessWidget {
         //     textTheme: Theme.of(context).textTheme.apply(
         //         fontFamily: 'Freestyle Script Regular',
         //         )),
+
         theme: ThemeData(
+          fontFamily: 'APril Flowers',
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: TextTheme(
+            headline1: TextStyle(
+              color: ConfigDatas.appBlueColor,
+              fontSize: 35,
+              // fontWeight: FontWeight.w900,
+              fontFamily: 'Metamora Demo Regular',
+            ),
+            headline2: TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+              // fontWeight: FontWeight.w900,
+              fontFamily: 'Metamora Demo Regular',
+            ),
+            subtitle1: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.w400),
+            bodyText1: TextStyle(color: Colors.white,fontSize: 40),
+            bodyText2: TextStyle(fontSize: 27,fontWeight: FontWeight.w500),
+            button: TextStyle(fontSize: 27,fontWeight: FontWeight.w500),
+            caption: TextStyle(fontSize: 25,fontWeight: FontWeight.w500),
+          ),
         ),
         initialRoute: '/',
         onGenerateRoute: MyRouteBuilder.buildRoute

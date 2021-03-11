@@ -226,17 +226,14 @@ class _StoryPageState extends State<StoryPage> {
           ),
           SizedBox(height: 10),
           if(double.parse(accomplishmentRate)<50) Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.only(top:20,left: 20,right: 20,bottom: 10),
             decoration: BoxDecoration(
               color: Colors.red,
               borderRadius: BorderRadius.circular(40)
             ),
             child: Text(
               '😑 BAD PRODUCTIVITY',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold
-              ),
+              style: Theme.of(context).textTheme.headline2
             ),
           ),
           if(double.parse(accomplishmentRate)>=50 && double.parse(accomplishmentRate)<80) Container(
@@ -247,10 +244,7 @@ class _StoryPageState extends State<StoryPage> {
             ),
             child: Text(
               '🙂 MEDIUM PRODUCTIVITY',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-              ),
+              style: Theme.of(context).textTheme.headline2
             ),
           ),
           if(double.parse(accomplishmentRate)>=80) Container(
@@ -261,10 +255,7 @@ class _StoryPageState extends State<StoryPage> {
             ),
             child: Text(
               '😲 AMAZING PRODUCTIVITY',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-              ),
+              style: Theme.of(context).textTheme.headline2
             ),
           ),
           SizedBox(height: 10),
@@ -301,11 +292,7 @@ class _StoryPageState extends State<StoryPage> {
                             SizedBox(width: 5),
                             Text(
                               '${numberActivitiesAccomplished} activities accomplished',
-                              style: TextStyle(
-                                // color: ConfigDatas.appBlueColor,
-                                fontSize: 15,
-                                // fontFamily: 'Freestyle Script Regular',
-                              ),
+                              style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
                         ),
@@ -316,11 +303,7 @@ class _StoryPageState extends State<StoryPage> {
                             SizedBox(width: 5),
                             Text(
                               '${numberActivitiesNotAccomplished} activities not accomplished',
-                              style: TextStyle(
-                                // color: ConfigDatas.appBlueColor,
-                                fontSize: 15,
-                                // fontFamily: 'Freestyle Script Regular',
-                              ),
+                              style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
                         ),
@@ -357,11 +340,7 @@ class _StoryPageState extends State<StoryPage> {
                             SizedBox(width: 5),
                             Text(
                               '${numberEmergenciesAccomplished} emergencies accomplished',
-                              style: TextStyle(
-                                // color: ConfigDatas.appBlueColor,
-                                fontSize: 15,
-                                // fontFamily: 'Freestyle Script Regular',
-                              ),
+                              style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
                         ),
@@ -372,11 +351,7 @@ class _StoryPageState extends State<StoryPage> {
                             SizedBox(width: 5),
                             Text(
                               '${numberEmergenciesNotAccomplished} emergencies not accomplished',
-                              style: TextStyle(
-                                // color: ConfigDatas.appBlueColor,
-                                fontSize: 15,
-                                // fontFamily: 'Freestyle Script Regular',
-                              ),
+                              style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
                         ),
@@ -396,11 +371,7 @@ class _StoryPageState extends State<StoryPage> {
                     ),
                     Text(
                       'ACCOMPLISHMENTS',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        color: Colors.black.withOpacity(0.7)
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2
                     ),
                   ],
                 ),
@@ -425,11 +396,7 @@ class _StoryPageState extends State<StoryPage> {
                       ),
                       Text(
                         'Activities',
-                        style: TextStyle(
-                          color: ConfigDatas.appBlueColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20
-                        ),
+                        style: Theme.of(context).textTheme.bodyText2
                       ),
                     ],
                   ),
@@ -461,11 +428,7 @@ class _StoryPageState extends State<StoryPage> {
                       ),
                       Text(
                         'Emergencies',
-                        style: TextStyle(
-                          color: ConfigDatas.appBlueColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20
-                        ),
+                        style: Theme.of(context).textTheme.bodyText2
                       ),
                     ],
                   ),
@@ -498,11 +461,7 @@ class _StoryPageState extends State<StoryPage> {
           backgroundColor: ConfigDatas.appBlueColor,
             alertPadding: EdgeInsets.all(5),
             isButtonVisible: false,
-            titleStyle: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w900,
-              fontSize:35,
-            )
+            titleStyle: Theme.of(context).textTheme.headline2
         ),
         title: 'Story comments',
         closeIcon: Icon(Icons.close_outlined,color: Colors.white),
@@ -556,7 +515,7 @@ class _StoryPageState extends State<StoryPage> {
                       return comments.length==0?Center(
                         child: Text(
                           'No Comments',
-                          style: TextStyle(color: Colors.white),
+                          style: Theme.of(context).textTheme.bodyText1
                         ),
                       ):ListView.builder(
                           shrinkWrap: true ,

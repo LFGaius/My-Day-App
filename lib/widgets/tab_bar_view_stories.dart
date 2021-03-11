@@ -125,21 +125,13 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                                 'DAY',
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 35,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white
-                                ),
+                                style: Theme.of(context).textTheme.headline2
                               ),
                               Text(
                                 GlobalProcedures.getDateWithMoreText(days[days.length-index-1]),//principles[index].title,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white
-                                ),
+                                style: Theme.of(context).textTheme.subtitle1
                               )
                             ],
                           ),

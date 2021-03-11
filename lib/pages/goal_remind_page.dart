@@ -80,16 +80,11 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
             //   color: ConfigDatas.appDarkBlueColor,
             // ),
             Padding(
-              padding: const EdgeInsets.only(left:30,right: 30,bottom: 30,top: 10),
+              padding: const EdgeInsets.only(left:30,right: 30,top: 10),
               child: Text(
                 'Always remember your goals',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w900,
-                  // fontFamily: 'Freestyle Script Regular',
-                ),
+                style: Theme.of(context).textTheme.headline2,
               ),
             ),
             Container(
@@ -146,9 +141,9 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: ConfigDatas.appDarkBlueColor,
-                                    fontSize: 40,
-                                    // fontWeight: FontWeight.bold,
-                                    fontFamily: 'Freestyle Script Regular',
+                                    fontSize: 45,
+                                    fontWeight: FontWeight.w300,
+                                    // fontFamily: 'APril Flowers',
                                   ),
                                   keyboardType: TextInputType.multiline,
                                   decoration: InputDecoration(

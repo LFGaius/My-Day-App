@@ -37,11 +37,7 @@ class PopupFunctions{
         context: context,
         style: AlertStyle(
             alertPadding: EdgeInsets.all(5),
-            titleStyle: TextStyle(
-              color: ConfigDatas.appBlueColor,
-              fontWeight: FontWeight.bold,
-              fontSize: mode!='view'?30:0,
-            )
+            titleStyle: Theme.of(context).textTheme.headline1
         ),
         title: mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='comment'?'comment':variant}':'Restore $variant')):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
@@ -82,12 +78,14 @@ class PopupFunctions{
                     borderRadius: BorderRadius.circular(20)
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(storyMode?Icons.restore:Icons.edit,color: Colors.white),
-                    Text(
-                      storyMode?'Restore for today':'Edit',
-                      style: TextStyle(
-                          color: Colors.white
+                    Padding(
+                      padding: const EdgeInsets.only(top:13.0),
+                      child: Text(
+                        storyMode?'Restore':'Edit',
+                        style: Theme.of(context).textTheme.headline2
                       ),
                     )
                   ],
@@ -102,6 +100,7 @@ class PopupFunctions{
                 readOnly: mode=='view',
                 autofocus: true,
                 keyboardType: TextInputType.multiline,
+                style: Theme.of(context).textTheme.bodyText1,
                 decoration: InputDecoration(
                   // labelText: 'Comment',
                   fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
@@ -111,8 +110,10 @@ class PopupFunctions{
               TextField(
                 controller: titleController,
                 readOnly: mode=='view',
+                style: Theme.of(context).textTheme.caption,
                 decoration: InputDecoration(
                   labelText: 'Title',
+                  labelStyle: Theme.of(context).textTheme.caption
                 ),
               ),
             if(variant!='storycomment')
@@ -122,8 +123,10 @@ class PopupFunctions{
                 maxLines: null,
                 readOnly: mode=='view',
                 keyboardType: TextInputType.multiline,
+                style: Theme.of(context).textTheme.caption,
                 decoration: InputDecoration(
                   labelText: 'Description',
+                  labelStyle: Theme.of(context).textTheme.caption
                 ),
               ),
             if(variant=='activity')
@@ -146,11 +149,7 @@ class PopupFunctions{
                   children: [
                     Text(
                       'Type',
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 17,
-                          color: Colors.black54
-                      ),
+                      style: Theme.of(context).textTheme.caption
                     ),
 
                     StatefulBuilder(
@@ -176,7 +175,7 @@ class PopupFunctions{
                                   SizedBox(width: 10,),
                                   Text(
                                     activitytype.name,
-                                    style: TextStyle(color: Colors.black),
+                                    style: Theme.of(context).textTheme.caption,
                                   ),
                                 ],
                               ),
@@ -325,11 +324,12 @@ class PopupFunctions{
       sound: RawResourceAndroidNotificationSound('activitystartedmale'),
       largeIcon: DrawableResourceAndroidBitmap('logo'),
       enableVibration: true,
-      importance: Importance.high,
+      importance: Importance.max,
       playSound: true,
       visibility: NotificationVisibility.public,
       channelShowBadge: true,
-      fullScreenIntent: true
+
+      // fullScreenIntent: true
     );
 
     // var iOSPlatformChannelSpecifics = IOSNotificationDetails(
