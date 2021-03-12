@@ -106,11 +106,7 @@ class _GoalsPageState extends State<GoalsPage> {
               ),
               Text(
                 'Your Goals',
-                style: TextStyle(
-                  color: ConfigDatas.appBlueColor,
-                  fontSize: 60,
-                  fontFamily: 'Freestyle Script Regular',
-                ),
+                style: Theme.of(context).textTheme.headline1,
               ),
             ],
           ),
@@ -185,11 +181,7 @@ class _GoalsPageState extends State<GoalsPage> {
                                 maxLines: null,
                                 readOnly: true,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 35,
-                                  fontFamily: 'Freestyle Script Regular',
-                                ),
+                                style: Theme.of(context).textTheme.bodyText1,
                                 keyboardType: TextInputType.multiline,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
