@@ -70,7 +70,7 @@ class _TimePickerState extends State<TimePicker> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(color: Colors.grey[200]),
                   child: TextFormField(
-                    style: TextStyle(fontSize: 25),
+                    style: Theme.of(context).textTheme.headline3,
                     textAlign: TextAlign.center,
                     onSaved: (String val) {
                       _setTime = val;

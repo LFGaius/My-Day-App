@@ -226,7 +226,7 @@ class _StoryPageState extends State<StoryPage> {
           ),
           SizedBox(height: 10),
           if(double.parse(accomplishmentRate)<50) Container(
-            padding: EdgeInsets.only(top:20,left: 20,right: 20,bottom: 10),
+            padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.red,
               borderRadius: BorderRadius.circular(40)

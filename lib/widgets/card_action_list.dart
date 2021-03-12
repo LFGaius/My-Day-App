@@ -26,8 +26,9 @@ class CardActionList extends StatelessWidget {
           titleStyle: TextStyle(
               color: Colors.redAccent,
               fontWeight: FontWeight.bold,
-              fontSize: 30
-          )
+              fontSize: 40
+          ),
+        descStyle: Theme.of(context).textTheme.bodyText2
       ),
       type: AlertType.warning,
       title: "Warning",
@@ -36,7 +37,7 @@ class CardActionList extends StatelessWidget {
         DialogButton(
           child: Text(
             "Confirm",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.button,
           ),
           onPressed: () {
             onDelete();
@@ -47,7 +48,7 @@ class CardActionList extends StatelessWidget {
         DialogButton(
           child: Text(
             "Cancel",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: Theme.of(context).textTheme.button,
           ),
           onPressed: () => Navigator.pop(context),
           color: ConfigDatas.appBlueColor,

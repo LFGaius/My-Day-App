@@ -36,158 +36,163 @@ class PopupFunctions{
     Alert(
         context: context,
         style: AlertStyle(
-            alertPadding: EdgeInsets.all(5),
+            alertPadding: EdgeInsets.only(top:30,left: 5,right: 5),
             titleStyle: Theme.of(context).textTheme.headline1
         ),
-        title: mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='comment'?'comment':variant}':'Restore $variant')):'',
+        title: mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='storycomment'?'comment':variant}':'Restore $variant')):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-        content: Column(
-          children: <Widget>[
-            if(mode=='view' && (variant=='principle' || ((variant=='activity' || variant=='emergency') && !(element.isAccomplished!=null?element.isAccomplished:false)))) GestureDetector(
-              onTap: () async{
-                if(!storyMode) {
-                  Navigator.pop(context);
-                  onAlertWithCustomContentPressed(
-                      context, 'edit', variant, element: element,
-                      database: database);
-                }else {
-                  performRestoreProcess(variant,element,database,context,title:titleController.text,description:descriptionController.text);
-                  // DateTime _now = DateTime.now();
-                  // if (variant == 'emergency') {
-                  //   savePrincipleOrEmergencyOrComment({
-                  //     'id': element?.id,
-                  //     'title': titleController.text,
-                  //     'date': '${_now.day}-${_now.month}-${_now.year}',
-                  //     'description': descriptionController.text,
-                  //     'isAccomplished': element.isAccomplished,
-                  //   }, database, 'emergencies', context);
-                  //   print('emergency restored');
-                  // } else {
-                  //   Navigator.pop(context);
-                  //   onAlertWithCustomContentPressed(
-                  //       context, 'restore', variant, element: element,
-                  //       database: database);
-                  // }
-                }
-              },
-              child: Container(
-                width: storyMode?190:80,
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                    color: ConfigDatas.appBlueColor,
-                    borderRadius: BorderRadius.circular(20)
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(storyMode?Icons.restore:Icons.edit,color: Colors.white),
-                    Padding(
-                      padding: const EdgeInsets.only(top:13.0),
-                      child: Text(
-                        storyMode?'Restore':'Edit',
-                        style: Theme.of(context).textTheme.headline2
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            if(variant=='storycomment')
-              TextField(
-                controller: commentController,
-                minLines: 4,
-                maxLines: null,
-                readOnly: mode=='view',
-                autofocus: true,
-                keyboardType: TextInputType.multiline,
-                style: Theme.of(context).textTheme.bodyText1,
-                decoration: InputDecoration(
-                  // labelText: 'Comment',
-                  fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
-                ),
-              ),
-            if(variant!='storycomment')
-              TextField(
-                controller: titleController,
-                readOnly: mode=='view',
-                style: Theme.of(context).textTheme.caption,
-                decoration: InputDecoration(
-                  labelText: 'Title',
-                  labelStyle: Theme.of(context).textTheme.caption
-                ),
-              ),
-            if(variant!='storycomment')
-              TextField(
-                controller: descriptionController,
-                minLines: 4,
-                maxLines: null,
-                readOnly: mode=='view',
-                keyboardType: TextInputType.multiline,
-                style: Theme.of(context).textTheme.caption,
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                  labelStyle: Theme.of(context).textTheme.caption
-                ),
-              ),
-            if(variant=='activity')
-              SizedBox(height: 40),
-            if(variant=='activity')
-              TimePicker(label: 'Start time',
-                  readOnly: mode == 'view',
-                  timeController: timeController),
-            if(variant=='activity')
-              SizedBox(height: 40),
-            if(variant=='activity')
-              TimePicker(label: 'Duration',
-                  readOnly: mode == 'view',
-                  timeController: durationController),
-            if(variant=='activity')
-              SizedBox(height: 40),
-            if(variant=='activity')
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Type',
-                      style: Theme.of(context).textTheme.caption
+        content: Container(
+          height: MediaQuery.of(context).size.height*0.6,
+          width: MediaQuery.of(context).size.width*0.7,
+          child: Scrollbar(
+            child: ListView(
+              shrinkWrap: true ,
+              scrollDirection: Axis.vertical,
+              children: <Widget>[
+                if(mode=='view' && (variant=='principle' || ((variant=='activity' || variant=='emergency') && !(element.isAccomplished!=null?element.isAccomplished:false)))) GestureDetector(
+                  onTap: () async{
+                    if(!storyMode) {
+                      Navigator.pop(context);
+                      onAlertWithCustomContentPressed(
+                          context, 'edit', variant, element: element,
+                          database: database);
+                    }else {
+                      performRestoreProcess(variant,element,database,context,title:titleController.text,description:descriptionController.text);
+                      // DateTime _now = DateTime.now();
+                      // if (variant == 'emergency') {
+                      //   savePrincipleOrEmergencyOrComment({
+                      //     'id': element?.id,
+                      //     'title': titleController.text,
+                      //     'date': '${_now.day}-${_now.month}-${_now.year}',
+                      //     'description': descriptionController.text,
+                      //     'isAccomplished': element.isAccomplished,
+                      //   }, database, 'emergencies', context);
+                      //   print('emergency restored');
+                      // } else {
+                      //   Navigator.pop(context);
+                      //   onAlertWithCustomContentPressed(
+                      //       context, 'restore', variant, element: element,
+                      //       database: database);
+                      // }
+                    }
+                  },
+                  child: Container(
+                    width: storyMode?190:100,
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: ConfigDatas.appBlueColor,
+                        borderRadius: BorderRadius.circular(20)
                     ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(storyMode?Icons.restore:Icons.edit,color: Colors.white),
+                        Text(
+                          storyMode?'Restore':'Edit',
+                          style: Theme.of(context).textTheme.headline2
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                if(variant=='storycomment')
+                  TextField(
+                    controller: commentController,
+                    minLines: 4,
+                    maxLines: null,
+                    readOnly: mode=='view',
+                    autofocus: true,
+                    keyboardType: TextInputType.multiline,
+                    style: Theme.of(context).textTheme.headline3,
+                    decoration: InputDecoration(
+                      // labelText: 'Comment',
+                      fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
+                    ),
+                  ),
+                if(variant!='storycomment')
+                  TextField(
+                    controller: titleController,
+                    readOnly: mode=='view',
+                    style: Theme.of(context).textTheme.headline3,
+                    decoration: InputDecoration(
+                      labelText: 'Title',
+                      labelStyle: Theme.of(context).textTheme.caption
+                    ),
+                  ),
+                if(variant!='storycomment')
+                  TextField(
+                    controller: descriptionController,
+                    minLines: 4,
+                    maxLines: null,
+                    readOnly: mode=='view',
+                    keyboardType: TextInputType.multiline,
+                    style: Theme.of(context).textTheme.headline3,
+                    decoration: InputDecoration(
+                      labelText: 'Description',
+                      labelStyle: Theme.of(context).textTheme.caption
+                    ),
+                  ),
+                if(variant=='activity')
+                  SizedBox(height: 40),
+                if(variant=='activity')
+                  TimePicker(label: 'Start time',
+                      readOnly: mode == 'view',
+                      timeController: timeController),
+                if(variant=='activity')
+                  SizedBox(height: 40),
+                if(variant=='activity')
+                  TimePicker(label: 'Duration',
+                      readOnly: mode == 'view',
+                      timeController: durationController),
+                if(variant=='activity')
+                  SizedBox(height: 40),
+                if(variant=='activity')
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Type',
+                          style: Theme.of(context).textTheme.caption
+                        ),
 
-                    StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return DropdownButton<String>(
+                        StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setState) {
+                            return DropdownButton<String>(
 
-                          hint: Text("Select type"),
-                          value: selectedActivityType,
-                          onChanged: (String value) {
-                            if (mode != 'view')
-                              setState(() {
-                                print('----------$value---------');
-                                selectedActivityType = value;
-                              });
-                          },
-                          items: ConfigDatas.activitytypes.map((
-                              ActivityTypeItem activitytype) {
-                            return DropdownMenuItem<String>(
-                              value: activitytype.name,
-                              child: Row(
-                                children: <Widget>[
-                                  activitytype.icon,
-                                  SizedBox(width: 10,),
-                                  Text(
-                                    activitytype.name,
-                                    style: Theme.of(context).textTheme.caption,
+                              hint: Text("Select type"),
+                              value: selectedActivityType,
+                              onChanged: (String value) {
+                                if (mode != 'view')
+                                  setState(() {
+                                    print('----------$value---------');
+                                    selectedActivityType = value;
+                                  });
+                              },
+                              items: ConfigDatas.activitytypes.map((
+                                  ActivityTypeItem activitytype) {
+                                return DropdownMenuItem<String>(
+                                  value: activitytype.name,
+                                  child: Row(
+                                    children: <Widget>[
+                                      activitytype.icon,
+                                      SizedBox(width: 10,),
+                                      Text(
+                                        activitytype.name,
+                                        style: Theme.of(context).textTheme.headline3,
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                );
+                              }).toList(),
                             );
-                          }).toList(),
-                        );
-                      },
-                    ),
-                  ],
-              ),
+                          },
+                        ),
+                      ],
+                  ),
 
-          ],
+              ],
+            ),
+          ),
         ),
         buttons: [
           if(mode!='view') DialogButton(
@@ -230,7 +235,7 @@ class PopupFunctions{
             width: 100,
             child: Text(
               "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.button,
             ),
           )
         ]).show();

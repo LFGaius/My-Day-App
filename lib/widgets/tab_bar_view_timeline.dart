@@ -192,12 +192,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
                     Text(
                       activities[index].title,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        fontFamily: 'APril Flowers',
-                      ),
+                      style: Theme.of(context).textTheme.headline4,
                     ),
                     SizedBox(height: 10),
                     Row(

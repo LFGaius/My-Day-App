@@ -141,11 +141,7 @@ class _TabBarViewPrinciplesState extends State<TabBarViewPrinciples> {
                           principles[index-1].title,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
+                          style: Theme.of(context).textTheme.headline4,
                         )
                       ],
                     ),

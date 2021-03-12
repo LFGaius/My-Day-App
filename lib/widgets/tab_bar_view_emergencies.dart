@@ -154,11 +154,7 @@ class _TabBarViewEmergenciesState extends State<TabBarViewEmergencies> {
                           emergencies[index-1].title,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white
-                          ),
+                          style: Theme.of(context).textTheme.headline4,
                         )
                       ],
                     ),

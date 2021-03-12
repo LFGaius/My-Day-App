@@ -246,7 +246,7 @@ class BlacklistyPageState extends State<BlacklistPage> {
             width: 100,
             child: Text(
               "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.button,
             ),
           )
         ]).show();
