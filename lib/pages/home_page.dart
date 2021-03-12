@@ -68,9 +68,35 @@ class _HomePageState extends State<HomePage> {
         key: scaffoldKey,
         appBar: AppBar(
           backgroundColor: ConfigDatas.appBlueColor,
-          title: Image.asset(
-              'assets/logowhitevariant.png',
-            height: 50,
+          title: Padding(
+            padding: const EdgeInsets.only(bottom:10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset(
+                    'assets/logowhitevariant.png',
+                  height: 50,
+                ),
+                PopupMenuButton<int>(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.settings,
+                            color: Colors.black87,
+                            size: 30,
+                          ),
+                          Text("Settings",style: Theme.of(context).textTheme.bodyText2,),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
           centerTitle: true,
           bottom: TabBar(
