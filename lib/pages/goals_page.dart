@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/goal.dart';
@@ -166,7 +167,7 @@ class _GoalsPageState extends State<GoalsPage> {
                               await store.record(goals[index].id).delete(widget.database);
                             },
                             onEdit: () {
-                              _onAlertWithCustomContentPressed(context,'edit',goals[index]);
+                              PopupFunctions.onAlertWithCustomContentPressed(context,'edit','goal',element:goals[index],database: widget.database);
                             },
                           ),
                         ),
@@ -204,96 +205,15 @@ class _GoalsPageState extends State<GoalsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _onAlertWithCustomContentPressed(context,'create',new Goal(
+          PopupFunctions.onAlertWithCustomContentPressed(context,'create','goal',element:new Goal(
               null,
               '',
               0
-          ));
+          ),database: widget.database);
         },
         child: Icon(Icons.add),
         backgroundColor: ConfigDatas.appDarkBlueColor,
       ),
-    );
-  }
-
-  _onAlertWithCustomContentPressed(context,mode,Goal goal) {
-    TextEditingController descriptionController = TextEditingController(text:goal.description);
-    int isFavorite=goal.isFavorite;
-
-    Alert(
-        context: context,
-        style: AlertStyle(
-            titleStyle: TextStyle(
-              color: ConfigDatas.appBlueColor,
-              fontWeight: FontWeight.bold,
-              fontSize:30,
-            )
-        ),
-        title: mode=='create'?'Create goal':'Edit goal',
-        closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-        content: Column(
-          children: <Widget>[
-            TextField(
-              controller: descriptionController,
-              minLines: 4,
-              maxLines: null,
-              readOnly: false,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                labelText: 'Goal',
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            onPressed: ()  async=>{
-              await saveGoal(new Goal(
-                goal?.id,
-                descriptionController.text,
-                isFavorite
-              )),
-              Navigator.pop(context)
-            },
-            color: ConfigDatas.appBlueColor,
-            width: 100,
-            child: Text(
-              "Save",
-              style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-            ),
-          )
-        ]).show();
-  }
-
-  saveGoal(Goal goal) async {
-    var store = intMapStoreFactory.store('goals');
-    if(goal.id==null)
-      await widget.database.transaction((txn) async {
-        print(goal.id);
-        print('ttt ${goal.id}');
-        await store.add(txn, {
-          'isFavorite': goal.isFavorite,
-          'description': goal.description
-        });
-      });
-    else
-      await widget.database.transaction((txn) async {
-        print(goal.id);
-        print('ttt ${goal.id}');
-        await store.record(goal.id).update(txn, {
-          'isFavorite': goal.isFavorite,
-          'description': goal.description
-        });
-      });
-
-    Fluttertoast.showToast(
-        msg: 'Saved',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0
     );
   }
 

@@ -6,6 +6,8 @@ import 'package:my_day_app/main.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
 import 'package:my_day_app/models/emergency.dart';
+import 'package:my_day_app/models/goal.dart';
+import 'package:my_day_app/models/taboo.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
@@ -15,18 +17,22 @@ import 'package:timezone/timezone.dart' as tz;
 class PopupFunctions{
   static Future<dynamic> onAlertWithCustomContentPressed(context,mode,variant,{element,database,storyMode:false}) {
     TextEditingController commentController = TextEditingController();
+    TextEditingController wordController = TextEditingController();
     TextEditingController titleController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
     TextEditingController timeController = TextEditingController();
     TextEditingController durationController = TextEditingController();
     String selectedActivityType;
     bool isAccomplished=false;
+    int isFavorite=0;
     if(variant=='storycomment')
       commentController.text = element?.value;
     else{
-      titleController.text = element?.title;
-      descriptionController.text = element?.description;
-      if (variant != 'principle') isAccomplished = element?.isAccomplished;
+      if(variant!='goal' && variant!='taboo') titleController.text = element?.title;
+      if(variant!='taboo') descriptionController.text = element?.description;
+      if(variant=='taboo') wordController.text = element?.word;
+      if (variant != 'principle' && variant != 'goal' && variant != 'taboo') isAccomplished = element?.isAccomplished;
+      if (variant == 'goal') isFavorite = element?.isFavorite;
       if (variant == 'activity') {
         timeController.text = element?.time;
         durationController.text = element?.duration;
@@ -42,7 +48,7 @@ class PopupFunctions{
         title: mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='storycomment'?'comment':variant}':'Restore $variant')):'',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Container(
-          height: MediaQuery.of(context).size.height*0.6,
+          height: (variant=='storycomment' || variant=='goal')?200:(variant=='taboo'?100:MediaQuery.of(context).size.height*0.6),
           width: MediaQuery.of(context).size.width*0.7,
           child: Scrollbar(
             child: ListView(
@@ -109,7 +115,19 @@ class PopupFunctions{
                       fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
                     ),
                   ),
-                if(variant!='storycomment')
+                if(variant=='taboo')
+                  TextField(
+                    controller: wordController,
+                    readOnly: mode=='view',
+                    autofocus: true,
+                    keyboardType: TextInputType.multiline,
+                    style: Theme.of(context).textTheme.headline3,
+                    decoration: InputDecoration(
+                      labelText: 'Word',
+                      // fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
+                    ),
+                  ),
+                if(variant!='storycomment' && variant!='goal' && variant!='taboo')
                   TextField(
                     controller: titleController,
                     readOnly: mode=='view',
@@ -119,7 +137,7 @@ class PopupFunctions{
                       labelStyle: Theme.of(context).textTheme.caption
                     ),
                   ),
-                if(variant!='storycomment')
+                if(variant!='storycomment' && variant!='taboo')
                   TextField(
                     controller: descriptionController,
                     minLines: 4,
@@ -206,13 +224,23 @@ class PopupFunctions{
                 savePrincipleOrEmergencyOrComment({
                   'id':element?.id,'value':commentController.text,'storyDate':element.storyDate
                 },database,'comments',context);
-              else
-                if(variant=='principle')
+             else if(variant=='principle')
                   savePrincipleOrEmergencyOrComment({
                     'id':element?.id,'title':titleController.text,
                     'description':descriptionController.text,
                   },database,'principles',context);
-                 else{
+             else if(variant=='goal')
+                saveGoal(new Goal(
+                    element?.id,
+                    descriptionController.text,
+                    element.isFavorite
+                ),database,context);
+             else if(variant=='taboo')
+                saveTaboo(new Taboo(
+                    element?.id,
+                    wordController.text
+                ),database,context);
+             else{
                    DateTime _now = DateTime.now();
                     onSaveActivity({
                       'id':mode=='restore'?null:element?.id,'title':titleController.text,'date':(mode=='restore' || mode=='create')?'${_now.day}-${_now.month}-${_now.year}':element.date,
@@ -229,7 +257,7 @@ class PopupFunctions{
                     //    textColor: Colors.white,
                     //    fontSize: 16.0
                     // );
-                 }
+              }
             },
             color: ConfigDatas.appBlueColor,
             width: 100,
@@ -433,5 +461,60 @@ class PopupFunctions{
         fontSize: 16.0
     );
     if(frompopup) Navigator.pop(context);
+  }
+
+  static saveGoal(Goal goal,database,context) async {
+    var store = intMapStoreFactory.store('goals');
+    if(goal.id==null)
+      await database.transaction((txn) async {
+        print(goal.id);
+        print('ttt ${goal.id}');
+        await store.add(txn, {
+          'isFavorite': goal.isFavorite,
+          'description': goal.description
+        });
+      });
+    else
+      await database.transaction((txn) async {
+        print(goal.id);
+        print('ttt ${goal.id}');
+        await store.record(goal.id).update(txn, {
+          'isFavorite': goal.isFavorite,
+          'description': goal.description
+        });
+      });
+
+    Fluttertoast.showToast(
+        msg: 'Saved',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+    Navigator.pop(context);
+  }
+
+  static saveTaboo(Taboo taboo,database,context) async {
+    var store = intMapStoreFactory.store('taboos');
+    if(taboo.id==null)
+      await database.transaction((txn) async {
+        print(taboo.id);
+        print('ttt ${taboo.id}');
+        await store.add(txn, {
+          'word': taboo.word
+        });
+      });
+    else
+      await database.transaction((txn) async {
+        print(taboo.id);
+        print('ttt ${taboo.id}');
+        await store.record(taboo.id).update(txn, {
+          'word': taboo.word
+        });
+      });
+
+    Navigator.pop(context);
   }
 }

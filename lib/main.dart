@@ -143,7 +143,7 @@ class MyApp extends StatelessWidget {
             bodyText2: TextStyle(fontSize: 27,fontWeight: FontWeight.w500),
             headline3: TextStyle(fontSize: 27,color: Colors.black.withOpacity(0.7),fontWeight: FontWeight.w900),
             headline4: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
-            button: TextStyle(fontSize: 27,fontWeight: FontWeight.w500,color: Colors.white),
+            button: TextStyle(fontSize: 27,fontWeight: FontWeight.bold,color: Colors.white),
             caption: TextStyle(fontSize: 25,fontWeight: FontWeight.w500),
           ),
         ),

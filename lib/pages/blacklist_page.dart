@@ -176,7 +176,7 @@ class BlacklistyPageState extends State<BlacklistPage> {
                                 await store.record(taboos[index].id).delete(widget.database);
                               },
                               onEdit: () {
-                                _onAlertWithCustomContentPressed(context,'edit',taboos[index]);
+                                PopupFunctions.onAlertWithCustomContentPressed(context,'edit','taboo',element:taboos[index],database: widget.database);
                               },
                             ),
                           ],
@@ -191,87 +191,15 @@ class BlacklistyPageState extends State<BlacklistPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _onAlertWithCustomContentPressed(context,'create',new Taboo(
+            PopupFunctions.onAlertWithCustomContentPressed(context,'create','taboo',element:new Taboo(
                 null,
                 '',
-            ));
+            ),database: widget.database);
           },
           child: Icon(Icons.add,color: Colors.black,),
           backgroundColor: Colors.white,
         ),
       );
-  }
-
-  _onAlertWithCustomContentPressed(context,mode,Taboo taboo) {
-    TextEditingController tabooWordController = TextEditingController();
-    tabooWordController.text = taboo.word;
-
-    Alert(
-        context: context,
-        style: AlertStyle(
-            titleStyle: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize:30,
-            )
-        ),
-        title: mode=='create'?'Add taboo':'Edit taboo',
-        closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
-        content: Column(
-          children: <Widget>[
-            TextField(
-              controller: tabooWordController,
-              minLines: 1,
-              maxLines: null,
-              readOnly: false,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                labelText: 'Word',
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            onPressed: ()  async=>{
-              await saveTaboo(
-                new Taboo(
-                  taboo?.id,
-                  tabooWordController.text
-                )
-              ),
-              Navigator.pop(context)
-            },
-            color: Colors.black,
-            width: 100,
-            child: Text(
-              "Save",
-              style: Theme.of(context).textTheme.button,
-            ),
-          )
-        ]).show();
-  }
-
-
-
-  saveTaboo(Taboo taboo) async {
-    var store = intMapStoreFactory.store('taboos');
-    if(taboo.id==null)
-      await widget.database.transaction((txn) async {
-        print(taboo.id);
-        print('ttt ${taboo.id}');
-        await store.add(txn, {
-          'word': taboo.word
-        });
-      });
-    else
-      await widget.database.transaction((txn) async {
-        print(taboo.id);
-        print('ttt ${taboo.id}');
-        await store.record(taboo.id).update(txn, {
-          'word': taboo.word
-        });
-      });
   }
 
 }

@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:expandable/expandable.dart';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
@@ -242,7 +243,7 @@ class _StoryPageState extends State<StoryPage> {
                 color: Colors.orange,
                 borderRadius: BorderRadius.circular(40)
             ),
-            child: Text(
+            child: AutoSizeText(
               '🙂 MEDIUM PRODUCTIVITY',
               style: Theme.of(context).textTheme.headline2
             ),
@@ -253,7 +254,7 @@ class _StoryPageState extends State<StoryPage> {
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(40)
             ),
-            child: Text(
+            child: AutoSizeText(
               '😲 AMAZING PRODUCTIVITY',
               style: Theme.of(context).textTheme.headline2
             ),
