@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,29 +70,40 @@ class _HomePageState extends State<HomePage> {
         key: scaffoldKey,
         appBar: AppBar(
           backgroundColor: ConfigDatas.appBlueColor,
+          automaticallyImplyLeading: false,
+          // leading: Icon(Icons.arrow_back_rounded),
           title: Padding(
             padding: const EdgeInsets.only(bottom:10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Image.asset(
-                    'assets/logowhitevariant.png',
+                  'assets/logowhitevariant.png',
                   height: 50,
                 ),
                 PopupMenuButton<int>(
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 1,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.settings,
-                            color: Colors.black87,
-                            size: 30,
-                          ),
-                          Text("Settings",style: Theme.of(context).textTheme.bodyText2,),
-                        ],
+                      child: GestureDetector(
+                        onTap: () {
+                          print('tap');
+                          Navigator.of(context).popAndPushNamed(
+                              '/settings',
+                              arguments:{'database':widget.database}
+                          );
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.settings,
+                              color: Colors.black87,
+                              size: 30,
+                            ),
+                            Text("Settings",style: Theme.of(context).textTheme.bodyText2,),
+                          ],
+                        ),
                       ),
                     ),
                   ],

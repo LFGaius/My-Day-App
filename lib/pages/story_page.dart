@@ -189,7 +189,7 @@ class _StoryPageState extends State<StoryPage> {
             ],
           ),
           centerTitle: true,
-          leading: FlatButton(
+          leading: TextButton(
             onPressed: () {
               Navigator.of(context).popAndPushNamed(
                   '/home',

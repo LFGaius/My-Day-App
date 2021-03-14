@@ -4,6 +4,7 @@ import 'package:my_day_app/pages/goal_remind_page.dart';
 import 'package:my_day_app/pages/goals_page.dart';
 import 'package:my_day_app/pages/home_page.dart';
 import 'package:my_day_app/pages/onboarding_screen.dart';
+import 'package:my_day_app/pages/settings_page.dart';
 import 'package:my_day_app/pages/start_page.dart';
 import 'package:my_day_app/pages/story_page.dart';
 
@@ -26,6 +27,8 @@ class MyRouteBuilder{
         return MaterialPageRoute(builder: (_)=>GoalRemindPage(database: args['database']));
       case '/home':
         return MaterialPageRoute(builder: (_)=>HomePage(database: args['database'],startTab:args['startTab'] ,));
+      case '/settings':
+        return MaterialPageRoute(builder: (_)=>SettingsPage(database: args['database']));
       default: return errorRoute();
     }
   }
