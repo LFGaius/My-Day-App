@@ -42,6 +42,7 @@ dependencies:
   google_fonts: ^1.1.2
   expandable: ^4.1.4
   auto_size_text: ^2.1.0
+  audioplayers: ^0.17.4
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,8 @@ flutter:
    - assets/onboardillust1.png
    - assets/onboardillust2.png
    - assets/logowhitevariant.png
+   - assets/sounds/activitystartedmale.mp3
+   - assets/sounds/activitystartedfemale.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

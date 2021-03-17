@@ -1,5 +1,8 @@
 
 import 'dart:async';
+import 'dart:io';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_day_app/configs/config_datas.dart';
@@ -24,6 +27,15 @@ class _StartPageState extends State<StartPage> {
   @override
   void initState(){
     super.initState();
+
+    // List directory contents, recursing into sub-directories,
+    // but not following symbolic links.
+    // if (Platform.isIOS) {
+    //   if (audioCache.fixedPlayer != null) {
+    //     audioCache.fixedPlayer.startHeadlessService();
+    //   }
+    //   advancedPlayer.startHeadlessService();
+    // }
     Timer(Duration(seconds: 3),() async{
       SharedPreferences prefs=await SharedPreferences.getInstance();
       var dir = await getApplicationDocumentsDirectory();

@@ -92,7 +92,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 ListTile(
                   onTap: () {
-
+                    Navigator.of(context).popAndPushNamed(
+                        '/configurealertsound',
+                        arguments:{'database':widget.database}
+                    );
                   },
                   leading: Icon(
                     Icons.audiotrack,
@@ -121,7 +124,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                   },
                   leading: Icon(
-                    Icons.delete_forever_sharp,
+                    Icons.sync,
                     color: ConfigDatas.appBlueColor,
                   ),
                   title: Text(
