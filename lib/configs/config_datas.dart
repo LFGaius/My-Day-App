@@ -33,4 +33,9 @@ class ConfigDatas{
     'activity-started-female':'activitystartedfemale',
     'activity-started-male':'activitystartedmale'
   };
+
+  static final Map<String,String> appLangs={
+    'french-lang':'french',
+    'english-lang':'english'
+  };
 }

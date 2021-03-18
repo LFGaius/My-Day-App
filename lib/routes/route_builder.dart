@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_day_app/pages/blacklist_page.dart';
 import 'package:my_day_app/pages/configure_alert_sound_page.dart';
+import 'package:my_day_app/pages/configure_lang_page.dart';
 import 'package:my_day_app/pages/goal_remind_page.dart';
 import 'package:my_day_app/pages/goals_page.dart';
 import 'package:my_day_app/pages/home_page.dart';
@@ -32,6 +33,8 @@ class MyRouteBuilder{
         return MaterialPageRoute(builder: (_)=>SettingsPage(database: args['database']));
       case '/configurealertsound':
         return MaterialPageRoute(builder: (_)=>ConfigureAlertSoundPage(database: args['database']));
+      case '/configurelang':
+        return MaterialPageRoute(builder: (_)=>ConfigureLangPage(database: args['database']));
       default: return errorRoute();
     }
   }

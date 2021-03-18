@@ -108,6 +108,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 ListTile(
                   onTap: () {
+                    Navigator.of(context).popAndPushNamed(
+                        '/configurelang',
+                        arguments:{'database':widget.database}
+                    );
+                  },
+                  leading: Icon(
+                    Icons.language,
+                    color: ConfigDatas.appBlueColor,
+                  ),
+                  title: Text(
+                    'Configure app lang',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
 
                   },
                   leading: Icon(
