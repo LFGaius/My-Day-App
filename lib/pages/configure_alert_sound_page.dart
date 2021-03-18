@@ -26,7 +26,7 @@ class _ConfigureAlertSoundPageState extends State<ConfigureAlertSoundPage> {
 
   AudioCache audioCache;
   AudioPlayer audioPlayer;
-  String _valueSelected = 'activitystartedmale';
+  String _valueSelected;
 
   playSound({name,format}){
     audioCache.play('sounds/$name.$format');
@@ -36,6 +36,15 @@ class _ConfigureAlertSoundPageState extends State<ConfigureAlertSoundPage> {
     super.initState();
     audioPlayer = AudioPlayer();
     audioCache = AudioCache(fixedPlayer: audioPlayer);
+    SharedPreferences.getInstance().then((prefs) {
+      if(mounted)
+        setState(() {
+          _valueSelected=prefs.getString('myday_config_alert_sound');
+        });
+      else
+        _valueSelected=prefs.getString('myday_config_alert_sound');
+    });
+
   }
 
   @override
@@ -82,26 +91,30 @@ class _ConfigureAlertSoundPageState extends State<ConfigureAlertSoundPage> {
               LabeledRadio(
                 label: 'Activity started female',
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                value: 'activitystartedfemale',
+                value: ConfigDatas.alertSounds['activity-started-female'],
                 groupValue: _valueSelected,
-                onChanged: (String newValue) {
+                onChanged: (String newValue) async{
                   print('activitystartedfemale $newValue');
                   setState(() {
                     _valueSelected = newValue;
                   });
-                  playSound(name:'activitystartedfemale',format: 'mp3');
+                  SharedPreferences prefs=await SharedPreferences.getInstance();
+                  prefs.setString('myday_config_alert_sound',newValue);
+                  playSound(name:ConfigDatas.alertSounds['activity-started-female'],format: 'mp3');
                 },
               ),
               LabeledRadio(
                 label: 'Activity started male',
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                value: 'activitystartedmale',
+                value: ConfigDatas.alertSounds['activity-started-male'],
                 groupValue: _valueSelected,
-                onChanged: (String newValue) {
+                onChanged: (String newValue) async{
                   setState(() {
                     _valueSelected = newValue;
                   });
-                  playSound(name:'activitystartedmale',format: 'mp3');
+                  SharedPreferences prefs=await SharedPreferences.getInstance();
+                  prefs.setString('myday_config_alert_sound',newValue);
+                  playSound(name:ConfigDatas.alertSounds['activity-started-male'],format: 'mp3');
                 },
               ),
             ],

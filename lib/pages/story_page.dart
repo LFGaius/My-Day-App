@@ -227,14 +227,14 @@ class _StoryPageState extends State<StoryPage> {
           ),
           SizedBox(height: 10),
           if(double.parse(accomplishmentRate)<50) Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.red,
               borderRadius: BorderRadius.circular(40)
             ),
             child: Text(
               '😑 BAD PRODUCTIVITY',
-              style: Theme.of(context).textTheme.headline2
+              style: Theme.of(context).textTheme.headline5
             ),
           ),
           if(double.parse(accomplishmentRate)>=50 && double.parse(accomplishmentRate)<80) Container(
@@ -245,7 +245,7 @@ class _StoryPageState extends State<StoryPage> {
             ),
             child: AutoSizeText(
               '🙂 MEDIUM PRODUCTIVITY',
-              style: Theme.of(context).textTheme.headline2
+              style: Theme.of(context).textTheme.headline5
             ),
           ),
           if(double.parse(accomplishmentRate)>=80) Container(
@@ -256,10 +256,10 @@ class _StoryPageState extends State<StoryPage> {
             ),
             child: AutoSizeText(
               '😲 AMAZING PRODUCTIVITY',
-              style: Theme.of(context).textTheme.headline2
+              style: Theme.of(context).textTheme.headline5
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           Expanded(
             child: ListView(
                 controller:lvcontroller,

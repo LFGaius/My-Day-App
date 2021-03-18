@@ -28,4 +28,9 @@ class ConfigDatas{
     6:Colors.green,
     7:Colors.amber,
   };
+
+  static final Map<String,String> alertSounds={
+    'activity-started-female':'activitystartedfemale',
+    'activity-started-male':'activitystartedmale'
+  };
 }

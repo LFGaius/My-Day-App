@@ -78,9 +78,9 @@ class _StartPageState extends State<StartPage> {
       //   print('name:${element['name']}');
       // });
       // prefs.setString('myday_start_date','10-02-2021');
-
       if(prefs.getBool('myday_already_opened')==null){//first time connection TO DO: Uncomment
         prefs.setBool('myday_already_opened',true);
+        prefs.setString('myday_config_alert_sound',ConfigDatas.alertSounds['activity-started-female']);
         var now=DateTime.now();
         prefs.setString('myday_start_date','${now.day}-${now.month}-${now.year}');
         Navigator.of(context).popAndPushNamed(

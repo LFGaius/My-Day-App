@@ -138,6 +138,12 @@ class MyApp extends StatelessWidget {
               // fontWeight: FontWeight.w900,
               fontFamily: 'HEy Comic',
             ),
+            headline5: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              // fontWeight: FontWeight.w900,
+              fontFamily: 'HEy Comic',
+            ),
             subtitle1: TextStyle(color: Colors.white,fontSize: 22,fontWeight: FontWeight.w400),
             bodyText1: TextStyle(color: Colors.white,fontSize: 40),
             bodyText2: TextStyle(fontSize: 27,fontWeight: FontWeight.w500),

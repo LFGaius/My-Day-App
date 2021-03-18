@@ -11,6 +11,7 @@ import 'package:my_day_app/models/taboo.dart';
 import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timelines/timelines.dart';import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -349,12 +350,13 @@ class PopupFunctions{
 
   static void scheduleAlarm(int id,String time,int secondsToSchedule,String activityTitle) async {
     print('wait $secondsToSchedule');
+    SharedPreferences prefs=await SharedPreferences.getInstance();
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'alarm_notif',
       'alarm_notif',
       'Channel for Alarm notification',
       icon: 'logo',
-      sound: RawResourceAndroidNotificationSound('activitystartedmale'),
+      sound: RawResourceAndroidNotificationSound(prefs.getString('myday_config_alert_sound')),
       largeIcon: DrawableResourceAndroidBitmap('logo'),
       enableVibration: true,
       importance: Importance.max,
