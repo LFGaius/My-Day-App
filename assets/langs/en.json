@@ -61,6 +61,19 @@
   "professional": "Professional",
   "project": "Project",
   "add": "Add",
-  "edit": "Edit",
-  "restore": "Restore"
+  "addcomment": "Add comment",
+  "editcomment": "Edit comment",
+  "addactivity": "Add activity",
+  "editactivity": "Edit activity",
+  "activitydetails": "Activity details",
+  "addemergency": "Add emergency",
+  "editemergency": "Edit emergency",
+  "emergencydetails": "Emergency details",
+  "addprinciple": "Add principle",
+  "editprinciple": "Edit principle",
+  "principledetails": "Principle details",
+  "addtaboo": "Add taboo",
+  "edittaboo": "Edit taboo",
+  "addgoal": "Add goal",
+  "editgoal": "Edit goal"
 }

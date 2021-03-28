@@ -17,6 +17,23 @@ import 'package:timelines/timelines.dart';import 'package:timezone/data/latest.d
 import 'package:timezone/timezone.dart' as tz;
 
 class PopupFunctions{
+  static Map<String,String> title={
+    'create-storycomment':'addcomment',
+    'edit-storycomment':'editcomment',
+    'create-activity':'addactivity',
+    'edit-activity':'editactivity',
+    'view-activity':'activitydetails',
+    'create-emergency':'addemergency',
+    'edit-emergency':'editemergency',
+    'view-emergency':'emergencydetails',
+    'create-principle':'addprinciple',
+    'edit-principle':'editprinciple',
+    'view-principle':'principledetails',
+    'create-taboo':'addtaboo',
+    'edit-taboo':'edittaboo',
+    'create-goal':'addgoal',
+    'edit-goal':'editgoal'
+  };
   static Future<dynamic> onAlertWithCustomContentPressed(context,mode,variant,{element,database,storyMode:false}) {
     TextEditingController commentController = TextEditingController();
     TextEditingController wordController = TextEditingController();
@@ -47,7 +64,7 @@ class PopupFunctions{
             alertPadding: EdgeInsets.only(top:30,left: 5,right: 5),
             titleStyle: Theme.of(context).textTheme.headline1
         ),
-        title: mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='storycomment'?'comment':variant}':'Restore $variant')):'${variant[0].toUpperCase() + variant.substring(1)} details',
+        title: translator.translate(title['$mode-$variant']),// mode!='view'?(mode=='create'?'Add ${variant=='storycomment'?'comment':variant}':(mode=='edit'?'Edit ${variant=='storycomment'?'comment':variant}':'Restore $variant')):'${variant[0].toUpperCase() + variant.substring(1)} details',
         closeIcon: Icon(Icons.close_outlined,color: ConfigDatas.appBlueColor),
         content: Container(
           height: (variant=='storycomment' || variant=='goal')?200:(variant=='taboo'?100:MediaQuery.of(context).size.height*0.6),
