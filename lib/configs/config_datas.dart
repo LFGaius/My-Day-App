@@ -35,7 +35,9 @@ class ConfigDatas{
   };
 
   static final Map<String,String> appLangs={
-    'french-lang':'french',
-    'english-lang':'english'
+    'french-lang':'fr',
+    'english-lang':'en'
   };
+
+  static String defaultLang='en';
 }

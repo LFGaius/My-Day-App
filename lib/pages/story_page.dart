@@ -6,6 +6,7 @@ import 'package:expandable/expandable.dart';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/helpers/popup_functions.dart';
@@ -233,7 +234,7 @@ class _StoryPageState extends State<StoryPage> {
               borderRadius: BorderRadius.circular(40)
             ),
             child: Text(
-              '😑 BAD PRODUCTIVITY',
+              '😑 ${translator.translate('badProductivity')}',
               style: Theme.of(context).textTheme.headline5
             ),
           ),
@@ -244,7 +245,7 @@ class _StoryPageState extends State<StoryPage> {
                 borderRadius: BorderRadius.circular(40)
             ),
             child: AutoSizeText(
-              '🙂 MEDIUM PRODUCTIVITY',
+              '🙂 ${translator.translate('badProductivity')}',
               style: Theme.of(context).textTheme.headline5
             ),
           ),
@@ -255,7 +256,7 @@ class _StoryPageState extends State<StoryPage> {
                 borderRadius: BorderRadius.circular(40)
             ),
             child: AutoSizeText(
-              '😲 AMAZING PRODUCTIVITY',
+              '😲 ${translator.translate('badProductivity')}',
               style: Theme.of(context).textTheme.headline5
             ),
           ),
@@ -292,7 +293,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.green),
                             SizedBox(width: 5),
                             Text(
-                              '${numberActivitiesAccomplished} activities accomplished',
+                              '${numberActivitiesAccomplished} ${translator.translate('activitiesAccomplished')}',
                               style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
@@ -303,7 +304,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.orange),
                             SizedBox(width: 5),
                             Text(
-                              '${numberActivitiesNotAccomplished} activities not accomplished',
+                              '${numberActivitiesNotAccomplished} ${translator.translate('activitiesNotAccomplished')}',
                               style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
@@ -340,7 +341,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.green),
                             SizedBox(width: 5),
                             Text(
-                              '${numberEmergenciesAccomplished} emergencies accomplished',
+                              '${numberEmergenciesAccomplished} ${translator.translate('emergenciesAccomplished')}',
                               style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
@@ -351,7 +352,7 @@ class _StoryPageState extends State<StoryPage> {
                             Indicator.dot(color: Colors.orange),
                             SizedBox(width: 5),
                             Text(
-                              '${numberEmergenciesNotAccomplished} emergencies not accomplished',
+                              '${numberEmergenciesNotAccomplished} ${translator.translate('emergenciesNotAccomplished')}',
                               style: Theme.of(context).textTheme.bodyText2
                             )
                           ],
@@ -371,14 +372,14 @@ class _StoryPageState extends State<StoryPage> {
                       ),
                     ),
                     Text(
-                      'ACCOMPLISHMENTS',
+                      translator.translate('accomplishments'),
                       style: Theme.of(context).textTheme.bodyText2
                     ),
                   ],
                 ),
                 SizedBox(height: 15),
                 ExpandablePanel(
-                  headerAlignment:  ExpandablePanelHeaderAlignment.center,
+
                   header: Row(
                     children: [
                       Container(
@@ -396,18 +397,27 @@ class _StoryPageState extends State<StoryPage> {
                           ))
                       ),
                       Text(
-                        'Activities',
+                        translator.translate('activities'),
                         style: Theme.of(context).textTheme.bodyText2
                       ),
                     ],
                   ),
                   // collapsed: Text('zerrz', softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
                   expanded: expandedWidget(activities,'activity'),
-                  tapHeaderToExpand: true,
-                  hasIcon: true,
+                  theme: const ExpandableThemeData(
+                    tapHeaderToExpand: true,
+                    hasIcon: true,
+                    headerAlignment:  ExpandablePanelHeaderAlignment.center,
+                  ),
+
                 ),
                 ExpandablePanel(
-                  headerAlignment:  ExpandablePanelHeaderAlignment.center,
+                  theme: const ExpandableThemeData(
+                    headerAlignment: ExpandablePanelHeaderAlignment.center,
+                    tapBodyToCollapse: true,
+                    tapHeaderToExpand: true,
+                    hasIcon: true,
+                  ),
                   header: Row(
                     children: [
                       Container(
@@ -428,15 +438,14 @@ class _StoryPageState extends State<StoryPage> {
                           )
                       ),
                       Text(
-                        'Emergencies',
+                        translator.translate('emergencies'),
                         style: Theme.of(context).textTheme.bodyText2
                       ),
                     ],
                   ),
                   // collapsed: Text('zerrz', softWrap: true, maxLines: 2, overflow: TextOverflow.ellipsis,),
                   expanded: expandedWidget(emergencies,'emergency'),
-                  tapHeaderToExpand: true,
-                  hasIcon: true,
+
                 ),
 
               ],
@@ -464,7 +473,7 @@ class _StoryPageState extends State<StoryPage> {
             isButtonVisible: false,
             titleStyle: Theme.of(context).textTheme.headline2
         ),
-        title: 'Story comments',
+        title: translator.translate('storyComments'),
         closeIcon: Icon(Icons.close_outlined,color: Colors.white),
         content: Container(
           height: MediaQuery.of(context).size.height*0.7,
@@ -608,7 +617,7 @@ class _StoryPageState extends State<StoryPage> {
               return true;
             },
             child: elements.length==0?Center(
-              child: Text(variant=='emergency'?'No Emergencies':'No Activities'),
+              child: Text(variant=='emergency'?translator.translate('noActivities'):translator.translate('noEmergencies')),
             ):GridView.builder(
               shrinkWrap: true,
               itemCount: elements.length,

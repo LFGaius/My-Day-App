@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
@@ -82,28 +83,27 @@ class _HomePageState extends State<HomePage> {
                   height: 50,
                 ),
                 PopupMenuButton<int>(
+                  onSelected: (ind) {
+                    switch(ind){
+                      case 1:Navigator.of(context).popAndPushNamed(
+                          '/settings',
+                          arguments:{'database':widget.database}
+                      );break;
+                    }
+                  },
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 1,
-                      child: GestureDetector(
-                        onTap: () {
-                          print('tap');
-                          Navigator.of(context).popAndPushNamed(
-                              '/settings',
-                              arguments:{'database':widget.database}
-                          );
-                        },
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.settings,
-                              color: Colors.black87,
-                              size: 30,
-                            ),
-                            Text("Settings",style: Theme.of(context).textTheme.bodyText2,),
-                          ],
-                        ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.settings,
+                            color: Colors.black87,
+                            size: 30,
+                          ),
+                          Text(translator.translate('settings'),style: Theme.of(context).textTheme.bodyText2,),
+                        ],
                       ),
                     ),
                   ],
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Icon(Icons.today),
                   Text(
-                      'Today',
+                    translator.translate('today'),
                     style: Theme.of(context).textTheme.subtitle1
                   )
                 ],
@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   Text(
-                      'Urgencies',
+                    translator.translate('urgencies'),
                     style: Theme.of(context).textTheme.subtitle1
                   )
                 ],
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Icon(Icons.rule),
                   Text(
-                      'Principles',
+                    translator.translate('principles'),
                     style: Theme.of(context).textTheme.subtitle1
                   )
                 ],
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Icon(Icons.history_edu_sharp),
                         Text(
-                            'Stories',
+                          translator.translate('stories'),
                           style: Theme.of(context).textTheme.subtitle1
                         )
                       ],

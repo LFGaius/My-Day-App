@@ -2,6 +2,7 @@
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/models/activity.dart';
 import 'package:my_day_app/models/activity_type_item.dart';
@@ -40,6 +41,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
     // _controller.addListener(_scrollListener);//the listener for up and down.
     // TODO: implement initState
     super.initState();
+
     var store = intMapStoreFactory.store('goals');
     var finder = Finder(
         filter: Filter.equals('isFavorite', 1)
@@ -82,7 +84,7 @@ class _GoalRemindPageState extends State<GoalRemindPage> {
             Padding(
               padding: const EdgeInsets.only(left:30,right: 30,top: 10),
               child: Text(
-                'Always remember your goals',
+                translator.translate('alwaysRememberYourGoals'),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headline2,
               ),

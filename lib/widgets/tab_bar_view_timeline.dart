@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/helpers/popup_functions.dart';
@@ -118,7 +119,7 @@ class _TabBarViewTimelineState extends State<TabBarViewTimeline> {
         oppositeContentsBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              activities.length==index?'Add activity':activities[index].time,
+              activities.length==index?translator.translate('addActivity'):activities[index].time,
             style: activities.length==index?TextStyle(
                 // fontFamily: 'APril Flowers',
               fontSize: 30

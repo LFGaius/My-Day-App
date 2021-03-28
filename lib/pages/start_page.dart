@@ -5,6 +5,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
@@ -81,7 +82,11 @@ class _StartPageState extends State<StartPage> {
       if(prefs.getBool('myday_already_opened')==null){//first time connection TO DO: Uncomment
         prefs.setBool('myday_already_opened',true);
         prefs.setString('myday_config_alert_sound',ConfigDatas.alertSounds['activity-started-female']);
-        prefs.setString('myday_config_lang',ConfigDatas.appLangs['english-lang']);
+        translator.setNewLanguage(
+          context,
+          newLanguage: ConfigDatas.defaultLang,
+          remember: true,
+        );
         var now=DateTime.now();
         prefs.setString('myday_start_date','${now.day}-${now.month}-${now.year}');
         Navigator.of(context).popAndPushNamed(

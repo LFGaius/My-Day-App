@@ -5,6 +5,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
@@ -36,14 +37,12 @@ class _ConfigureLangPageState extends State<ConfigureLangPage> {
     super.initState();
     audioPlayer = AudioPlayer();
     audioCache = AudioCache(fixedPlayer: audioPlayer);
-    SharedPreferences.getInstance().then((prefs) {
-      if(mounted)
-        setState(() {
-          _valueSelected=prefs.getString('myday_config_lang');
-        });
-      else
-        _valueSelected=prefs.getString('myday_config_lang');
-    });
+    if(mounted)
+      setState(() {
+        _valueSelected=translator.currentLanguage;
+      });
+    else
+      _valueSelected=translator.currentLanguage;
 
   }
 
@@ -56,8 +55,8 @@ class _ConfigureLangPageState extends State<ConfigureLangPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Configure app lang',
-                  style: Theme.of(context).textTheme.headline2,
+                  translator.translate('configureAppLang'),
+                  style: Theme.of(context).textTheme.headline5,
                 )
               ],
             ),
@@ -85,11 +84,11 @@ class _ConfigureLangPageState extends State<ConfigureLangPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                    'Choose the lang you want for myday app'
+                    translator.translate('ChooseTheLangYouWantForMydayApp')
                 ),
               ),
               LabeledRadio(
-                label: 'French',
+                label: translator.translate('french'),
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 value: ConfigDatas.appLangs['french-lang'],
                 groupValue: _valueSelected,
@@ -97,12 +96,11 @@ class _ConfigureLangPageState extends State<ConfigureLangPage> {
                   setState(() {
                     _valueSelected = newValue;
                   });
-                  SharedPreferences prefs=await SharedPreferences.getInstance();
-                  prefs.setString('myday_config_lang',newValue);
+                  setLang(newValue);
                 },
               ),
               LabeledRadio(
-                label: 'English',
+                label: translator.translate('english'),
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 value: ConfigDatas.appLangs['english-lang'],
                 groupValue: _valueSelected,
@@ -110,13 +108,21 @@ class _ConfigureLangPageState extends State<ConfigureLangPage> {
                   setState(() {
                     _valueSelected = newValue;
                   });
-                  SharedPreferences prefs=await SharedPreferences.getInstance();
-                  prefs.setString('myday_config_lang',newValue);
+                  setLang(newValue);
                 },
               ),
             ],
           ),
         )// This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  setLang(lang){
+    translator.setNewLanguage(
+      context,
+      newLanguage: lang,
+      remember: true,
+      restart: true,
     );
   }
 

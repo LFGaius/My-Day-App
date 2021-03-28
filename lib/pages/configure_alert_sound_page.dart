@@ -5,6 +5,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:path/path.dart' as Path;
 import 'package:path_provider/path_provider.dart';
@@ -56,8 +57,8 @@ class _ConfigureAlertSoundPageState extends State<ConfigureAlertSoundPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Configure alert sound',
-                  style: Theme.of(context).textTheme.headline2,
+                  translator.translate('configureAlertSound'),
+                  style: Theme.of(context).textTheme.headline5,
                 )
               ],
             ),
@@ -85,7 +86,7 @@ class _ConfigureAlertSoundPageState extends State<ConfigureAlertSoundPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Choose the song you want to be played on activity notifications'
+                  translator.translate('configAlertSoundMsg')
                 ),
               ),
               LabeledRadio(

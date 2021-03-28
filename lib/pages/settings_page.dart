@@ -6,6 +6,7 @@ import 'package:expandable/expandable.dart';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/helpers/popup_functions.dart';
@@ -51,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  'Settings',
+                  translator.translate('settings'),
                   style: Theme.of(context).textTheme.headline2,
                 )
               ],
@@ -86,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: ConfigDatas.appBlueColor,
                   ),
                   title: Text(
-                    'Personal infos',
+                    translator.translate('personalInfos'),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
@@ -102,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: ConfigDatas.appBlueColor,
                   ),
                   title: Text(
-                      'Configure alert sound',
+                    translator.translate('configureAlertSound'),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
@@ -118,7 +119,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: ConfigDatas.appBlueColor,
                   ),
                   title: Text(
-                    'Configure app lang',
+                    translator.translate('configureAppLang'),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
@@ -131,7 +132,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: ConfigDatas.appBlueColor,
                   ),
                   title: Text(
-                    'Clear all my datas',
+                    translator.translate('clearAllMyDatas'),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
@@ -144,7 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     color: ConfigDatas.appBlueColor,
                   ),
                   title: Text(
-                    'Sync datas',
+                    translator.translate('syncDatas'),
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),

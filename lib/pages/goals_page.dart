@@ -3,6 +3,7 @@ import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:my_day_app/models/activity.dart';
@@ -80,7 +81,7 @@ class _GoalsPageState extends State<GoalsPage> {
           ],
         ),
         centerTitle: true,
-        leading: FlatButton(
+        leading: TextButton(
           onPressed: () {
             Navigator.of(context).popAndPushNamed(
                 '/home',
@@ -106,7 +107,7 @@ class _GoalsPageState extends State<GoalsPage> {
                 color: ConfigDatas.appDarkBlueColor,
               ),
               Text(
-                'Your Goals',
+                translator.translate('yourGoals'),
                 style: Theme.of(context).textTheme.headline1,
               ),
             ],

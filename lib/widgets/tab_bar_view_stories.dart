@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/models/activity.dart';
@@ -122,7 +123,7 @@ class _TabBarViewStoriesState extends State<TabBarViewStories> {
                                 color: Colors.white,
                               ),
                               Text(
-                                'DAY',
+                                translator.translate('day'),
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context).textTheme.headline2

@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/widgets/onboarding_slide.dart';
 import 'package:sembast/sembast.dart';
@@ -41,11 +42,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           children:[
                             OnboardingSlide(
                               imagepath: 'assets/onboardillust1.png',
-                              message: 'A good way to organize your daily activities',
+                              message: translator.translate('onboardMsg1'),
                             ),
                             OnboardingSlide(
                               imagepath: 'assets/onboardillust2.png',
-                              message: 'Organize your tasks and increase your productivity',
+                              message: translator.translate('onboardMsg2'),
                             )
                           ]
                       ),
@@ -71,9 +72,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        FlatButton(
+                        TextButton(
                           child: Text(
-                            (currentpage==numpages-1)?'Get started':'Skip',
+                            (currentpage==numpages-1)?translator.translate('getStarted'):translator.translate('skip'),
                             style: TextStyle(
                               fontWeight:FontWeight.bold,
                               fontSize: 23,

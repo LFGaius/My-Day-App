@@ -3,6 +3,7 @@ import 'package:expandable/expandable.dart';
 import 'package:fitted_text_field_container/fitted_text_field_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/helpers/global_procedures.dart';
 import 'package:my_day_app/helpers/popup_functions.dart';
@@ -129,7 +130,7 @@ class BlacklistyPageState extends State<BlacklistPage> {
               Padding(
                 padding: const EdgeInsets.only(left:20,right: 20),
                 child: Text(
-                  'TABOOLIST',
+                  translator.translate('taboolist'),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline2
                 ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/routes/route_builder.dart';
 import 'package:sembast/sembast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -103,7 +105,24 @@ void main() async{
   //   ),
   // ]);
   // controller.run();
-  runApp(MyApp());
+  SharedPreferences prefs=await SharedPreferences.getInstance();
+  if(prefs.getBool('myday_already_opened')==null)
+    await translator.init(
+      language: ConfigDatas.defaultLang,
+      languagesList: <String>['fr', 'en'],
+      assetsDirectory: 'assets/langs/'
+    );
+  else
+    await translator.init(
+      languagesList: <String>['fr', 'en'],
+      assetsDirectory: 'assets/langs/'
+    );
+
+  runApp(
+    LocalizedApp(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -120,7 +139,9 @@ class MyApp extends StatelessWidget {
         //     textTheme: Theme.of(context).textTheme.apply(
         //         fontFamily: 'Freestyle Script Regular',
         //         )),
-
+        localizationsDelegates: translator.delegates,
+        locale: translator.locale,
+        supportedLocales: translator.locals(),
         theme: ThemeData(
           fontFamily: 'APril Flowers',
           primarySwatch: Colors.blue,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:my_day_app/main.dart';
 import 'package:my_day_app/models/activity.dart';
@@ -95,7 +96,7 @@ class PopupFunctions{
                       children: [
                         Icon(storyMode?Icons.restore:Icons.edit,color: Colors.white),
                         Text(
-                          storyMode?'Restore':'Edit',
+                          storyMode?translator.translate('restore'):translator.translate('edit'),
                           style: Theme.of(context).textTheme.headline2
                         )
                       ],
@@ -124,7 +125,7 @@ class PopupFunctions{
                     keyboardType: TextInputType.multiline,
                     style: Theme.of(context).textTheme.headline3,
                     decoration: InputDecoration(
-                      labelText: 'Word',
+                      labelText: translator.translate('word'),
                       // fillColor: ConfigDatas.appBlueColor.withOpacity(0.5)
                     ),
                   ),
@@ -134,7 +135,7 @@ class PopupFunctions{
                     readOnly: mode=='view',
                     style: Theme.of(context).textTheme.headline3,
                     decoration: InputDecoration(
-                      labelText: 'Title',
+                      labelText: translator.translate('title'),
                       labelStyle: Theme.of(context).textTheme.caption
                     ),
                   ),
@@ -147,20 +148,20 @@ class PopupFunctions{
                     keyboardType: TextInputType.multiline,
                     style: Theme.of(context).textTheme.headline3,
                     decoration: InputDecoration(
-                      labelText: 'Description',
+                      labelText: translator.translate('description'),
                       labelStyle: Theme.of(context).textTheme.caption
                     ),
                   ),
                 if(variant=='activity')
                   SizedBox(height: 40),
                 if(variant=='activity')
-                  TimePicker(label: 'Start time',
+                  TimePicker(label: translator.translate('startTime'),
                       readOnly: mode == 'view',
                       timeController: timeController),
                 if(variant=='activity')
                   SizedBox(height: 40),
                 if(variant=='activity')
-                  TimePicker(label: 'Duration',
+                  TimePicker(label: translator.translate('duration'),
                       readOnly: mode == 'view',
                       timeController: durationController),
                 if(variant=='activity')
@@ -170,7 +171,7 @@ class PopupFunctions{
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'Type',
+                          translator.translate('type'),
                           style: Theme.of(context).textTheme.caption
                         ),
 
@@ -178,7 +179,7 @@ class PopupFunctions{
                           builder: (BuildContext context, StateSetter setState) {
                             return DropdownButton<String>(
 
-                              hint: Text("Select type"),
+                              hint: Text(translator.translate('selectType')),
                               value: selectedActivityType,
                               onChanged: (String value) {
                                 if (mode != 'view')
@@ -263,7 +264,7 @@ class PopupFunctions{
             color: ConfigDatas.appBlueColor,
             width: 100,
             child: Text(
-              "Save",
+              translator.translate('save'),
               style: Theme.of(context).textTheme.button,
             ),
           )
@@ -281,7 +282,7 @@ class PopupFunctions{
         'isAccomplished': element.isAccomplished,
       }, database, 'emergencies', context,frompopup:frompopup);
       Fluttertoast.showToast(
-         msg: "Emergency Restored",
+         msg: translator.translate('emergencyRestored'),
          toastLength: Toast.LENGTH_SHORT,
          gravity: ToastGravity.CENTER,
          timeInSecForIosWeb: 1,
@@ -327,7 +328,7 @@ class PopupFunctions{
         Navigator.pop(context);
       }else
         Fluttertoast.showToast(
-            msg: "Invalid duration! Please enter a duration greater than 0 and less than the remaining time in the day",
+            msg: translator.translate('errorMsgInvalidDuration'),
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -337,7 +338,7 @@ class PopupFunctions{
         );
     }else{
       Fluttertoast.showToast(
-          msg: "Time passed! Please enter a future time",
+          msg: translator.translate('errorMsgInvalidTime'),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -349,11 +350,11 @@ class PopupFunctions{
   }
 
   static void scheduleAlarm(int id,String time,int secondsToSchedule,String activityTitle) async {
-    print('wait $secondsToSchedule');
-    SharedPreferences prefs=await SharedPreferences.getInstance();
+    SharedPreferences prefs=await SharedPreferences.getInstance(); print('wait ${prefs.getString('myday_config_alert_sound')}');
+
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'alarm_notif',
-      'alarm_notif',
+      'alarm_notif$id',
+      'alarm_notif$id',
       'Channel for Alarm notification',
       icon: 'logo',
       sound: RawResourceAndroidNotificationSound(prefs.getString('myday_config_alert_sound')),
@@ -381,7 +382,7 @@ class PopupFunctions{
     var offset=now.timeZoneOffset;
     print('schedule ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second)} ${tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(Duration(seconds: secondsToSchedule))}');
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        id, 'Activity started', activityTitle,
+        id, translator.translate('activityStarted'), activityTitle,
         tz.TZDateTime.local(now.year,now.month,now.day,now.hour,now.minute,now.second).add(-offset).add(Duration(seconds: secondsToSchedule)),//with -offset, we avoid the effect of the offset because in background, the offset is added(conversion to UTC) and compared to the local time(Weird package behavior)
         platformChannelSpecifics,
         androidAllowWhileIdle: true,

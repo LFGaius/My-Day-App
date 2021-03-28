@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class GlobalProcedures{
   static String getDateWithMoreText(String date){
@@ -23,17 +24,19 @@ class GlobalProcedures{
 
   static dynamic getIcon(type){
     switch(type){
-      case 'Other': return Icons.wysiwyg_sharp;
+      case 'other': return Icons.wysiwyg_sharp;
       break;
-      case 'Rest': return Icons.airline_seat_flat;
+      case 'rest': return Icons.airline_seat_flat;
       break;
-      case 'Hobby': return Icons.accessible_forward_outlined;
+      case 'hobby': return Icons.accessible_forward_outlined;
       break;
-      case 'Study': return Icons.menu_book;
+      case 'education': return Icons.menu_book;
       break;
-      case 'Spiritual': return Icons.accessibility_new;
+      case 'spiritual': return Icons.accessibility_new;
       break;
-      case 'Professional': return Icons.corporate_fare;
+      case 'professional': return Icons.corporate_fare;
+      break;
+      case 'project': return Icons.corporate_fare;
       break;
     }
   }

@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -31,12 +32,12 @@ class CardActionList extends StatelessWidget {
         descStyle: Theme.of(context).textTheme.bodyText2
       ),
       type: AlertType.warning,
-      title: "Warning",
+      title: translator.translate('warning'),
       desc: message,
       buttons: [
         DialogButton(
           child: Text(
-            "Confirm",
+            translator.translate('confirm'),
             style: Theme.of(context).textTheme.button,
           ),
           onPressed: () {
@@ -47,7 +48,7 @@ class CardActionList extends StatelessWidget {
         ),
         DialogButton(
           child: Text(
-            "Cancel",
+            translator.translate('cancel'),
             style: Theme.of(context).textTheme.button,
           ),
           onPressed: () => Navigator.pop(context),
@@ -88,7 +89,7 @@ class CardActionList extends StatelessWidget {
           SizedBox(height: 12),
           GestureDetector(
             onTap: () {
-              _onConfirmDeleteAction(context,'Are you sure you want to delete this element?');
+              _onConfirmDeleteAction(context,translator.translate('confirmDeleteQuestion'));
             },
             child: Container(
               padding: EdgeInsets.all(4),
@@ -203,7 +204,7 @@ class CardActionList extends StatelessWidget {
             )
           else if(variant!='story') GestureDetector(
             onTap: () {
-              _onConfirmDeleteAction(context,'Are you sure you want to delete this element?');
+              _onConfirmDeleteAction(context,translator.translate('confirmDeleteQuestion'));
             },
             child: Container(
               padding: EdgeInsets.all(4),
