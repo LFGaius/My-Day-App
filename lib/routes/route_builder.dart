@@ -6,6 +6,7 @@ import 'package:my_day_app/pages/goal_remind_page.dart';
 import 'package:my_day_app/pages/goals_page.dart';
 import 'package:my_day_app/pages/home_page.dart';
 import 'package:my_day_app/pages/onboarding_screen.dart';
+import 'package:my_day_app/pages/personal_info_page.dart';
 import 'package:my_day_app/pages/settings_page.dart';
 import 'package:my_day_app/pages/start_page.dart';
 import 'package:my_day_app/pages/story_page.dart';
@@ -18,6 +19,7 @@ class MyRouteBuilder{
       case '/':
         return MaterialPageRoute(builder: (_)=>StartPage());
       case '/onboarding':
+        print('444');
         return MaterialPageRoute(builder: (_)=>OnboardingScreen(database: args['database']));
       case '/goals':
         return MaterialPageRoute(builder: (_)=>GoalsPage(database: args['database']));//args['database']
@@ -35,6 +37,8 @@ class MyRouteBuilder{
         return MaterialPageRoute(builder: (_)=>ConfigureAlertSoundPage(database: args['database']));
       case '/configurelang':
         return MaterialPageRoute(builder: (_)=>ConfigureLangPage(database: args['database']));
+      case '/personalinfo':
+        return MaterialPageRoute(builder: (_)=>PersonalInfoPage(database: args['database']));
       default: return errorRoute();
     }
   }

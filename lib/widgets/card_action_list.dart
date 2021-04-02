@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:my_day_app/configs/config_datas.dart';
+import 'package:my_day_app/helpers/popup_functions.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CardActionList extends StatelessWidget {
@@ -20,43 +21,6 @@ class CardActionList extends StatelessWidget {
 
 
   const CardActionList({Key key, this.onDelete, this.onView, this.variant, this.onEdit, this.isFavorite, this.onSwitchFavorite, this.isAccomplished, this.onSwitchAccomplished, this.onRestore, this.restoreHidden}) : super(key: key);
-  _onConfirmDeleteAction(context,message) {
-    Alert(
-      context: context,
-      style: AlertStyle(
-          titleStyle: TextStyle(
-              color: Colors.redAccent,
-              fontWeight: FontWeight.bold,
-              fontSize: 40
-          ),
-        descStyle: Theme.of(context).textTheme.bodyText2
-      ),
-      type: AlertType.warning,
-      title: translator.translate('warning'),
-      desc: message,
-      buttons: [
-        DialogButton(
-          child: Text(
-            translator.translate('confirm'),
-            style: Theme.of(context).textTheme.button,
-          ),
-          onPressed: () {
-            onDelete();
-            Navigator.pop(context);
-          },
-          color: Colors.redAccent
-        ),
-        DialogButton(
-          child: Text(
-            translator.translate('cancel'),
-            style: Theme.of(context).textTheme.button,
-          ),
-          onPressed: () => Navigator.pop(context),
-          color: ConfigDatas.appBlueColor,
-        )
-      ],
-    ).show();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +53,7 @@ class CardActionList extends StatelessWidget {
           SizedBox(height: 12),
           GestureDetector(
             onTap: () {
-              _onConfirmDeleteAction(context,translator.translate('confirmDeleteQuestion'));
+              PopupFunctions.onConfirmDeleteAction(context,translator.translate('confirmDeleteQuestion'),onDelete);
             },
             child: Container(
               padding: EdgeInsets.all(4),
@@ -204,7 +168,7 @@ class CardActionList extends StatelessWidget {
             )
           else if(variant!='story') GestureDetector(
             onTap: () {
-              _onConfirmDeleteAction(context,translator.translate('confirmDeleteQuestion'));
+              PopupFunctions.onConfirmDeleteAction(context,translator.translate('confirmDeleteQuestion'),onDelete);
             },
             child: Container(
               padding: EdgeInsets.all(4),

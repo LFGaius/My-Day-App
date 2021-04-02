@@ -537,4 +537,42 @@ class PopupFunctions{
 
     Navigator.pop(context);
   }
+
+  static onConfirmDeleteAction(context,message,Function onDelete) {
+    Alert(
+      context: context,
+      style: AlertStyle(
+          titleStyle: TextStyle(
+              color: Colors.redAccent,
+              fontWeight: FontWeight.bold,
+              fontSize: 40
+          ),
+          descStyle: Theme.of(context).textTheme.bodyText2
+      ),
+      type: AlertType.warning,
+      title: translator.translate('warning'),
+      desc: message,
+      buttons: [
+        DialogButton(
+            child: Text(
+              translator.translate('confirm'),
+              style: Theme.of(context).textTheme.button,
+            ),
+            onPressed: () {
+              onDelete();
+              Navigator.pop(context);
+            },
+            color: Colors.redAccent
+        ),
+        DialogButton(
+          child: Text(
+            translator.translate('cancel'),
+            style: Theme.of(context).textTheme.button,
+          ),
+          onPressed: () => Navigator.pop(context),
+          color: ConfigDatas.appBlueColor,
+        )
+      ],
+    ).show();
+  }
 }

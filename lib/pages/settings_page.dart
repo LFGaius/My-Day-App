@@ -25,6 +25,7 @@ import 'package:my_day_app/widgets/time_picker.dart';
 import 'package:pedantic/pedantic.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timelines/timelines.dart';
 
@@ -80,7 +81,10 @@ class _SettingsPageState extends State<SettingsPage> {
               tiles: [
                 ListTile(
                   onTap: () {
-
+                    Navigator.of(context).popAndPushNamed(
+                        '/personalinfo',
+                        arguments:{'database':widget.database}
+                    );
                   },
                   leading: Icon(
                     Icons.account_box_rounded,
@@ -125,7 +129,17 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 ListTile(
                   onTap: () {
+                    PopupFunctions.onConfirmDeleteAction(context,translator.translate('confirmClearDataMsg') , () async{
 
+                      widget.database.close();
+                      await databaseFactoryIo.deleteDatabase(widget.database.path);
+
+                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                      await preferences.clear();
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/', (Route<dynamic> route) => false
+                      );
+                    });
                   },
                   leading: Icon(
                     Icons.delete_forever_sharp,
@@ -156,5 +170,5 @@ class _SettingsPageState extends State<SettingsPage> {
       );
   }
 
-
 }
+

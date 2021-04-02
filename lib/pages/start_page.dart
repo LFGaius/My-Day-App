@@ -79,13 +79,15 @@ class _StartPageState extends State<StartPage> {
       //   print('name:${element['name']}');
       // });
       // prefs.setString('myday_start_date','10-02-2021');
-      if(prefs.getBool('myday_already_opened')==null){//first time connection TO DO: Uncomment
+
+      if(prefs.getBool('myday_already_opened')==null){//first time connection
         prefs.setBool('myday_already_opened',true);
         prefs.setString('myday_config_alert_sound',ConfigDatas.alertSounds['activity-started-female']);
         translator.setNewLanguage(
           context,
           newLanguage: ConfigDatas.defaultLang,
           remember: true,
+          restart: false
         );
         var now=DateTime.now();
         prefs.setString('myday_start_date','${now.day}-${now.month}-${now.year}');
@@ -93,8 +95,12 @@ class _StartPageState extends State<StartPage> {
           '/onboarding',
             arguments:{'database':db}
         );
-      }else
-        Navigator.of(context).pushNamedAndRemoveUntil('/goalremind',(Route<dynamic> route) => false, arguments:{'database':db});
+      }else {
+        print('already opened2 ${prefs.getBool('myday_already_opened')}');
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            '/goalremind', (Route<dynamic> route) => false,
+            arguments: {'database': db});
+      }
     });
   }
 

@@ -75,5 +75,6 @@
   "addtaboo": "Add taboo",
   "edittaboo": "Edit taboo",
   "addgoal": "Add goal",
-  "editgoal": "Edit goal"
+  "editgoal": "Edit goal",
+  "confirmClearDataMsg": "Are you sure you want to clear all your datas?"
 }

@@ -73,5 +73,6 @@
   "addtaboo": "Ajout d'interdit",
   "edittaboo": "Modification d'interdit",
   "addgoal": "Ajout de but",
-  "editgoal": "Modification de but"
+  "editgoal": "Modification de but",
+  "confirmClearDataMsg": "Etes-vous certains de vouloir supprimer vos données?"
 }
